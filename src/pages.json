@@ -21,6 +21,13 @@
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}
+		},
+		{
+			"path": "pages/map/map",
+			"style": {
+				"navigationBarTitleText": "地图",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {
