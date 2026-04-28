@@ -86,7 +86,7 @@ const featureList = [
   { icon: '🚌', title: '交通出行', sub: '品质出行' },
 ]
 
-const quickTags = ['精品路线', '阿坝美食', '阿坝优选']
+const quickTags = ['精品路线', '精选美食', '阿坝优选']
 
 const spotList = [
   { name: '九寨沟', desc: '“童话世界”、“人间仙境”', bg: 'linear-gradient(140deg, #84d5ff 0%, #2f78d2 100%)' },
@@ -105,6 +105,10 @@ const tabs = [
 
 function onTabTap(item) {
   if (item.isAi) return
+  if (item.key === 'map') {
+    uni.navigateTo({ url: '/pages/map/map' })
+    return
+  }
   activeTab.value = item.key
   uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
 }
