@@ -1,77 +1,45 @@
 <template>
   <view class="page">
-    <view class="scroll">
-      <view class="hero">
-        <image class="hero-bg" :src="heroBgUrl" mode="aspectFill" />
-        <view class="hero-overlay" />
-
-        <view class="user-row">
-          <view class="avatar">👤</view>
-          <view class="user-text">
-            <text class="user-name">{{ userName }}</text>
-            <text class="user-sub">文旅订单管理</text>
-          </view>
-        </view>
+    <!-- 顶部背景区域 -->
+    <view class="header">
+      <view class="header-bg"></view>
+      
+      <!-- 用户信息 -->
+      <view class="user-info">
+        <image class="avatar" src="/static/logo.png" mode="aspectFill" />
+        <text class="username">{{ userName }}</text>
       </view>
+    </view>
 
-      <view class="card">
-        <view class="card-title">我的订单</view>
-
-        <view class="order-tabs">
-          <view
-            class="order-tab"
-            :class="{ active: activeOrderStatus === 'all' }"
-            @tap="goOrderDetail('all')"
-          >
-            <image class="order-img" :src="orderIcons.all" mode="aspectFit" />
-            <text class="order-text">全部订单</text>
-          </view>
-          <view
-            class="order-tab"
-            :class="{ active: activeOrderStatus === 'pendingPay' }"
-            @tap="goOrderDetail('pendingPay')"
-          >
-            <image class="order-img" :src="orderIcons.pendingPay" mode="aspectFit" />
-            <text class="order-text">待付款</text>
-          </view>
-          <view
-            class="order-tab"
-            :class="{ active: activeOrderStatus === 'pendingUse' }"
-            @tap="goOrderDetail('pendingUse')"
-          >
-            <image class="order-img" :src="orderIcons.pendingUse" mode="aspectFit" />
-            <text class="order-text">待使用</text>
-          </view>
-          <view
-            class="order-tab"
-            :class="{ active: activeOrderStatus === 'completed' }"
-            @tap="goOrderDetail('completed')"
-          >
-            <image class="order-img" :src="orderIcons.completed" mode="aspectFit" />
-            <text class="order-text">已完成</text>
-          </view>
-        </view>
+    <!-- 我的订单 -->
+    <view class="section">
+      <view class="section-title">
+        <text>我的订单</text>
       </view>
-
-      <view class="card">
-        <view class="card-title">常用功能</view>
-
-        <view class="func-grid">
-          <view
-            class="func-item"
-            v-for="item in commonFunctions"
-            :key="item.key"
-            @tap="onFuncTap(item.key)"
-          >
-            <view class="func-icon-wrap">
-              <image class="func-img" :src="item.iconUrl" mode="aspectFit" />
-            </view>
-            <text class="func-text">{{ item.label }}</text>
-          </view>
+      
+      <view class="order-grid">
+        <view class="order-item" v-for="item in orderItems" :key="item.key" @tap="goOrderList(item.key)">
+          <image class="order-icon" :src="item.icon" mode="aspectFit" />
+          <text class="order-label">{{ item.label }}</text>
         </view>
       </view>
     </view>
 
+    <!-- 常用功能 -->
+    <view class="section">
+      <view class="section-title">
+        <text>常用功能</text>
+      </view>
+      
+      <view class="function-grid">
+        <view class="function-item" v-for="item in functionItems" :key="item.key" @tap="goFunction(item.key)">
+          <image class="function-icon" :src="item.icon" mode="aspectFit" />
+          <text class="function-label">{{ item.label }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底边栏 -->
     <view class="tabbar">
       <view
         class="tab-item"
@@ -94,15 +62,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { fetchUserName } from '../../api/mine'
 
 const activeTab = ref('mine')
-const userName = ref('游客qn8kn1')
-const activeOrderStatus = ref('all')
-
-const heroBgUrl =
-  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80'
+const userName = ref('')
 
 const tabs = [
   { key: 'home', label: '首页', icon: '⌂' },
@@ -112,244 +76,189 @@ const tabs = [
   { key: 'mine', label: '我的', icon: '◉' },
 ]
 
-const orderIcons = {
-  all: '../../static/mine/全部订单_1777459859.png',
-  pendingPay: '../../static/mine/待付款_1777460390.png',
-  pendingUse: '../../static/mine/待使用_1777460426.png',
-  completed: '../../static/mine/已完成_1777460440.png',
-}
-
-const commonFunctions = [
-  { key: 'info', iconUrl: 'https://cdn-icons-png.flaticon.com/512/2593/2593549.png', label: '常用信息' },
-  { key: 'receipt', iconUrl: 'https://cdn-icons-png.flaticon.com/512/679/679922.png', label: '收货管理' },
-  { key: 'footprint', iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', label: '我的足迹' },
-  { key: 'coupon', iconUrl: 'https://cdn-icons-png.flaticon.com/512/3081/3081559.png', label: '优惠券' },
-  { key: 'feedback', iconUrl: 'https://cdn-icons-png.flaticon.com/512/1827/1827933.png', label: '意见反馈' },
-  { key: 'support', iconUrl: 'https://cdn-icons-png.flaticon.com/512/3050/3050525.png', label: '联系客服' },
-  { key: 'settings', iconUrl: 'https://cdn-icons-png.flaticon.com/512/2099/2099058.png', label: '设置' },
-  { key: 'cart', iconUrl: 'https://cdn-icons-png.flaticon.com/512/263/263142.png', label: '购物车' },
-  { key: 'survey', iconUrl: 'https://cdn-icons-png.flaticon.com/512/3039/3039436.png', label: '调查问卷' },
+// 订单图标（使用编译后的路径）
+const orderItems = [
+  { key: 'all', label: '全部订单', icon: '/static/mine/mine-sub/allorders_1777459859.png' },
+  { key: 'pendingPay', label: '待付款', icon: '/static/mine/mine-sub/pending_1777460426.png' },
+  { key: 'pendingUse', label: '待使用', icon: '/static/mine/mine-sub/obligation_1777460390.png' },
+  { key: 'completed', label: '已完成', icon: '/static/mine/mine-sub/off_the_stocks_1777460440.png' },
 ]
 
-onLoad(async () => {
+// 常用功能图标
+const functionItems = [
+  { key: 'information', label: '我的信息', icon: '/static/mine/mine-using/information_1777461157.png' },
+  { key: 'discount', label: '优惠券', icon: '/static/mine/mine-using/discount_1777461276.png' },
+  { key: 'settings', label: '设置', icon: '/static/mine/mine-using/settings_1777461303.png' },
+  { key: 'feedback', label: '意见反馈', icon: '/static/mine/mine-using/feedback_1777461336.png' },
+]
+
+onMounted(async () => {
   userName.value = await fetchUserName()
 })
 
-function goOrderDetail(status) {
-  activeOrderStatus.value = status
-  uni.navigateTo({ url: `/pages/mine/orderDetail?status=${status}` })
+// 订单列表跳转
+function goOrderList(status) {
+  // TODO: 跳转到订单列表页面
+  uni.showToast({ title: `跳转${status}订单页面`, icon: 'none' })
+  // uni.navigateTo({ url: `/pages/mine/orderList?status=${status}` })
 }
 
+// 常用功能跳转
+function goFunction(key) {
+  // TODO: 跳转到对应功能页面
+  uni.showToast({ title: `跳转${key}页面`, icon: 'none' })
+  // uni.navigateTo({ url: `/pages/mine/${key}` })
+}
+
+// AI助手
 function onAiTap() {
   uni.showToast({ title: 'AI助手页面待开发', icon: 'none' })
 }
 
+// 底边栏切换
 function onTabTap(item) {
   if (item.isAi) return
+  activeTab.value = item.key
+
   if (item.key === 'home') {
     uni.reLaunch({ url: '/pages/index/index' })
     return
   }
+
   if (item.key === 'map') {
     uni.navigateTo({ url: '/pages/map/map' })
     return
   }
+
   if (item.key === 'discover') {
     uni.navigateTo({ url: '/pages/discover/discover' })
     return
   }
-  if (item.key === 'mine') return
-  uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
-}
 
-function onFuncTap() {
-  uni.showToast({ title: '功能开发中', icon: 'none' })
+  if (item.key === 'mine') return
+
+  uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
 }
 </script>
 
 <style scoped>
 .page {
-  height: 100vh;
+  min-height: 100vh;
+  background: #f5f5f5;
   position: relative;
-  background: #f3f6f9;
+  padding-bottom: 140rpx;
+}
+
+/* 顶部区域 */
+.header {
+  position: relative;
+  height: 400rpx;
   overflow: hidden;
 }
 
-.scroll {
-  height: 100%;
-  overflow-y: auto;
-  box-sizing: border-box;
-  padding: 0 24rpx calc(180rpx + env(safe-area-inset-bottom));
-}
-
-.hero {
-  position: relative;
-  height: 220rpx;
-  overflow: hidden;
-}
-
-.hero-bg {
-  width: 100%;
-  height: 100%;
-}
-
-.hero-overlay {
+.header-bg {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.05));
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #e8d5c4 0%, #d4b896 100%);
 }
 
-.user-row {
+.user-info {
   position: absolute;
-  left: 24rpx;
-  right: 24rpx;
-  bottom: -60rpx;
+  top: 120rpx;
+  left: 40rpx;
   display: flex;
   align-items: center;
-  gap: 18rpx;
-  padding: 18rpx 20rpx;
-  box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 28rpx;
-  box-shadow: 0 18rpx 36rpx rgba(0, 0, 0, 0.08);
+  gap: 30rpx;
+  z-index: 10;
 }
 
 .avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  border: 6rpx solid #fff;
+  background: #fff;
+}
+
+.username {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+/* 区块样式 */
+.section {
+  margin: 20rpx 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  margin-bottom: 30rpx;
+}
+
+.section-title text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+/* 订单网格 */
+.order-grid {
+  display: flex;
+  justify-content: space-around;
+}
+
+.order-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.order-icon {
+  width: 80rpx;
+  height: 80rpx;
+}
+
+.order-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 功能网格 */
+.function-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30rpx;
+}
+
+.function-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.function-icon {
   width: 72rpx;
   height: 72rpx;
-  border-radius: 36rpx;
-  background: #f0f6ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 34rpx;
 }
 
-.user-text {
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-}
-
-.user-name {
-  font-size: 32rpx;
-  font-weight: 800;
-  color: #222;
-}
-
-.user-sub {
+.function-label {
   font-size: 24rpx;
-  color: #666;
-}
-
-.card {
-  margin-top: 98rpx;
-  padding: 18rpx 20rpx 22rpx;
-  background: #fff;
-  border-radius: 28rpx;
-  box-sizing: border-box;
-  box-shadow: 0 14rpx 40rpx rgba(0, 0, 0, 0.04);
-}
-
-.card + .card {
-  margin-top: 26rpx;
-}
-
-.card-title {
-  font-size: 34rpx;
-  font-weight: 900;
-  color: #222;
-}
-
-.order-tabs {
-  margin-top: 12rpx;
-  display: flex;
-  justify-content: space-between;
-  padding: 10rpx 6rpx 0;
-}
-
-.order-tab {
-  flex: 1;
-  text-align: center;
-  font-size: 28rpx;
-  color: #9b9b9b;
-  padding-bottom: 18rpx;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10rpx;
-}
-
-.order-img {
-  width: 44rpx;
-  height: 44rpx;
-}
-
-.order-text {
-  font-size: 24rpx;
-  color: inherit;
-}
-
-.order-tab.active {
-  color: #222;
-  font-weight: 800;
-}
-
-.order-tab.active::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 56rpx;
-  height: 6rpx;
-  background: #222;
-  border-radius: 6rpx;
-}
-
-.func-grid {
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16rpx 10rpx;
-  margin-top: 20rpx;
-}
-
-.func-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8rpx 4rpx;
-}
-
-.func-icon-wrap {
-  width: 86rpx;
-  height: 86rpx;
-  border-radius: 22rpx;
-  background: #f4f6f8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.func-img {
-  width: 44rpx;
-  height: 44rpx;
-}
-
-.func-text {
-  margin-top: 10rpx;
-  font-size: 22rpx;
   color: #666;
   text-align: center;
 }
 
+/* 底边栏 */
 .tabbar {
-  height: calc(120rpx + env(safe-area-inset-bottom));
-  padding-bottom: env(safe-area-inset-bottom);
+  height: 120rpx;
   background: #fff;
   border-top: 1rpx solid #ebedf0;
   display: flex;
@@ -360,7 +269,6 @@ function onFuncTap() {
   right: 0;
   bottom: 0;
   z-index: 20;
-  box-sizing: border-box;
 }
 
 .tab-item {
@@ -370,8 +278,6 @@ function onFuncTap() {
   align-items: center;
   justify-content: center;
   color: #9b9b9b;
-  position: relative;
-  z-index: 2;
 }
 
 .tab-icon {
@@ -408,4 +314,3 @@ function onFuncTap() {
   font-size: 54rpx;
 }
 </style>
-

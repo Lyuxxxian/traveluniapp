@@ -95,7 +95,7 @@ function onTabTap(item) {
   if (item.key === 'discover') return
 
   if (item.key === 'mine') {
-    uni.navigateTo({ url: '/pages/mine/mine' })
+    uni.reLaunch({ url: '/pages/mine/mine' })
     return
   }
 
