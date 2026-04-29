@@ -336,6 +336,14 @@ function onTabTap(item) {
     return
   }
   if (item.key === 'map') return
+  if (item.key === 'discover') {
+    uni.navigateTo({ url: '/pages/discover/discover' })
+    return
+  }
+  if (item.key === 'mine') {
+    uni.navigateTo({ url: '/pages/mine/mine' })
+    return
+  }
   uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
 }
 

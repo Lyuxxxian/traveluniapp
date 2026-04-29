@@ -28,6 +28,34 @@
 				"navigationBarTitleText": "地图",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/discover/discover",
+			"style": {
+				"navigationBarTitleText": "发现",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/discover/discoverDetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/orderDetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

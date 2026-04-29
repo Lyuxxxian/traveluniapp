@@ -109,6 +109,14 @@ function onTabTap(item) {
     uni.navigateTo({ url: '/pages/map/map' })
     return
   }
+  if (item.key === 'discover') {
+    uni.navigateTo({ url: '/pages/discover/discover' })
+    return
+  }
+  if (item.key === 'mine') {
+    uni.navigateTo({ url: '/pages/mine/mine' })
+    return
+  }
   activeTab.value = item.key
   uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
 }
