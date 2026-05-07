@@ -1,129 +1,83 @@
 <template>
-  <view class="page">
-    <scroll-view scroll-y class="scroll">
-      <view class="hero">
-        <view class="hero-overlay" />
-        <view class="top-bar">
-          <view class="location">
-            <view class="location-icon">▲</view>
-            <view class="location-text">
-              <text class="city">数字助手</text>
-              <text class="city-sub">站式文旅服务</text>
+  <TabBar activeTab="home" :showTabbar="true">
+    <view class="page">
+      <scroll-view scroll-y class="scroll">
+        <view class="hero">
+          <view class="hero-overlay" />
+          <view class="top-bar">
+            <view class="location">
+              <view class="location-icon">▲</view>
+              <view class="location-text">
+                <text class="city">数字助手</text>
+                <text class="city-sub">站式文旅服务</text>
+              </view>
+            </view>
+
+            <view class="search">
+              <text class="search-icon">🔍</text>
+              <text class="search-text">找景区/酒店</text>
+            </view>
+
+            <view class="camera">◉</view>
+          </view>
+        </view>
+
+        <view class="main-card">
+          <view class="feature-grid">
+            <view class="feature-item" v-for="item in featureList" :key="item.title">
+              <view class="feature-icon">{{ item.icon }}</view>
+              <text class="feature-title">{{ item.title }}</text>
+              <text class="feature-sub">{{ item.sub }}</text>
             </view>
           </view>
 
-          <view class="search">
-            <text class="search-icon">🔍</text>
-            <text class="search-text">找景区/酒店</text>
+          <view class="quick-row">
+            <view class="quick-tag" v-for="item in quickTags" :key="item">
+              <text>{{ item }}</text>
+            </view>
           </view>
 
-          <view class="camera">◉</view>
-        </view>
-      </view>
-
-      <view class="main-card">
-        <view class="feature-grid">
-          <view class="feature-item" v-for="item in featureList" :key="item.title">
-            <view class="feature-icon">{{ item.icon }}</view>
-            <text class="feature-title">{{ item.title }}</text>
-            <text class="feature-sub">{{ item.sub }}</text>
+          <view class="section-title">
+            <text class="fire">🔥</text>
+            <text>热门景区</text>
           </view>
-        </view>
 
-        <view class="quick-row">
-          <view class="quick-tag" v-for="item in quickTags" :key="item">
-            <text>{{ item }}</text>
-          </view>
-        </view>
-
-        <view class="section-title">
-          <text class="fire">🔥</text>
-          <text>热门景区</text>
-        </view>
-
-        <view class="spot-grid">
-          <view class="spot-card" v-for="spot in spotList" :key="spot.name">
-            <view class="spot-bg" :style="{ background: spot.bg }" />
-            <view class="spot-mask" />
-            <view class="spot-content">
-              <text class="spot-name">{{ spot.name }}</text>
-              <text class="spot-desc">{{ spot.desc }}</text>
+          <view class="spot-grid">
+            <view class="spot-card" v-for="spot in spotList" :key="spot.name">
+              <view class="spot-bg" :style="{ background: spot.bg }" />
+              <view class="spot-mask" />
+              <view class="spot-content">
+                <text class="spot-name">{{ spot.name }}</text>
+                <text class="spot-desc">{{ spot.desc }}</text>
+              </view>
             </view>
           </view>
         </view>
-      </view>
-    </scroll-view>
-
-    <view class="tabbar">
-      <view
-        class="tab-item"
-        v-for="item in tabs"
-        :key="item.key"
-        :class="{ active: item.key === activeTab && !item.isAi }"
-        @tap="onTabTap(item)"
-      >
-        <template v-if="!item.isAi">
-          <text class="tab-icon">{{ item.icon }}</text>
-          <text class="tab-text">{{ item.label }}</text>
-        </template>
-      </view>
-
-      <view class="ai-button" @tap="onAiTap">
-        <text class="ai-icon">🐼</text>
-      </view>
+      </scroll-view>
     </view>
-  </view>
+  </TabBar>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import TabBar from '../../components/TabBar.vue'
 
 const activeTab = ref('home')
 
 const featureList = [
   { icon: '🏨', title: '酒店民宿', sub: '品质住宿' },
   { icon: '🎫', title: '景区门票', sub: '节日福利' },
-  { icon: '🚌', title: '交通出行', sub: '品质出行' },
+  { icon: '', title: '交通出行', sub: '品质出行' },
 ]
 
 const quickTags = ['精品路线', '精选美食', '阿坝优选']
 
 const spotList = [
-  { name: '九寨沟', desc: '“童话世界”、“人间仙境”', bg: 'linear-gradient(140deg, #84d5ff 0%, #2f78d2 100%)' },
-  { name: '黄龙', desc: '“世界奇观”、“人间瑶池”', bg: 'linear-gradient(140deg, #89f0d0 0%, #2c8f5d 100%)' },
-  { name: '四姑娘山', desc: '“蜀山皇后”、“东方圣山”', bg: 'linear-gradient(140deg, #8bc5ff 0%, #4d65d1 100%)' },
-  { name: '达古冰川', desc: '“冰川奇观”、“最近的遥远”', bg: 'linear-gradient(140deg, #76b3ff 0%, #2145a6 100%)' },
+  { name: '九寨沟', desc: '"童话世界"、"人间仙境"', bg: 'linear-gradient(140deg, #84d5ff 0%, #2f78d2 100%)' },
+  { name: '黄龙', desc: '"世界奇观"、"人间瑶池"', bg: 'linear-gradient(140deg, #89f0d0 0%, #2c8f5d 100%)' },
+  { name: '四姑娘山', desc: '"蜀山皇后"、"东方圣山"', bg: 'linear-gradient(140deg, #8bc5ff 0%, #4d65d1 100%)' },
+  { name: '达古冰川', desc: '"冰川奇观"、"最近的遥远"', bg: 'linear-gradient(140deg, #76b3ff 0%, #2145a6 100%)' },
 ]
-
-const tabs = [
-  { key: 'home', label: '首页', icon: '⌂' },
-  { key: 'map', label: '地图', icon: '⌖' },
-  { key: 'ai', label: 'AI', icon: '●', isAi: true },
-  { key: 'discover', label: '发现', icon: '◈' },
-  { key: 'mine', label: '我的', icon: '◉' },
-]
-
-function onTabTap(item) {
-  if (item.isAi) return
-  if (item.key === 'map') {
-    uni.navigateTo({ url: '/pages/map/map' })
-    return
-  }
-  if (item.key === 'discover') {
-    uni.navigateTo({ url: '/pages/discover/discover' })
-    return
-  }
-  if (item.key === 'mine') {
-    uni.navigateTo({ url: '/pages/mine/mine' })
-    return
-  }
-  activeTab.value = item.key
-  uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
-}
-
-function onAiTap() {
-  uni.showToast({ title: 'AI助手页面待开发', icon: 'none' })
-}
 </script>
 
 <style scoped>
@@ -352,58 +306,5 @@ function onAiTap() {
   margin-top: 8rpx;
   font-size: 22rpx;
   opacity: 0.95;
-}
-
-.tabbar {
-  height: 120rpx;
-  background: #fff;
-  border-top: 1rpx solid #ebedf0;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  position: relative;
-}
-
-.tab-item {
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #9b9b9b;
-}
-
-.tab-icon {
-  font-size: 34rpx;
-  line-height: 1;
-}
-
-.tab-text {
-  margin-top: 6rpx;
-  font-size: 22rpx;
-}
-
-.tab-item.active {
-  color: #3ca764;
-}
-
-.ai-button {
-  position: absolute;
-  left: 50%;
-  top: -28rpx;
-  transform: translateX(-50%);
-  width: 108rpx;
-  height: 108rpx;
-  border-radius: 50%;
-  border: 8rpx solid #fff;
-  background: linear-gradient(145deg, #72d67f 0%, #48b258 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10rpx 18rpx rgba(31, 136, 56, 0.3);
-}
-
-.ai-icon {
-  font-size: 54rpx;
 }
 </style>
