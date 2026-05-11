@@ -1,9 +1,35 @@
 <template>
   <TabBar activeTab="home" :showTabbar="true">
     <view class="page">
-      <scroll-view scroll-y class="scroll">
-        <view class="hero">
+      <scroll-view scroll-y class="scroll" @scroll="handleHeroScroll">
+        <view class="hero" :style="{ backgroundColor: currentHero.themeColor }">
+          <swiper
+            class="hero-swiper"
+            circular
+            autoplay
+            :interval="4200"
+            :duration="700"
+            @change="handleHeroChange"
+          >
+            <swiper-item v-for="item in heroSlides" :key="item.title">
+              <image
+                class="hero-image"
+                :src="item.image"
+                mode="aspectFill"
+                :style="heroImageStyle"
+              />
+            </swiper-item>
+          </swiper>
           <view class="hero-overlay" />
+          <view
+            class="hero-feather"
+            :style="{ background: `linear-gradient(to bottom, rgba(248, 248, 248, 0) 0%, ${currentHero.themeColor} 72%, ${currentHero.themeColor} 100%)` }"
+          />
+          <view class="hero-copy">
+            <text class="hero-kicker">{{ currentHero.kicker }}</text>
+            <text class="hero-title">{{ currentHero.title }}</text>
+            <text class="hero-subtitle">{{ currentHero.subtitle }}</text>
+          </view>
           <view class="top-bar">
             <view class="location">
               <view class="location-icon">▲</view>
@@ -22,7 +48,7 @@
           </view>
         </view>
 
-        <view class="main-card">
+        <view class="main-card" :style="{ backgroundColor: currentHero.themeColor }">
           <view class="feature-grid">
             <view class="feature-item" v-for="item in featureList" :key="item.title">
               <view class="feature-icon">{{ item.icon }}</view>
@@ -59,10 +85,58 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import TabBar from '../../components/TabBar.vue'
 
 const activeTab = ref('home')
+const activeHeroIndex = ref(0)
+const heroBlur = ref(0)
+
+const heroSlides = [
+  {
+    title: '灵山大佛全景',
+    subtitle: '在山湖之间仰望庄严佛光',
+    kicker: 'Lingshan Grand Buddha',
+    image:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/%E7%81%B5%E5%B1%B1%E5%A4%A7%E4%BD%9B_-_panoramio_(1).jpg',
+    themeColor: '#f8f1e3',
+  },
+  {
+    title: '灵山梵宫艺术细节',
+    subtitle: '金色穹顶、壁画与木雕交织成东方美学',
+    kicker: 'Brahma Palace',
+    image:
+      'https://commons.wikimedia.org/wiki/Special:FilePath/%E6%97%A0%E9%94%A1%E7%81%B5%E5%B1%B1%E5%A4%A7%E4%BD%9B%E6%A2%B5%E5%AE%AB_-_panoramio.jpg',
+    themeColor: '#f5ead9',
+  },
+  {
+    title: '拈花湾花海',
+    subtitle: '花海铺展，禅意小镇慢慢苏醒',
+    kicker: 'Nianhua Bay',
+    image:
+      'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1200&q=80',
+    themeColor: '#f4efe6',
+  },
+]
+
+const currentHero = computed(() => heroSlides[activeHeroIndex.value] || heroSlides[0])
+const heroImageStyle = computed(() => {
+  const blur = heroBlur.value
+
+  return {
+    filter: `blur(${blur}px)`,
+    transform: `scale(${1 + blur * 0.012})`,
+  }
+})
+
+function handleHeroChange(event) {
+  activeHeroIndex.value = event.detail.current
+}
+
+function handleHeroScroll(event) {
+  const scrollTop = event.detail.scrollTop || 0
+  heroBlur.value = Math.min(24, Math.round((scrollTop / 220) * 24))
+}
 
 const featureList = [
   { icon: '🏨', title: '酒店民宿', sub: '品质住宿' },
@@ -91,21 +165,78 @@ const spotList = [
 }
 
 .hero {
-  height: 470rpx;
+  height: 52vh;
+  min-height: 520rpx;
   padding: 26rpx 24rpx 0;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 76% 34%, rgba(255, 172, 209, 0.8), rgba(255, 172, 209, 0) 28%),
-    radial-gradient(circle at 22% 20%, rgba(140, 212, 255, 0.9), rgba(140, 212, 255, 0) 34%),
-    linear-gradient(145deg, #0f9db3 0%, #0e7e99 38%, #12628a 100%);
+  transition: background-color 0.5s ease;
+}
+
+.hero-swiper {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  will-change: filter, transform;
+  transition: filter 0.12s linear, transform 0.12s linear;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.25) 100%);
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.12) 46%, rgba(0, 0, 0, 0.38) 100%),
+    radial-gradient(circle at 72% 24%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 36%);
+}
+
+.hero-feather {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2rpx;
+  height: 190rpx;
+  transition: background 0.5s ease;
+}
+
+.hero-copy {
+  position: absolute;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: 116rpx;
+  z-index: 2;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  text-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.32);
+}
+
+.hero-kicker {
+  font-size: 22rpx;
+  letter-spacing: 4rpx;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+.hero-title {
+  margin-top: 12rpx;
+  font-size: 58rpx;
+  line-height: 1.05;
+  font-family: STKaiti, KaiTi, serif;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  margin-top: 14rpx;
+  width: 82%;
+  font-size: 26rpx;
+  line-height: 1.45;
+  opacity: 0.95;
 }
 
 .top-bar {
@@ -184,12 +315,14 @@ const spotList = [
 }
 
 .main-card {
-  margin-top: -22rpx;
-  background: #f8f8f8;
+  margin-top: -74rpx;
   border-radius: 28rpx 28rpx 0 0;
   padding: 30rpx 24rpx 38rpx;
   min-height: 950rpx;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  transition: background-color 0.5s ease;
 }
 
 .feature-grid {
