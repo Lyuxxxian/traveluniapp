@@ -49,17 +49,37 @@
         </view>
 
         <view class="main-card" :style="{ backgroundColor: currentHero.themeColor }">
-          <view class="feature-grid">
-            <view class="feature-item" v-for="item in featureList" :key="item.title">
-              <view class="feature-icon">{{ item.icon }}</view>
-              <text class="feature-title">{{ item.title }}</text>
-              <text class="feature-sub">{{ item.sub }}</text>
-            </view>
-          </view>
+          <view class="function-box">
+            <scroll-view scroll-x class="matrix-scroll" :show-scrollbar="false">
+              <view class="matrix-row">
+                <view class="matrix-item" v-for="item in matrixItems" :key="item.title">
+                  <view class="matrix-icon">{{ item.icon }}</view>
+                  <text class="matrix-title">{{ item.title }}</text>
+                  <text class="matrix-desc">{{ item.desc }}</text>
+                </view>
+              </view>
+            </scroll-view>
 
-          <view class="quick-row">
-            <view class="quick-tag" v-for="item in quickTags" :key="item">
-              <text>{{ item }}</text>
+            <view class="action-grid">
+              <view class="action-card" v-for="item in actionCards" :key="item.title">
+                <view>
+                  <text class="action-title">{{ item.title }}</text>
+                  <text class="action-desc">{{ item.desc }}</text>
+                </view>
+                <text class="action-icon">{{ item.icon }}</text>
+              </view>
+            </view>
+
+            <view class="member-strip">
+              <view class="merit-badge">
+                <text class="merit-icon">莲</text>
+                <text class="merit-level">善缘</text>
+              </view>
+              <view class="member-copy">
+                <text class="member-title">积功德星·换灵山礼</text>
+                <text class="member-sub">消费积星称为“积攒功德”</text>
+              </view>
+              <button class="scan-btn" hover-class="scan-btn-hover">一键扫码</button>
             </view>
           </view>
 
@@ -138,13 +158,24 @@ function handleHeroScroll(event) {
   heroBlur.value = Math.min(24, Math.round((scrollTop / 220) * 24))
 }
 
-const featureList = [
-  { icon: '🏨', title: '酒店民宿', sub: '品质住宿' },
-  { icon: '🎫', title: '景区门票', sub: '节日福利' },
-  { icon: '', title: '交通出行', sub: '品质出行' },
+const matrixItems = [
+  { icon: '🎟️', title: '预售门票', desc: '票务小程序' },
+  { icon: '🎫', title: '当日门票', desc: '160元起' },
+  { icon: '🔔', title: '入园提醒', desc: '须知与检票点' },
+  { icon: '🕘', title: '运营时间', desc: '8:00-17:00' },
+  { icon: '🎧', title: '电子讲解器', desc: '扫码支付佩戴' },
+  { icon: '🙏', title: '考试祈福', desc: '摸掌祈福' },
+  { icon: '🛍️', title: '会员商品', desc: '文创与禅茶' },
+  { icon: '💬', title: '游客服务', desc: '热评与回复' },
+  { icon: '🗺️', title: '我的行程', desc: 'DIY优化路线' },
 ]
 
-const quickTags = ['精品路线', '精选美食', '阿坝优选']
+const actionCards = [
+  { icon: '购', title: '立即购买', desc: '门票与套票' },
+  { icon: '会', title: '会员俱乐部', desc: '功德等级权益' },
+  { icon: '年', title: '年卡', desc: '全年畅游' },
+  { icon: '香', title: '体验活动', desc: '藏香制作等' },
+]
 
 const spotList = [
   { name: '九寨沟', desc: '"童话世界"、"人间仙境"', bg: 'linear-gradient(140deg, #84d5ff 0%, #2f78d2 100%)' },
@@ -325,60 +356,213 @@ const spotList = [
   transition: background-color 0.5s ease;
 }
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20rpx 12rpx;
+.function-box {
+  padding: 22rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.62);
+  border-radius: 32rpx;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(255, 248, 235, 0.5)),
+    radial-gradient(circle at 12% 0%, rgba(255, 214, 142, 0.45), rgba(255, 255, 255, 0) 34%);
+  box-shadow: 0 20rpx 48rpx rgba(99, 72, 34, 0.14);
+  -webkit-backdrop-filter: blur(22rpx);
+  backdrop-filter: blur(22rpx);
 }
 
-.feature-item {
+.matrix-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.matrix-row {
+  display: inline-flex;
+  gap: 16rpx;
+  padding-bottom: 4rpx;
+}
+
+.matrix-item {
+  width: 150rpx;
+  min-height: 176rpx;
+  padding: 18rpx 12rpx 14rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.68);
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.82);
+}
+
+.matrix-icon {
+  width: 70rpx;
+  height: 70rpx;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #fff3cf 0%, #e8b66b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  box-shadow: 0 8rpx 20rpx rgba(175, 121, 47, 0.2);
+}
+
+.matrix-title {
+  margin-top: 14rpx;
+  color: #3e2b1a;
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.matrix-desc {
+  margin-top: 10rpx;
+  color: #8a7154;
+  font-size: 20rpx;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+}
+
+.action-grid {
+  margin-top: 22rpx;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14rpx;
+}
+
+.action-card {
+  min-height: 104rpx;
+  padding: 18rpx 18rpx 16rpx;
+  border-radius: 22rpx;
+  background: linear-gradient(135deg, rgba(110, 72, 33, 0.9) 0%, rgba(205, 154, 82, 0.86) 100%);
+  color: #fff8ea;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+}
+
+.action-card::after {
+  content: '';
+  position: absolute;
+  top: -42rpx;
+  right: -28rpx;
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.action-title,
+.action-desc {
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.action-title {
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.action-desc {
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  opacity: 0.84;
+}
+
+.action-icon {
+  position: relative;
+  z-index: 1;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.member-strip {
+  margin-top: 18rpx;
+  padding: 16rpx;
+  border-radius: 26rpx;
+  background: linear-gradient(135deg, rgba(62, 43, 26, 0.92) 0%, rgba(120, 79, 35, 0.9) 100%);
+  color: #fff4d6;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 14rpx 30rpx rgba(70, 45, 18, 0.18);
+}
+
+.merit-badge {
+  width: 86rpx;
+  height: 86rpx;
+  border-radius: 24rpx;
+  background: linear-gradient(160deg, #fff2bd 0%, #d99c45 100%);
+  color: #5d3512;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.feature-icon {
-  width: 108rpx;
-  height: 108rpx;
-  border-radius: 50%;
-  background: linear-gradient(160deg, #ffecc2 0%, #ffd48a 100%);
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 52rpx;
+  flex-shrink: 0;
 }
 
-.feature-title {
-  margin-top: 12rpx;
-  font-size: 40rpx;
+.merit-icon {
+  font-size: 30rpx;
   line-height: 1;
   font-family: STKaiti, KaiTi, serif;
-  color: #3c2b21;
 }
 
-.feature-sub {
-  margin-top: 10rpx;
-  color: #888;
-  font-size: 24rpx;
+.merit-level {
+  margin-top: 6rpx;
+  font-size: 20rpx;
+  font-weight: 700;
 }
 
-.quick-row {
-  margin-top: 22rpx;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12rpx;
+.member-copy {
+  min-width: 0;
+  flex: 1;
+  margin-left: 16rpx;
 }
 
-.quick-tag {
-  height: 56rpx;
-  border-radius: 12rpx;
-  background: linear-gradient(135deg, #ffe8bf 0%, #f5d19a 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #5f3f1e;
-  font-size: 26rpx;
-  font-weight: 600;
+.member-title,
+.member-sub {
+  display: block;
+}
+
+.member-title {
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.member-sub {
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  color: rgba(255, 244, 214, 0.76);
+}
+
+.scan-btn {
+  flex-shrink: 0;
+  height: 58rpx;
+  line-height: 58rpx;
+  margin: 0;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  background: #fff0bf;
+  color: #6e4214;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.scan-btn::after {
+  border: 0;
+}
+
+.scan-btn-hover {
+  opacity: 0.84;
 }
 
 .section-title {
