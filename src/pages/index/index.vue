@@ -115,6 +115,32 @@
               </scroll-view>
             </view>
           </view>
+
+          <view class="feed-section">
+            <view class="feed-head">
+              <view>
+                <text class="feed-title">猜你喜欢</text>
+                <text class="feed-subtitle">灵山好物 · 攻略推文 · 预约入口</text>
+              </view>
+              <text class="feed-badge">Feed</text>
+            </view>
+
+            <view class="feed-grid">
+              <view class="feed-card" v-for="item in feedItems" :key="item.title">
+                <view class="feed-cover" :style="{ background: item.bg }">
+                  <text class="feed-type">{{ item.type }}</text>
+                </view>
+                <view class="feed-content">
+                  <text class="feed-card-title">{{ item.title }}</text>
+                  <text class="feed-card-desc">{{ item.desc }}</text>
+                  <view class="feed-footer">
+                    <text class="feed-source">{{ item.source }}</text>
+                    <text class="feed-action">{{ item.action }}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
         </view>
       </scroll-view>
     </view>
@@ -324,6 +350,41 @@ const collectionSections = [
         bg: 'linear-gradient(140deg, #8c7a24 0%, #e1c95d 100%)',
       },
     ],
+  },
+]
+
+const feedItems = [
+  {
+    type: '文创广告',
+    title: '灵山学子祈福包',
+    desc: '祈福牌、手串与定制明信片组合，送给正在备考的你。',
+    source: '灵山文创',
+    action: '查看',
+    bg: 'linear-gradient(140deg, #8b5230 0%, #e1b56d 100%)',
+  },
+  {
+    type: '攻略推文',
+    title: '灵山集章全攻略',
+    desc: '从大照壁到天下第一掌，整理隐藏章点和推荐动线。',
+    source: '游玩攻略',
+    action: '阅读',
+    bg: 'linear-gradient(140deg, #526f52 0%, #b5c987 100%)',
+  },
+  {
+    type: '外部链接',
+    title: '美食预约小程序',
+    desc: '梵宫素斋、精舍素斋和素面馆预约入口统一收纳。',
+    source: '美食预约',
+    action: '预约',
+    bg: 'linear-gradient(140deg, #6f5b3e 0%, #d8aa67 100%)',
+  },
+  {
+    type: '攻略推文',
+    title: '祈福打卡路线推荐',
+    desc: '把摸掌祈福、转经筒和菩提树串成一条轻松路线。',
+    source: '精选路线',
+    action: '收藏',
+    bg: 'linear-gradient(140deg, #4e637a 0%, #a7bfd4 100%)',
   },
 ]
 </script>
@@ -871,5 +932,130 @@ const collectionSections = [
   color: #8a5b25;
   font-size: 18rpx;
   line-height: 1;
+}
+
+.feed-section {
+  margin-top: 34rpx;
+}
+
+.feed-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 2rpx;
+}
+
+.feed-title,
+.feed-subtitle {
+  display: block;
+}
+
+.feed-title {
+  color: #2f2418;
+  font-size: 40rpx;
+  line-height: 1;
+  font-family: STKaiti, KaiTi, serif;
+  font-weight: 700;
+}
+
+.feed-subtitle {
+  margin-top: 10rpx;
+  color: #8a7154;
+  font-size: 22rpx;
+}
+
+.feed-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(62, 43, 26, 0.9);
+  color: #fff2c8;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.feed-grid {
+  margin-top: 18rpx;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18rpx;
+}
+
+.feed-card {
+  border-radius: 24rpx;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 14rpx 34rpx rgba(95, 68, 35, 0.12);
+}
+
+.feed-cover {
+  height: 168rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.feed-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 76% 16%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(to top, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0));
+}
+
+.feed-type {
+  position: relative;
+  z-index: 1;
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.82);
+  color: #704718;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.feed-content {
+  padding: 18rpx 18rpx 16rpx;
+}
+
+.feed-card-title,
+.feed-card-desc {
+  display: block;
+}
+
+.feed-card-title {
+  color: #322416;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.28;
+}
+
+.feed-card-desc {
+  min-height: 92rpx;
+  margin-top: 10rpx;
+  color: #7f6c58;
+  font-size: 22rpx;
+  line-height: 1.42;
+}
+
+.feed-footer {
+  margin-top: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.feed-source {
+  color: #a2835f;
+  font-size: 20rpx;
+}
+
+.feed-action {
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  background: #f8ead0;
+  color: #8a5b25;
+  font-size: 20rpx;
+  font-weight: 700;
 }
 </style>
