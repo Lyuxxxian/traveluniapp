@@ -83,19 +83,36 @@
             </view>
           </view>
 
-          <view class="section-title">
-            <text class="fire">🔥</text>
-            <text>热门景区</text>
-          </view>
-
-          <view class="spot-grid">
-            <view class="spot-card" v-for="spot in spotList" :key="spot.name">
-              <view class="spot-bg" :style="{ background: spot.bg }" />
-              <view class="spot-mask" />
-              <view class="spot-content">
-                <text class="spot-name">{{ spot.name }}</text>
-                <text class="spot-desc">{{ spot.desc }}</text>
+          <view class="collection-stack">
+            <view class="collection-section" v-for="section in collectionSections" :key="section.title">
+              <view class="collection-head">
+                <view>
+                  <text class="collection-title">{{ section.title }}</text>
+                  <text class="collection-subtitle">{{ section.subtitle }}</text>
+                </view>
+                <view class="all-link">
+                  <text>全部</text>
+                  <text class="all-arrow">›</text>
+                </view>
               </view>
+
+              <scroll-view scroll-x class="collection-scroll" :show-scrollbar="false">
+                <view class="collection-row">
+                  <view class="collection-card" v-for="item in section.items" :key="item.title">
+                    <view class="collection-cover" :style="{ background: item.bg }">
+                      <text class="collection-tag">{{ item.tag }}</text>
+                      <text v-if="item.notice" class="collection-notice">{{ item.notice }}</text>
+                    </view>
+                    <view class="collection-content">
+                      <text class="card-title">{{ item.title }}</text>
+                      <text class="card-desc">{{ item.desc }}</text>
+                      <view class="card-meta-row">
+                        <text class="card-meta" v-for="meta in item.meta" :key="meta">{{ meta }}</text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </scroll-view>
             </view>
           </view>
         </view>
@@ -177,11 +194,137 @@ const actionCards = [
   { icon: '香', title: '体验活动', desc: '藏香制作等' },
 ]
 
-const spotList = [
-  { name: '九寨沟', desc: '"童话世界"、"人间仙境"', bg: 'linear-gradient(140deg, #84d5ff 0%, #2f78d2 100%)' },
-  { name: '黄龙', desc: '"世界奇观"、"人间瑶池"', bg: 'linear-gradient(140deg, #89f0d0 0%, #2c8f5d 100%)' },
-  { name: '四姑娘山', desc: '"蜀山皇后"、"东方圣山"', bg: 'linear-gradient(140deg, #8bc5ff 0%, #4d65d1 100%)' },
-  { name: '达古冰川', desc: '"冰川奇观"、"最近的遥远"', bg: 'linear-gradient(140deg, #76b3ff 0%, #2145a6 100%)' },
+const collectionSections = [
+  {
+    title: '路线选择',
+    subtitle: '路线特点 · 地图轨迹 · 沿途景点',
+    items: [
+      {
+        title: '历史文化深度游',
+        desc: '串联祥符禅寺、五智门等文化节点',
+        tag: 'Routes',
+        meta: ['解说', '导航', '分享'],
+        bg: 'linear-gradient(140deg, #a56a3d 0%, #d9b06f 100%)',
+      },
+      {
+        title: '自然风光全景游',
+        desc: '湖山佛光与园林景观一线看完',
+        tag: 'Routes',
+        meta: ['语音', '点评', '轨迹'],
+        bg: 'linear-gradient(140deg, #4e8b65 0%, #a5c77c 100%)',
+      },
+      {
+        title: '亲子家庭轻松游',
+        desc: '低强度步行，适合家庭慢游打卡',
+        tag: 'Routes',
+        meta: ['亲子', '导航', '点评'],
+        bg: 'linear-gradient(140deg, #d08b55 0%, #f2c77b 100%)',
+      },
+    ],
+  },
+  {
+    title: '演出',
+    subtitle: '场次提醒 · 地点导航 · 演出介绍',
+    items: [
+      {
+        title: '九龙灌浴',
+        desc: '大型音乐动态群雕表演',
+        tag: 'Shows',
+        notice: '下一场 11:30 开始',
+        meta: ['开放时间', '场次表', '导航'],
+        bg: 'linear-gradient(140deg, #386b8f 0%, #8fbdda 100%)',
+      },
+      {
+        title: '灵山吉祥颂',
+        desc: '以梵宫空间呈现祥瑞礼赞',
+        tag: 'Shows',
+        notice: '下一场 14:00 开始',
+        meta: ['轮播图', '介绍', '导航'],
+        bg: 'linear-gradient(140deg, #7d5535 0%, #d4a15d 100%)',
+      },
+    ],
+  },
+  {
+    title: '美食',
+    subtitle: '素斋自助 · 素面馆 · 点单小程序',
+    items: [
+      {
+        title: '梵宫素斋自助',
+        desc: '禅意空间里的精致素食自助',
+        tag: 'Food',
+        meta: ['点单', '素斋', '推荐'],
+        bg: 'linear-gradient(140deg, #71513a 0%, #c6945c 100%)',
+      },
+      {
+        title: '灵山精舍素斋',
+        desc: '清雅素斋，适合午间休憩',
+        tag: 'Food',
+        meta: ['点单', '雅座', '导航'],
+        bg: 'linear-gradient(140deg, #697642 0%, #c2bd70 100%)',
+      },
+      {
+        title: '景区素面馆',
+        desc: '快速补给，一碗热面继续游览',
+        tag: 'Food',
+        meta: ['点单', '快捷', '热食'],
+        bg: 'linear-gradient(140deg, #b06a35 0%, #e7b46d 100%)',
+      },
+    ],
+  },
+  {
+    title: '打卡',
+    subtitle: '历史简介 · 游客合影 · 实时导航',
+    items: [
+      {
+        title: '灵山大照壁',
+        desc: '入园标志景观，适合第一站合影',
+        tag: 'Landmarks',
+        meta: ['导航', '合影', '点评'],
+        bg: 'linear-gradient(140deg, #84694f 0%, #d5b48c 100%)',
+      },
+      {
+        title: '五明桥',
+        desc: '连接禅意动线的经典步行景点',
+        tag: 'Landmarks',
+        meta: ['简介', '导航', '分享'],
+        bg: 'linear-gradient(140deg, #536f82 0%, #a9c4d0 100%)',
+      },
+      {
+        title: '天下第一掌',
+        desc: '摸掌祈福文化代表点位',
+        tag: 'Landmarks',
+        meta: ['祈福', '点评', '合影'],
+        bg: 'linear-gradient(140deg, #8f6a30 0%, #e0b75d 100%)',
+      },
+      {
+        title: '转经筒',
+        desc: '体验转经祈愿的互动打卡点',
+        tag: 'Landmarks',
+        meta: ['互动', '导航', '分享'],
+        bg: 'linear-gradient(140deg, #684233 0%, #b9895f 100%)',
+      },
+    ],
+  },
+  {
+    title: '菩提世界',
+    subtitle: '植物百科 · 禅意景观 · 自然和谐',
+    items: [
+      {
+        title: '印度正宗菩提树',
+        desc: '感受佛教文化中的觉悟意象',
+        tag: 'Bodhi World',
+        meta: ['百科', '禅意', '植物'],
+        bg: 'linear-gradient(140deg, #446e46 0%, #9fc57b 100%)',
+      },
+      {
+        title: '千年银杏',
+        desc: '四季皆有看点的古树景观',
+        tag: 'Bodhi World',
+        meta: ['百科', '古树', '自然'],
+        bg: 'linear-gradient(140deg, #8c7a24 0%, #e1c95d 100%)',
+      },
+    ],
+  },
 ]
 </script>
 
@@ -565,63 +708,168 @@ const spotList = [
   opacity: 0.84;
 }
 
-.section-title {
-  margin-top: 34rpx;
+.collection-stack {
+  margin-top: 30rpx;
+}
+
+.collection-section {
+  margin-top: 28rpx;
+}
+
+.collection-section:first-child {
+  margin-top: 0;
+}
+
+.collection-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 2rpx;
+}
+
+.collection-title,
+.collection-subtitle {
+  display: block;
+}
+
+.collection-title {
+  color: #2f2418;
+  font-size: 38rpx;
+  line-height: 1;
+  font-family: STKaiti, KaiTi, serif;
+  font-weight: 700;
+}
+
+.collection-subtitle {
+  margin-top: 10rpx;
+  color: #8a7154;
+  font-size: 22rpx;
+}
+
+.all-link {
+  height: 42rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.52);
+  color: #7b5529;
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  font-size: 56rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.72);
+}
+
+.all-arrow {
+  margin-left: 4rpx;
+  font-size: 28rpx;
   line-height: 1;
-  color: #111;
-  font-family: STKaiti, KaiTi, serif;
 }
 
-.fire {
-  font-size: 38rpx;
+.collection-scroll {
+  width: 100%;
+  margin-top: 16rpx;
+  white-space: nowrap;
 }
 
-.spot-grid {
-  margin-top: 22rpx;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16rpx;
+.collection-row {
+  display: inline-flex;
+  gap: 18rpx;
+  padding-right: 8rpx;
 }
 
-.spot-card {
-  height: 248rpx;
-  border-radius: 18rpx;
+.collection-card {
+  width: 292rpx;
+  border-radius: 24rpx;
   overflow: hidden;
-  position: relative;
+  background: rgba(255, 255, 255, 0.72);
+  display: inline-flex;
+  flex-direction: column;
+  box-shadow: 0 14rpx 34rpx rgba(95, 68, 35, 0.12);
 }
 
-.spot-bg,
-.spot-mask {
+.collection-cover {
+  height: 144rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.collection-cover::after {
+  content: '';
   position: absolute;
   inset: 0;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 32%),
+    linear-gradient(to top, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0));
 }
 
-.spot-mask {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1));
-}
-
-.spot-content {
-  position: absolute;
-  left: 16rpx;
-  right: 16rpx;
-  bottom: 16rpx;
+.collection-tag,
+.collection-notice {
+  position: relative;
+  z-index: 1;
+  border-radius: 999rpx;
   color: #fff;
+  font-weight: 700;
 }
 
-.spot-name {
-  font-size: 46rpx;
-  line-height: 1;
-  font-family: STKaiti, KaiTi, serif;
+.collection-tag {
+  padding: 6rpx 14rpx;
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 20rpx;
 }
 
-.spot-desc {
+.collection-notice {
+  max-width: 150rpx;
+  padding: 6rpx 12rpx;
+  background: rgba(255, 236, 180, 0.94);
+  color: #6a3f13;
+  font-size: 18rpx;
+  line-height: 1.25;
+  text-align: right;
+  white-space: normal;
+}
+
+.collection-content {
+  padding: 18rpx 18rpx 16rpx;
+}
+
+.card-title,
+.card-desc {
   display: block;
-  margin-top: 8rpx;
+}
+
+.card-title {
+  color: #322416;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.card-desc {
+  min-height: 64rpx;
+  margin-top: 10rpx;
+  color: #7f6c58;
   font-size: 22rpx;
-  opacity: 0.95;
+  line-height: 1.45;
+  white-space: normal;
+}
+
+.card-meta-row {
+  margin-top: 14rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.card-meta {
+  padding: 5rpx 10rpx;
+  border-radius: 999rpx;
+  background: #f8ead0;
+  color: #8a5b25;
+  font-size: 18rpx;
+  line-height: 1;
 }
 </style>
