@@ -88,7 +88,6 @@
               <view class="collection-head">
                 <view>
                   <text class="collection-title">{{ section.title }}</text>
-                  <text class="collection-subtitle">{{ section.subtitle }}</text>
                 </view>
                 <view class="all-link">
                   <text>全部</text>
@@ -101,14 +100,13 @@
                   <view class="collection-card" v-for="item in section.items" :key="item.title">
                     <view class="collection-cover" :style="{ background: item.bg }">
                       <text class="collection-tag">{{ item.tag }}</text>
-                      <text v-if="item.notice" class="collection-notice">{{ item.notice }}</text>
+                    </view>
+                    <view v-if="item.notice" class="collection-notice">
+                      <text>{{ item.notice }}</text>
                     </view>
                     <view class="collection-content">
                       <text class="card-title">{{ item.title }}</text>
                       <text class="card-desc">{{ item.desc }}</text>
-                      <view class="card-meta-row">
-                        <text class="card-meta" v-for="meta in item.meta" :key="meta">{{ meta }}</text>
-                      </view>
                     </view>
                   </view>
                 </view>
@@ -256,7 +254,7 @@ const collectionSections = [
         title: '九龙灌浴',
         desc: '大型音乐动态群雕表演',
         tag: 'Shows',
-        notice: '下一场 11:30 开始',
+        notice: '11：30下一场',
         meta: ['开放时间', '场次表', '导航'],
         bg: 'linear-gradient(140deg, #386b8f 0%, #8fbdda 100%)',
       },
@@ -264,7 +262,7 @@ const collectionSections = [
         title: '灵山吉祥颂',
         desc: '以梵宫空间呈现祥瑞礼赞',
         tag: 'Shows',
-        notice: '下一场 14:00 开始',
+        notice: '14：00下一场',
         meta: ['轮播图', '介绍', '导航'],
         bg: 'linear-gradient(140deg, #7d5535 0%, #d4a15d 100%)',
       },
@@ -788,23 +786,13 @@ const feedItems = [
   padding: 0 2rpx;
 }
 
-.collection-title,
-.collection-subtitle {
-  display: block;
-}
-
 .collection-title {
+  display: block;
   color: #2f2418;
   font-size: 38rpx;
   line-height: 1;
   font-family: STKaiti, KaiTi, serif;
   font-weight: 700;
-}
-
-.collection-subtitle {
-  margin-top: 10rpx;
-  color: #8a7154;
-  font-size: 22rpx;
 }
 
 .all-link {
@@ -839,17 +827,18 @@ const feedItems = [
 }
 
 .collection-card {
-  width: 292rpx;
+  width: 520rpx;
   border-radius: 24rpx;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.72);
   display: inline-flex;
   flex-direction: column;
+  position: relative;
   box-shadow: 0 14rpx 34rpx rgba(95, 68, 35, 0.12);
 }
 
 .collection-cover {
-  height: 144rpx;
+  height: 250rpx;
   padding: 16rpx;
   box-sizing: border-box;
   position: relative;
@@ -867,34 +856,45 @@ const feedItems = [
     linear-gradient(to top, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0));
 }
 
-.collection-tag,
-.collection-notice {
+.collection-tag {
   position: relative;
   z-index: 1;
   border-radius: 999rpx;
   color: #fff;
   font-weight: 700;
-}
-
-.collection-tag {
   padding: 6rpx 14rpx;
   background: rgba(0, 0, 0, 0.2);
   font-size: 20rpx;
 }
 
 .collection-notice {
-  max-width: 150rpx;
-  padding: 6rpx 12rpx;
+  position: absolute;
+  z-index: 2;
+  right: 34rpx;
+  top: 194rpx;
+  width: 118rpx;
+  height: 118rpx;
   background: rgba(255, 236, 180, 0.94);
   color: #6a3f13;
-  font-size: 18rpx;
-  line-height: 1.25;
-  text-align: right;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 26rpx rgba(95, 62, 22, 0.18);
+  font-size: 22rpx;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  white-space: normal;
+}
+
+.collection-notice text {
+  width: 86rpx;
   white-space: normal;
 }
 
 .collection-content {
-  padding: 18rpx 18rpx 16rpx;
+  padding: 24rpx 22rpx 22rpx;
 }
 
 .card-title,
@@ -916,22 +916,6 @@ const feedItems = [
   font-size: 22rpx;
   line-height: 1.45;
   white-space: normal;
-}
-
-.card-meta-row {
-  margin-top: 14rpx;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8rpx;
-}
-
-.card-meta {
-  padding: 5rpx 10rpx;
-  border-radius: 999rpx;
-  background: #f8ead0;
-  color: #8a5b25;
-  font-size: 18rpx;
-  line-height: 1;
 }
 
 .feed-section {
