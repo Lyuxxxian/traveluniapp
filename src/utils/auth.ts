@@ -1,3 +1,5 @@
+/// <reference types="@dcloudio/types" />
+
 const TOKEN_KEY = 'traveluniapp_token'
 const USER_PROFILE_KEY = 'traveluniapp_user_profile'
 
