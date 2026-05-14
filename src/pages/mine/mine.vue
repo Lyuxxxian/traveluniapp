@@ -5,10 +5,10 @@
         <view class="ink ink-left" />
         <view class="ink ink-right" />
         <view class="profile-card">
-          <image class="avatar" src="/static/logo.png" mode="aspectFill" />
+          <image class="avatar" src="/static/logo.png" mode="aspectFill" @tap="goProfileEdit" />
           <view class="profile-copy">
-            <text class="profile-label">游客 ID</text>
-            <text class="username">{{ userName }}</text>
+            <text class="profile-label">昵称</text>
+            <text class="username">{{ displayName }}</text>
           </view>
         </view>
       </view>
@@ -24,9 +24,8 @@
 
         <view class="order-row">
           <view class="order-item" v-for="item in orderItems" :key="item.key" @tap="goOrderList(item.key)">
-            <view class="order-icon">{{ item.icon }}</view>
+            <view class="order-icon" :class="item.iconClass" />
             <text class="order-label">{{ item.label }}</text>
-            <text class="order-desc">{{ item.desc }}</text>
           </view>
         </view>
       </view>
@@ -38,7 +37,7 @@
 
         <view class="feature-list">
           <view class="feature-item" v-for="item in functionItems" :key="item.key" @tap="goFunction(item.key)">
-            <view class="feature-icon">{{ item.icon }}</view>
+            <view class="feature-icon" :class="item.iconClass" />
             <view class="feature-copy">
               <text class="feature-title">{{ item.label }}</text>
               <text class="feature-desc">{{ item.desc }}</text>
@@ -52,16 +51,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import TabBar from '../../components/TabBar.vue'
 
-const userName = ref('灵山居士_12345')
+const visitorId = ref('灵山居士_12345')
+const nickname = ref('')
+const displayName = computed(() => nickname.value || visitorId.value)
 
 const orderItems = [
-  { key: 'all', label: '全部订单', desc: '历史记录', icon: '全' },
-  { key: 'pendingPay', label: '待付款', desc: '暂存订单', icon: '付' },
-  { key: 'pendingUse', label: '待使用', desc: '券码核销', icon: '用' },
-  { key: 'completed', label: '已完成', desc: '行程结束', icon: '完' },
+  { key: 'all', label: '全部订单', iconClass: 'icon-order-all' },
+  { key: 'pendingPay', label: '待付款', iconClass: 'icon-order-pay' },
+  { key: 'pendingUse', label: '待使用', iconClass: 'icon-order-use' },
+  { key: 'completed', label: '已完成', iconClass: 'icon-order-done' },
 ]
 
 const functionItems = [
@@ -69,57 +70,61 @@ const functionItems = [
     key: 'commonInfo',
     label: '常用信息',
     desc: '录入游客姓名、身份证号，购买成人票及半价票时快速填充。',
-    icon: '信',
+    iconClass: 'icon-feature-info',
   },
   {
     key: 'address',
     label: '收货人管理',
     desc: '管理灵山禅茶、文创实物商品的快递地址。',
-    icon: '收',
+    iconClass: 'icon-feature-address',
   },
   {
     key: 'reviews',
     label: '我的点评',
     desc: '查看自己对祥符禅寺、灵山梵宫等景点的评价历史。',
-    icon: '评',
+    iconClass: 'icon-feature-review',
   },
   {
     key: 'coupons',
     label: '优惠券',
     desc: '个人账户内已领取的卡券包。',
-    icon: '券',
+    iconClass: 'icon-feature-coupon',
   },
   {
     key: 'feedback',
     label: '意见反馈',
     desc: '表单页面，支持上传图片，用于向景区反馈游览问题。',
-    icon: '意',
+    iconClass: 'icon-feature-feedback',
   },
   {
     key: 'service',
     label: '联系客服',
     desc: '跳转至智能客服界面。',
-    icon: '客',
+    iconClass: 'icon-feature-service',
   },
   {
     key: 'settings',
     label: '设置',
     desc: '修改个人资料、清除缓存、退出登录。',
-    icon: '设',
+    iconClass: 'icon-feature-settings',
   },
   {
     key: 'cart',
     label: '购物车',
     desc: '集中存放待购买的灵山文创、茶叶及祈福挂件等。',
-    icon: '购',
+    iconClass: 'icon-feature-cart',
   },
   {
     key: 'survey',
     label: '调查问卷',
     desc: '景区满意度调研，完成后可随机赠送积功德星或小额优惠券。',
-    icon: '问',
+    iconClass: 'icon-feature-survey',
   },
 ]
+
+function goProfileEdit() {
+  uni.navigateTo({ url: '/pages/mine/profileEdit' })
+}
 
 function goOrderList(status) {
   uni.showToast({ title: `${status}订单页面待开发`, icon: 'none' })
@@ -285,13 +290,82 @@ function goFunction(key) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30rpx;
-  font-weight: 800;
+  position: relative;
   box-shadow: 0 10rpx 22rpx rgba(161, 107, 42, 0.18);
 }
 
-.order-label,
-.order-desc {
+.order-icon::before,
+.order-icon::after,
+.feature-icon::before,
+.feature-icon::after {
+  content: '';
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.icon-order-all::before {
+  width: 34rpx;
+  height: 42rpx;
+  border: 4rpx solid #754a1f;
+  border-radius: 8rpx;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.icon-order-all::after {
+  width: 20rpx;
+  height: 4rpx;
+  border-radius: 999rpx;
+  background: #754a1f;
+  box-shadow: 0 12rpx 0 #754a1f;
+}
+
+.icon-order-pay::before {
+  width: 40rpx;
+  height: 30rpx;
+  border: 4rpx solid #754a1f;
+  border-radius: 8rpx;
+}
+
+.icon-order-pay::after {
+  right: 18rpx;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #754a1f;
+}
+
+.icon-order-use::before {
+  width: 42rpx;
+  height: 30rpx;
+  border: 4rpx solid #754a1f;
+  border-radius: 8rpx;
+}
+
+.icon-order-use::after {
+  width: 6rpx;
+  height: 38rpx;
+  border-radius: 999rpx;
+  background: #754a1f;
+  transform: rotate(90deg);
+  box-shadow: 0 0 0 8rpx rgba(117, 74, 31, 0.12);
+}
+
+.icon-order-done::before {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #754a1f;
+  border-radius: 50%;
+}
+
+.icon-order-done::after {
+  width: 24rpx;
+  height: 14rpx;
+  border-left: 5rpx solid #754a1f;
+  border-bottom: 5rpx solid #754a1f;
+  transform: rotate(-45deg) translate(1rpx, -2rpx);
+}
+
+.order-label {
   display: block;
 }
 
@@ -300,12 +374,6 @@ function goFunction(key) {
   color: #3d3021;
   font-size: 25rpx;
   font-weight: 700;
-}
-
-.order-desc {
-  margin-top: 6rpx;
-  color: #9a8265;
-  font-size: 20rpx;
 }
 
 .feature-section {
@@ -337,9 +405,146 @@ function goFunction(key) {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28rpx;
-  font-weight: 800;
+  position: relative;
   flex-shrink: 0;
+}
+
+.icon-feature-info::before {
+  width: 30rpx;
+  height: 38rpx;
+  border: 4rpx solid #8a5b25;
+  border-radius: 8rpx;
+}
+
+.icon-feature-info::after {
+  top: 20rpx;
+  width: 16rpx;
+  height: 4rpx;
+  border-radius: 999rpx;
+  background: #8a5b25;
+  box-shadow: 0 10rpx 0 #8a5b25;
+}
+
+.icon-feature-address::before {
+  width: 34rpx;
+  height: 28rpx;
+  border: 4rpx solid #8a5b25;
+  border-radius: 6rpx;
+  transform: translateY(6rpx);
+}
+
+.icon-feature-address::after {
+  top: 14rpx;
+  width: 22rpx;
+  height: 22rpx;
+  border-left: 4rpx solid #8a5b25;
+  border-top: 4rpx solid #8a5b25;
+  transform: rotate(45deg);
+}
+
+.icon-feature-review::before {
+  width: 38rpx;
+  height: 30rpx;
+  border: 4rpx solid #8a5b25;
+  border-radius: 10rpx;
+}
+
+.icon-feature-review::after {
+  left: 18rpx;
+  bottom: 14rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border-left: 4rpx solid #8a5b25;
+  border-bottom: 4rpx solid #8a5b25;
+  transform: rotate(-18deg);
+}
+
+.icon-feature-coupon::before {
+  width: 42rpx;
+  height: 28rpx;
+  border: 4rpx solid #8a5b25;
+  border-radius: 8rpx;
+}
+
+.icon-feature-coupon::after {
+  width: 4rpx;
+  height: 28rpx;
+  border-radius: 999rpx;
+  background: #8a5b25;
+  opacity: 0.8;
+}
+
+.icon-feature-feedback::before {
+  width: 36rpx;
+  height: 28rpx;
+  border: 4rpx solid #8a5b25;
+  border-radius: 8rpx;
+}
+
+.icon-feature-feedback::after {
+  width: 8rpx;
+  height: 8rpx;
+  border-radius: 50%;
+  background: #8a5b25;
+  box-shadow: -12rpx 0 0 #8a5b25, 12rpx 0 0 #8a5b25;
+}
+
+.icon-feature-service::before {
+  width: 38rpx;
+  height: 30rpx;
+  border: 4rpx solid #8a5b25;
+  border-radius: 18rpx 18rpx 10rpx 10rpx;
+}
+
+.icon-feature-service::after {
+  bottom: 17rpx;
+  width: 50rpx;
+  height: 16rpx;
+  border-left: 4rpx solid #8a5b25;
+  border-right: 4rpx solid #8a5b25;
+}
+
+.icon-feature-settings::before {
+  width: 36rpx;
+  height: 36rpx;
+  border: 6rpx solid #8a5b25;
+  border-radius: 50%;
+  box-shadow: 0 -15rpx 0 -10rpx #8a5b25, 0 15rpx 0 -10rpx #8a5b25, 15rpx 0 0 -10rpx #8a5b25,
+    -15rpx 0 0 -10rpx #8a5b25;
+}
+
+.icon-feature-cart::before {
+  width: 38rpx;
+  height: 26rpx;
+  border: 4rpx solid #8a5b25;
+  border-top: 0;
+  border-radius: 0 0 8rpx 8rpx;
+  transform: translateY(-2rpx);
+}
+
+.icon-feature-cart::after {
+  bottom: 14rpx;
+  width: 7rpx;
+  height: 7rpx;
+  border-radius: 50%;
+  background: #8a5b25;
+  box-shadow: 22rpx 0 0 #8a5b25;
+}
+
+.icon-feature-survey::before {
+  width: 34rpx;
+  height: 42rpx;
+  border: 4rpx solid #8a5b25;
+  border-radius: 8rpx;
+}
+
+.icon-feature-survey::after {
+  top: 20rpx;
+  width: 18rpx;
+  height: 4rpx;
+  border-radius: 999rpx;
+  background: #8a5b25;
+  box-shadow: 0 11rpx 0 #8a5b25, 0 22rpx 0 #8a5b25;
 }
 
 .feature-copy {
