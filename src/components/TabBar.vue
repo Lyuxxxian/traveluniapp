@@ -90,7 +90,7 @@ function onTabTap(item) {
   }
 
   if (item.key === 'mall') {
-    uni.showToast({ title: '商城页面待开发', icon: 'none' })
+    uni.reLaunch({ url: '/pages/mall/mall' })
     return
   }
 
