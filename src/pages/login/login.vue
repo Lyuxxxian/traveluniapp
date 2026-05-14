@@ -49,7 +49,9 @@
         <text class="link" @tap="onForgotPassword">忘记密码？</text>
       </view>
 
-      <button class="btn" type="default" hover-class="btn-hover" @tap="onSubmit">登 录</button>
+      <button class="btn" type="default" hover-class="btn-hover" :disabled="isSubmitting" @tap="onSubmit">
+        {{ isSubmitting ? '登录中…' : '登 录' }}
+      </button>
 
       <view class="bottom">
         <text class="bottom-text">还没有账号？</text>
@@ -61,6 +63,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { login } from '../../api/user'
 
 const form = reactive({
   username: '',
@@ -69,6 +72,7 @@ const form = reactive({
 })
 
 const showPassword = ref(false)
+const isSubmitting = ref(false)
 
 function togglePassword() {
   showPassword.value = !showPassword.value
@@ -82,7 +86,9 @@ function onRegister() {
   uni.navigateTo({ url: '/pages/register/register' })
 }
 
-function onSubmit() {
+async function onSubmit() {
+  if (isSubmitting.value) return
+
   if (!form.username.trim()) {
     uni.showToast({ title: '请输入用户名', icon: 'none' })
     return
@@ -92,13 +98,27 @@ function onSubmit() {
     return
   }
 
-  uni.showToast({ title: '登录中…', icon: 'loading', duration: 800 })
-  setTimeout(() => {
+  isSubmitting.value = true
+  uni.showLoading({ title: '登录中…', mask: true })
+
+  try {
+    await login({
+      username: form.username.trim(),
+      password: form.password,
+    })
+
+    uni.hideLoading()
     uni.showToast({ title: '登录成功', icon: 'success' })
     setTimeout(() => {
       uni.reLaunch({ url: '/pages/index/index' })
     }, 500)
-  }, 800)
+  } catch (error) {
+    uni.hideLoading()
+    const message = error instanceof Error ? error.message : '登录失败，请稍后再试'
+    uni.showToast({ title: message, icon: 'none' })
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 
