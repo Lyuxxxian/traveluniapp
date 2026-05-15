@@ -1,5 +1,6 @@
 import { API_PATHS } from '../config/api'
-import { saveLoginSession, setUserProfile, type UserProfile } from '../utils/auth'
+import { saveLoginSession, setUserProfile } from '../utils/auth'
+import type { UserProfile } from '../utils/auth'
 import { http } from '../utils/request'
 
 export type LoginPayload = {
@@ -53,6 +54,20 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
 
     throw error
   }
+}
+
+export function loginByWechat(): Promise<LoginResponse> {
+  return login({
+    username: 'wechat_member',
+    password: 'wechat_auth',
+  })
+}
+
+export function loginByPhone(phone: string): Promise<LoginResponse> {
+  return login({
+    username: phone,
+    password: 'phone_auth',
+  })
 }
 
 export async function fetchUserProfile(): Promise<UserProfileResponse> {

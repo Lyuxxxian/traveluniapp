@@ -1,15 +1,26 @@
 <template>
   <TabBar activeTab="mine" :showTabbar="true">
     <view class="page">
+      <view v-if="!loggedIn" class="login-panel">
+        <view class="login-logo-wrap">
+          <image class="login-logo" src="/static/logo.png" mode="aspectFill" />
+        </view>
+        <text class="login-title">您还未登录</text>
+        <text class="login-desc">登录后可查看订单、优惠券、购物车与个人资料。</text>
+        <button class="login-btn" hover-class="login-btn-hover" @tap="goLogin">点击登录</button>
+      </view>
+
+      <template v-else>
       <view class="profile-header">
         <view class="ink ink-left" />
         <view class="ink ink-right" />
         <view class="profile-card">
-          <image class="avatar" src="/static/logo.png" mode="aspectFill" @tap="goProfileEdit" />
+          <image class="avatar" :src="avatarUrl" mode="aspectFill" @tap="goProfileEdit" />
           <view class="profile-copy">
             <text class="profile-label">昵称</text>
             <text class="username">{{ displayName }}</text>
           </view>
+          <button class="logout-btn" hover-class="logout-btn-hover" @tap="logout">退出登录</button>
         </view>
       </view>
 
@@ -46,17 +57,21 @@
           </view>
         </view>
       </view>
+      </template>
     </view>
   </TabBar>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import TabBar from '../../components/TabBar.vue'
+import { clearAuth, getDisplayName, getUserProfile, isLoggedIn } from '../../utils/auth'
 
-const visitorId = ref('灵山居士_12345')
-const nickname = ref('')
-const displayName = computed(() => nickname.value || visitorId.value)
+const loggedIn = ref(false)
+const userProfile = ref(null)
+const displayName = computed(() => getDisplayName(userProfile.value))
+const avatarUrl = computed(() => userProfile.value?.avatarUrl || '/static/logo.png')
 
 const orderItems = [
   { key: 'all', label: '全部订单', iconClass: 'icon-order-all' },
@@ -122,8 +137,27 @@ const functionItems = [
   },
 ]
 
+onShow(() => {
+  refreshLoginState()
+})
+
+function goLogin() {
+  uni.navigateTo({ url: '/pages/login/login' })
+}
+
 function goProfileEdit() {
   uni.navigateTo({ url: '/pages/mine/profileEdit' })
+}
+
+function refreshLoginState() {
+  loggedIn.value = isLoggedIn()
+  userProfile.value = getUserProfile()
+}
+
+function logout() {
+  clearAuth()
+  refreshLoginState()
+  uni.showToast({ title: '已退出登录', icon: 'none' })
 }
 
 function goOrderList(status) {
@@ -143,6 +177,81 @@ function goFunction(key) {
   background:
     radial-gradient(circle at 14% 0%, rgba(225, 197, 145, 0.34), rgba(225, 197, 145, 0) 34%),
     linear-gradient(180deg, #f6efe2 0%, #f4f5ef 44%, #f7f1e7 100%);
+}
+
+.login-panel {
+  min-height: 560rpx;
+  padding: 72rpx 42rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.72);
+  border-radius: 36rpx;
+  background:
+    radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.86) 0%, rgba(244, 229, 201, 0.8) 100%);
+  box-shadow: 0 22rpx 48rpx rgba(92, 64, 31, 0.13);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.login-logo-wrap {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+  background: #fff8ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14rpx 30rpx rgba(84, 58, 28, 0.16);
+}
+
+.login-logo {
+  width: 116rpx;
+  height: 116rpx;
+  border-radius: 50%;
+}
+
+.login-title,
+.login-desc {
+  display: block;
+  text-align: center;
+}
+
+.login-title {
+  margin-top: 32rpx;
+  color: #332619;
+  font-size: 38rpx;
+  font-weight: 800;
+}
+
+.login-desc {
+  max-width: 520rpx;
+  margin-top: 16rpx;
+  color: #8d775d;
+  font-size: 25rpx;
+  line-height: 1.5;
+}
+
+.login-btn {
+  width: 360rpx;
+  height: 82rpx;
+  line-height: 82rpx;
+  margin-top: 44rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #8b6138 0%, #d8ad6b 100%);
+  color: #fffaf0;
+  font-size: 28rpx;
+  font-weight: 800;
+  box-shadow: 0 14rpx 28rpx rgba(139, 97, 56, 0.22);
+}
+
+.login-btn::after {
+  border: 0;
+}
+
+.login-btn-hover {
+  opacity: 0.9;
 }
 
 .profile-header {
@@ -211,6 +320,7 @@ function goFunction(key) {
 .profile-copy {
   margin-left: 28rpx;
   min-width: 0;
+  flex: 1;
 }
 
 .profile-label,
@@ -230,6 +340,27 @@ function goFunction(key) {
   font-size: 38rpx;
   font-weight: 800;
   line-height: 1.2;
+}
+
+.logout-btn {
+  flex-shrink: 0;
+  height: 58rpx;
+  line-height: 58rpx;
+  margin: 0;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.7);
+  color: #8b5a24;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.logout-btn::after {
+  border: 0;
+}
+
+.logout-btn-hover {
+  opacity: 0.86;
 }
 
 .section {
