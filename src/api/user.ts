@@ -1,5 +1,5 @@
 import { API_PATHS } from '../config/api'
-import { saveLoginSession, setUserProfile } from '../utils/auth'
+import { getUserProfile, saveLoginSession, setUserProfile } from '../utils/auth'
 import type { UserProfile } from '../utils/auth'
 import { http } from '../utils/request'
 
@@ -21,6 +21,10 @@ export type UserProfileResponse = UserProfile & {
 export type UpdateUserProfilePayload = {
   nickname?: string
   avatarUrl?: string
+}
+
+export type FetchUserProfileOptions = {
+  silent?: boolean
 }
 
 function createMockLoginSession(username: string): LoginResponse {
@@ -70,10 +74,22 @@ export function loginByPhone(phone: string): Promise<LoginResponse> {
   })
 }
 
-export async function fetchUserProfile(): Promise<UserProfileResponse> {
-  const profile = await http.get<UserProfileResponse>(API_PATHS.user.profile)
-  setUserProfile(profile)
-  return profile
+export async function fetchUserProfile(options: FetchUserProfileOptions = {}): Promise<UserProfileResponse> {
+  try {
+    const profile = await http.get<UserProfileResponse>(API_PATHS.user.profile, undefined, {
+      showErrorToast: !options.silent,
+    })
+    setUserProfile(profile)
+    return profile
+  } catch (error) {
+    const cachedProfile = getUserProfile()
+
+    if (import.meta.env.DEV && cachedProfile) {
+      return cachedProfile
+    }
+
+    throw error
+  }
 }
 
 export async function updateUserProfile(payload: UpdateUserProfilePayload): Promise<UserProfileResponse> {

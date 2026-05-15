@@ -17,7 +17,7 @@
         <view class="profile-card">
           <image class="avatar" :src="avatarUrl" mode="aspectFill" @tap="goProfileEdit" />
           <view class="profile-copy">
-            <text class="profile-label">昵称</text>
+            <text class="profile-label">{{ profileLoading ? '资料同步中' : '昵称' }}</text>
             <text class="username">{{ displayName }}</text>
           </view>
           <button class="logout-btn" hover-class="logout-btn-hover" @tap="logout">退出登录</button>
@@ -66,10 +66,12 @@
 import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import TabBar from '../../components/TabBar.vue'
+import { fetchUserProfile } from '../../api/user'
 import { clearAuth, getDisplayName, getUserProfile, isLoggedIn } from '../../utils/auth'
 
 const loggedIn = ref(false)
 const userProfile = ref(null)
+const profileLoading = ref(false)
 const displayName = computed(() => getDisplayName(userProfile.value))
 const avatarUrl = computed(() => userProfile.value?.avatarUrl || '/static/logo.png')
 
@@ -152,6 +154,24 @@ function goProfileEdit() {
 function refreshLoginState() {
   loggedIn.value = isLoggedIn()
   userProfile.value = getUserProfile()
+
+  if (loggedIn.value) {
+    loadLatestUserProfile()
+  }
+}
+
+async function loadLatestUserProfile() {
+  if (profileLoading.value) return
+
+  profileLoading.value = true
+  try {
+    userProfile.value = await fetchUserProfile({ silent: true })
+  } catch (error) {
+    // 资料接口不可用时保留本地缓存，避免“我的”页空白。
+    userProfile.value = getUserProfile()
+  } finally {
+    profileLoading.value = false
+  }
 }
 
 function logout() {
