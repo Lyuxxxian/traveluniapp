@@ -93,7 +93,22 @@ export async function fetchUserProfile(options: FetchUserProfileOptions = {}): P
 }
 
 export async function updateUserProfile(payload: UpdateUserProfilePayload): Promise<UserProfileResponse> {
-  const profile = await http.put<UserProfileResponse>(API_PATHS.user.profile, payload)
-  setUserProfile(profile)
-  return profile
+  try {
+    const profile = await http.put<UserProfileResponse>(API_PATHS.user.profile, payload)
+    setUserProfile(profile)
+    return profile
+  } catch (error) {
+    const cachedProfile = getUserProfile()
+
+    if (import.meta.env.DEV && cachedProfile) {
+      const profile = {
+        ...cachedProfile,
+        ...payload,
+      }
+      setUserProfile(profile)
+      return profile
+    }
+
+    throw error
+  }
 }

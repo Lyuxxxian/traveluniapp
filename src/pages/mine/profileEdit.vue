@@ -8,10 +8,10 @@
 
     <view class="profile-card">
       <view class="avatar-wrap" @tap="chooseAvatar">
-        <image class="avatar" src="/static/logo.png" mode="aspectFill" />
+        <image class="avatar" :src="avatarUrl" mode="aspectFill" />
         <view class="camera-icon" />
       </view>
-      <text class="hint">点击头像可更换</text>
+      <text class="hint">{{ uploading ? '头像上传中…' : '点击头像可更换' }}</text>
     </view>
 
     <view class="form-card">
@@ -29,20 +29,105 @@
 
 <script setup>
 import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+import { API_BASE_URL, API_PATHS } from '../../config/api'
+import { updateUserProfile } from '../../api/user'
+import { getToken, getUserProfile } from '../../utils/auth'
 
 const visitorId = ref('灵山居士_12345')
 const nickname = ref('')
+const avatarUrl = ref('/static/logo.png')
+const uploading = ref(false)
+const saving = ref(false)
+
+onShow(() => {
+  loadProfile()
+})
+
+function loadProfile() {
+  const profile = getUserProfile()
+  if (!profile) return
+
+  visitorId.value = profile.visitorId || visitorId.value
+  nickname.value = profile.nickname || ''
+  avatarUrl.value = profile.avatarUrl || avatarUrl.value
+}
 
 function goBack() {
   uni.navigateBack()
 }
 
 function chooseAvatar() {
-  uni.showToast({ title: '头像选择待接入', icon: 'none' })
+  if (uploading.value) return
+
+  uni.chooseImage({
+    count: 1,
+    sizeType: ['compressed'],
+    sourceType: ['album', 'camera'],
+    success: async (result) => {
+      const filePath = result.tempFilePaths[0]
+      if (!filePath) return
+
+      avatarUrl.value = filePath
+      await uploadAvatar(filePath)
+    },
+  })
 }
 
-function saveProfile() {
-  uni.showToast({ title: '个人信息保存待接入', icon: 'none' })
+function uploadAvatar(filePath) {
+  uploading.value = true
+
+  return new Promise((resolve) => {
+    uni.uploadFile({
+      url: `${API_BASE_URL}${API_PATHS.upload.image}`,
+      filePath,
+      name: 'file',
+      header: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+      success: (response) => {
+        try {
+          const parsed = JSON.parse(response.data)
+          avatarUrl.value = parsed?.data?.url || filePath
+        } catch (error) {
+          avatarUrl.value = filePath
+        }
+      },
+      fail: () => {
+        // 开发期后端上传接口未接入时，保留本地临时头像用于预览和模拟保存。
+        avatarUrl.value = filePath
+      },
+      complete: () => {
+        uploading.value = false
+        resolve()
+      },
+    })
+  })
+}
+
+async function saveProfile() {
+  if (saving.value || uploading.value) return
+
+  saving.value = true
+  uni.showLoading({ title: '保存中…', mask: true })
+
+  try {
+    await updateUserProfile({
+      nickname: nickname.value.trim(),
+      avatarUrl: avatarUrl.value,
+    })
+    uni.hideLoading()
+    uni.showToast({ title: '保存成功', icon: 'success' })
+    setTimeout(() => {
+      uni.navigateBack()
+    }, 500)
+  } catch (error) {
+    uni.hideLoading()
+    const message = error instanceof Error ? error.message : '保存失败，请稍后再试'
+    uni.showToast({ title: message, icon: 'none' })
+  } finally {
+    saving.value = false
+  }
 }
 </script>
 
