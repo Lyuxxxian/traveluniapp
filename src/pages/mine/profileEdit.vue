@@ -30,9 +30,9 @@
 <script setup>
 import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-import { API_BASE_URL, API_PATHS } from '../../config/api'
 import { updateUserProfile } from '../../api/user'
-import { getToken, getUserProfile } from '../../utils/auth'
+import { getUserProfile } from '../../utils/auth'
+import { chooseAndUploadImage } from '../../utils/upload'
 
 const visitorId = ref('灵山居士_12345')
 const nickname = ref('')
@@ -60,49 +60,18 @@ function goBack() {
 function chooseAvatar() {
   if (uploading.value) return
 
-  uni.chooseImage({
-    count: 1,
-    sizeType: ['compressed'],
-    sourceType: ['album', 'camera'],
-    success: async (result) => {
-      const filePath = result.tempFilePaths[0]
-      if (!filePath) return
-
-      avatarUrl.value = filePath
-      await uploadAvatar(filePath)
-    },
-  })
-}
-
-function uploadAvatar(filePath) {
   uploading.value = true
-
-  return new Promise((resolve) => {
-    uni.uploadFile({
-      url: `${API_BASE_URL}${API_PATHS.upload.image}`,
-      filePath,
-      name: 'file',
-      header: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-      success: (response) => {
-        try {
-          const parsed = JSON.parse(response.data)
-          avatarUrl.value = parsed?.data?.url || filePath
-        } catch (error) {
-          avatarUrl.value = filePath
-        }
-      },
-      fail: () => {
-        // 开发期后端上传接口未接入时，保留本地临时头像用于预览和模拟保存。
-        avatarUrl.value = filePath
-      },
-      complete: () => {
-        uploading.value = false
-        resolve()
-      },
+  chooseAndUploadImage()
+    .then((result) => {
+      avatarUrl.value = result.url
     })
-  })
+    .catch((error) => {
+      const message = error instanceof Error ? error.message : '头像选择失败'
+      uni.showToast({ title: message, icon: 'none' })
+    })
+    .finally(() => {
+      uploading.value = false
+    })
 }
 
 async function saveProfile() {
