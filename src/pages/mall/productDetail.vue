@@ -130,6 +130,7 @@ async function onBuy() {
     const result = await createOrder({
       title: detail.value.title,
       coverUrl: detail.value.coverUrl,
+      productType: detail.value.type,
       items: [
         {
           productId: detail.value.id,

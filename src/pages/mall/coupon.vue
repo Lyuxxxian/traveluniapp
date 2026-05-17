@@ -73,6 +73,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { fetchProducts, collectCoupon } from '../../api/mall'
+import { addUserCoupon } from '../../api/mine'
 import TabBar from '../../components/TabBar.vue'
 
 const keyword = ref('')
@@ -151,6 +152,7 @@ async function onCollect(item) {
   uni.showLoading({ title: '领取中...' })
   try {
     await collectCoupon(item.id)
+    await addUserCoupon(item.id)
     collectedIds.value.add(item.id)
     item.stock--
     uni.hideLoading()

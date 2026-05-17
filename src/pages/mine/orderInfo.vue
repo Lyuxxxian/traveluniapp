@@ -287,7 +287,7 @@ function confirmCoupon() {
 async function loadAvailableCoupons() {
   if (!detail.value || detail.value.status !== 'pendingPay') return
   const orderAmount = totalAmount.value + detail.value.couponDiscount
-  const productType = 'ticket'
+  const productType = detail.value.productType || 'ticket'
   try {
     availableCoupons.value = await getAvailableCouponsForOrder(orderAmount, productType)
   } catch {

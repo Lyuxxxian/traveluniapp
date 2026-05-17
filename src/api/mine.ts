@@ -12,6 +12,7 @@ export type OrderItem = {
   createdAt: string
   couponDiscount: number
   couponTitle: string
+  productType: string
 }
 
 export type OrderDetail = OrderItem & {
@@ -182,6 +183,7 @@ const staticOrders: OrderItem[] = [
     createdAt: '2026-05-14 10:00:00',
     couponDiscount: 2000,
     couponTitle: '满200减20',
+    productType: 'ticket',
   },
   {
     id: 9002,
@@ -195,6 +197,7 @@ const staticOrders: OrderItem[] = [
     createdAt: '2026-05-14 11:00:00',
     couponDiscount: 0,
     couponTitle: '',
+    productType: 'ticket',
   },
   {
     id: 9003,
@@ -208,6 +211,7 @@ const staticOrders: OrderItem[] = [
     createdAt: '2026-05-13 09:00:00',
     couponDiscount: 1000,
     couponTitle: '满100减10',
+    productType: 'ticket',
   },
   {
     id: 9004,
@@ -221,6 +225,7 @@ const staticOrders: OrderItem[] = [
     createdAt: '2026-05-12 14:30:00',
     couponDiscount: 1000,
     couponTitle: '满100减10',
+    productType: 'ticket',
   },
   {
     id: 9005,
@@ -234,6 +239,7 @@ const staticOrders: OrderItem[] = [
     createdAt: '2026-05-11 08:00:00',
     couponDiscount: 2000,
     couponTitle: '满200减20',
+    productType: 'ticket',
   },
   {
     id: 9006,
@@ -247,6 +253,7 @@ const staticOrders: OrderItem[] = [
     createdAt: '2026-05-15 16:00:00',
     couponDiscount: 3000,
     couponTitle: '满300减30',
+    productType: 'annualCard',
   },
   {
     id: 9007,
@@ -260,6 +267,7 @@ const staticOrders: OrderItem[] = [
     createdAt: '2026-05-15 12:00:00',
     couponDiscount: 0,
     couponTitle: '',
+    productType: 'ticket',
   },
 ]
 
@@ -324,6 +332,7 @@ export async function createOrder(params: {
   coverUrl: string
   items: CreateOrderItem[]
   couponId?: number
+  productType?: string
 }): Promise<CreateOrderResult> {
   // TODO: 对接后端 POST /api/orders
   // return http.post<CreateOrderResult>('/api/orders', params, { auth: true })
@@ -357,6 +366,7 @@ export async function createOrder(params: {
     createdAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
     couponDiscount,
     couponTitle,
+    productType: params.productType || 'ticket',
   }
 
   staticOrders.unshift(newOrder)
