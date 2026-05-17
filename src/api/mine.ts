@@ -158,15 +158,70 @@ export async function fetchOrderDetail(id: number): Promise<OrderDetail> {
   })
 }
 
+export type CreateOrderItem = {
+  productId: number
+  skuName: string
+  skuPrice: number
+  quantity: number
+}
+
+export type CreateOrderResult = {
+  id: number
+  orderNo: string
+  payAmount: number
+  status: OrderStatus
+}
+
+let nextOrderId = 9008
+
+export async function createOrder(params: {
+  title: string
+  coverUrl: string
+  items: CreateOrderItem[]
+}): Promise<CreateOrderResult> {
+  // TODO: 对接后端 POST /api/orders
+  // return http.post<CreateOrderResult>('/api/orders', params, { auth: true })
+
+  const id = nextOrderId++
+  const payAmount = params.items.reduce((sum, it) => sum + it.skuPrice * it.quantity, 0)
+  const orderNo = `LS${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${String(id).padStart(3, '0')}`
+
+  const newOrder: OrderItem = {
+    id,
+    orderNo,
+    status: 'pendingPay',
+    statusText: '待付款',
+    title: params.title,
+    coverUrl: params.coverUrl,
+    payAmount,
+    quantity: params.items.reduce((sum, it) => sum + it.quantity, 0),
+    createdAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
+  }
+
+  staticOrders.unshift(newOrder)
+
+  return { id, orderNo, payAmount, status: 'pendingPay' }
+}
+
 export async function cancelOrder(id: number): Promise<void> {
   // TODO: 对接后端 POST /api/orders/:id/cancel
   // return http.post(`/api/orders/${id}/cancel`, undefined, { auth: true })
-  return Promise.resolve()
+
+  const order = staticOrders.find((o) => o.id === id)
+  if (order) {
+    order.status = 'cancelled'
+    order.statusText = '已取消'
+  }
 }
 
 export async function mockPayOrder(id: number): Promise<void> {
   // TODO: 对接后端 POST /api/orders/:id/mock-pay
   // return http.post(`/api/orders/${id}/mock-pay`, undefined, { auth: true })
-  return Promise.resolve()
+
+  const order = staticOrders.find((o) => o.id === id)
+  if (order) {
+    order.status = 'pendingUse'
+    order.statusText = '待使用'
+  }
 }
 

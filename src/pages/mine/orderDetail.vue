@@ -99,7 +99,7 @@ function goBack() {
 }
 
 function goOrderDetail(id) {
-  uni.showToast({ title: '订单详情待开发', icon: 'none' })
+  uni.navigateTo({ url: `/pages/mine/orderInfo?id=${id}` })
 }
 
 onLoad((options) => {

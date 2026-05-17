@@ -87,6 +87,7 @@
 import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { fetchProductDetail } from '../../api/mall'
+import { createOrder } from '../../api/mine'
 
 const detail = ref(null)
 const selectedSpecId = ref(0)
@@ -120,9 +121,30 @@ function onShare() {
   uni.showToast({ title: '分享功能待开发', icon: 'none' })
 }
 
-function onBuy() {
+async function onBuy() {
   const spec = detail.value.specs.find((s) => s.id === selectedSpecId.value)
-  uni.showToast({ title: `已选 ${spec?.name || detail.value.title}，下单待开发`, icon: 'none' })
+  if (!spec) return
+
+  uni.showLoading({ title: '下单中...' })
+  try {
+    const result = await createOrder({
+      title: detail.value.title,
+      coverUrl: detail.value.coverUrl,
+      items: [
+        {
+          productId: detail.value.id,
+          skuName: spec.name,
+          skuPrice: spec.price,
+          quantity: 1,
+        },
+      ],
+    })
+    uni.hideLoading()
+    uni.navigateTo({ url: `/pages/mine/orderInfo?id=${result.id}` })
+  } catch {
+    uni.hideLoading()
+    uni.showToast({ title: '下单失败', icon: 'none' })
+  }
 }
 
 onLoad(async (options) => {

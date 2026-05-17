@@ -79,6 +79,13 @@
 			}
 		},
 		{
+			"path": "pages/mine/orderInfo",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/mine/profileEdit",
 			"style": {
 				"navigationBarTitleText": "",
