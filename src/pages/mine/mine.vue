@@ -181,7 +181,7 @@ function logout() {
 }
 
 function goOrderList(status) {
-  uni.showToast({ title: `${status}订单页面待开发`, icon: 'none' })
+  uni.navigateTo({ url: `/pages/mine/orderDetail?status=${status}` })
 }
 
 function goFunction(key) {
