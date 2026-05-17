@@ -185,6 +185,10 @@ function goOrderList(status) {
 }
 
 function goFunction(key) {
+  if (key === 'coupons') {
+    uni.navigateTo({ url: '/pages/mine/coupons' })
+    return
+  }
   uni.showToast({ title: `${key}页面待开发`, icon: 'none' })
 }
 </script>

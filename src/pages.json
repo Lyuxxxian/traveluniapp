@@ -58,6 +58,27 @@
 			}
 		},
 		{
+			"path": "pages/mall/hotel",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mall/annualCard",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mall/coupon",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/mall/productDetail",
 			"style": {
 				"navigationBarTitleText": "",
@@ -80,6 +101,13 @@
 		},
 		{
 			"path": "pages/mine/orderInfo",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/coupons",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"

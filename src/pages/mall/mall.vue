@@ -131,6 +131,18 @@ function goModule(item) {
     uni.navigateTo({ url: '/pages/mall/ticket' })
     return
   }
+  if (item.key === 'hotel') {
+    uni.navigateTo({ url: '/pages/mall/hotel' })
+    return
+  }
+  if (item.key === 'annualCard') {
+    uni.navigateTo({ url: '/pages/mall/annualCard' })
+    return
+  }
+  if (item.key === 'coupon') {
+    uni.navigateTo({ url: '/pages/mall/coupon' })
+    return
+  }
   uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
 }
 </script>

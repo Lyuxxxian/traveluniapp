@@ -64,11 +64,28 @@
         </view>
         <view class="amount-row">
           <text class="amount-label">优惠减免</text>
-          <text class="amount-value discount">-¥0</text>
+          <text class="amount-value discount" :class="{ 'no-coupon': !appliedCoupon }">
+            {{ appliedCoupon ? `-¥${formatPrice(appliedCoupon.discountAmount)}` : '-¥0' }}
+          </text>
+        </view>
+        <view v-if="appliedCoupon" class="amount-row coupon-detail">
+          <text class="amount-label">{{ appliedCoupon.title }}</text>
+          <text class="amount-value discount small">{{ appliedCoupon.subtitle }}</text>
+        </view>
+        <view
+          v-if="detail.status === 'pendingPay' && !appliedCoupon && availableCoupons.length > 0"
+          class="coupon-pick-row"
+          @tap="couponPickerVisible = true"
+        >
+          <text class="coupon-pick-label">选择优惠券</text>
+          <view class="coupon-pick-right">
+            <text class="coupon-pick-hint">{{ availableCoupons.length }}张可用</text>
+            <text class="coupon-pick-arrow">›</text>
+          </view>
         </view>
         <view class="amount-row total">
           <text class="amount-label">实付金额</text>
-          <text class="amount-value final">¥{{ formatPrice(detail.payAmount) }}</text>
+          <text class="amount-value final">¥{{ formatPrice(finalPayAmount) }}</text>
         </view>
       </view>
 
@@ -98,7 +115,7 @@
           <text class="pay-label">支付金额</text>
           <view class="pay-amount-row">
             <text class="pay-symbol">¥</text>
-            <text class="pay-value">{{ formatPrice(detail.payAmount) }}</text>
+            <text class="pay-value">{{ formatPrice(finalPayAmount) }}</text>
           </view>
         </view>
         <view class="pay-method">
@@ -113,7 +130,40 @@
             <text>取消</text>
           </view>
           <view class="pay-dialog-btn confirm" @tap="onPayConfirm">
-            <text>确认支付 ¥{{ formatPrice(detail.payAmount) }}</text>
+            <text>确认支付 ¥{{ formatPrice(finalPayAmount) }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="pay-mask" v-if="couponPickerVisible" @tap="closeCouponPicker">
+      <view class="pay-dialog" @tap.stop>
+        <text class="pay-dialog-title">选择优惠券</text>
+        <scroll-view scroll-y class="coupon-picker-list">
+          <view v-if="availableCoupons.length === 0" class="coupon-empty">
+            <text>暂无可使用优惠券</text>
+          </view>
+          <view
+            v-for="c in availableCoupons"
+            :key="c.id"
+            class="coupon-option"
+            :class="{ selected: selectedCouponId === c.id }"
+            @tap="selectCoupon(c)"
+          >
+            <view class="coupon-option-left">
+              <text class="coupon-option-title">{{ c.title }}</text>
+              <text class="coupon-option-scope">{{ c.subtitle }}</text>
+              <text class="coupon-option-date">有效期至 {{ c.validTo }}</text>
+            </view>
+            <view v-if="selectedCouponId === c.id" class="coupon-option-check">✓</view>
+          </view>
+        </scroll-view>
+        <view class="pay-dialog-actions">
+          <view class="pay-dialog-btn cancel" @tap="closeCouponPicker">
+            <text>不使用优惠券</text>
+          </view>
+          <view class="pay-dialog-btn confirm" @tap="confirmCoupon">
+            <text>确定</text>
           </view>
         </view>
       </view>
@@ -124,15 +174,25 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { fetchOrderDetail, cancelOrder, mockPayOrder } from '../../api/mine'
+import { fetchOrderDetail, cancelOrder, mockPayOrder, getAvailableCouponsForOrder } from '../../api/mine'
 
 const detail = ref(null)
 const payVisible = ref(false)
 const loading = ref(true)
 
+const availableCoupons = ref([])
+const couponPickerVisible = ref(false)
+const selectedCouponId = ref(0)
+const appliedCoupon = ref(null)
+
 const totalAmount = computed(() => {
   if (!detail.value) return 0
   return detail.value.items.reduce((sum, it) => sum + it.price * it.quantity, 0)
+})
+
+const finalPayAmount = computed(() => {
+  if (!detail.value) return 0
+  return detail.value.payAmount - (appliedCoupon.value?.discountAmount || 0)
 })
 
 function formatPrice(priceInFen) {
@@ -204,6 +264,37 @@ function onViewQr() {
   uni.showToast({ title: '入园凭证展示中', icon: 'none' })
 }
 
+function selectCoupon(coupon) {
+  selectedCouponId.value = coupon.id
+}
+
+function closeCouponPicker() {
+  couponPickerVisible.value = false
+  selectedCouponId.value = 0
+}
+
+function confirmCoupon() {
+  if (selectedCouponId.value) {
+    const coupon = availableCoupons.value.find((c) => c.id === selectedCouponId.value)
+    if (coupon) {
+      appliedCoupon.value = coupon
+    }
+  }
+  couponPickerVisible.value = false
+  selectedCouponId.value = 0
+}
+
+async function loadAvailableCoupons() {
+  if (!detail.value || detail.value.status !== 'pendingPay') return
+  const orderAmount = totalAmount.value + detail.value.couponDiscount
+  const productType = 'ticket'
+  try {
+    availableCoupons.value = await getAvailableCouponsForOrder(orderAmount, productType)
+  } catch {
+    availableCoupons.value = []
+  }
+}
+
 onLoad(async (options) => {
   const id = Number(options?.id || 0)
   if (!id) {
@@ -213,6 +304,14 @@ onLoad(async (options) => {
   }
   try {
     detail.value = await fetchOrderDetail(id)
+    if (detail.value.couponDiscount > 0) {
+      appliedCoupon.value = {
+        title: detail.value.couponTitle,
+        subtitle: '已使用',
+        discountAmount: detail.value.couponDiscount,
+      }
+    }
+    await loadAvailableCoupons()
   } catch {
     uni.showToast({ title: '加载失败', icon: 'none' })
   } finally {
@@ -490,6 +589,119 @@ onLoad(async (options) => {
 
 .amount-value.discount {
   color: #2e7d32;
+}
+
+.amount-value.discount.no-coupon {
+  color: #c4b59a;
+}
+
+.amount-value.discount.small {
+  font-size: 22rpx;
+  font-weight: 400;
+}
+
+.amount-row.coupon-detail {
+  padding: 4rpx 0 10rpx;
+}
+
+.coupon-pick-row {
+  padding: 14rpx 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.coupon-pick-label {
+  color: #6f451d;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.coupon-pick-right {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.coupon-pick-hint {
+  color: #a76524;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.coupon-pick-arrow {
+  color: #a76524;
+  font-size: 32rpx;
+  line-height: 1;
+}
+
+.coupon-picker-list {
+  max-height: 540rpx;
+  min-height: 100rpx;
+}
+
+.coupon-empty {
+  height: 160rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b4a38a;
+  font-size: 26rpx;
+}
+
+.coupon-option {
+  padding: 22rpx 20rpx;
+  margin-bottom: 14rpx;
+  border: 2rpx solid #e8ddd0;
+  border-radius: 16rpx;
+  background: #fffaf4;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.coupon-option.selected {
+  border-color: #8b6138;
+  background: #fff7ec;
+}
+
+.coupon-option-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.coupon-option-title {
+  display: block;
+  color: #312416;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.coupon-option-scope {
+  display: block;
+  margin-top: 6rpx;
+  color: #9a8265;
+  font-size: 22rpx;
+}
+
+.coupon-option-date {
+  display: block;
+  margin-top: 4rpx;
+  color: #c4b59a;
+  font-size: 20rpx;
+}
+
+.coupon-option-check {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: #8b6138;
+  color: #fff;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .amount-value.final {

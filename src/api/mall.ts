@@ -210,13 +210,82 @@ const staticAnnualCardProducts: Product[] = [
   },
 ]
 
+const staticCouponProducts: Product[] = [
+  {
+    id: 6001,
+    type: 'couponPackage',
+    title: '满200减20',
+    subtitle: '门票、酒店、年卡通用',
+    price: 0,
+    originPrice: 0,
+    coverUrl: 'https://images.unsplash.com/photo-1553729459-afe8f2e2db29?auto=format&fit=crop&w=600&q=80',
+    tags: ['满减', '通用'],
+    stock: 999,
+  },
+  {
+    id: 6002,
+    type: 'couponPackage',
+    title: '满100减10',
+    subtitle: '仅限门票使用',
+    price: 0,
+    originPrice: 0,
+    coverUrl: 'https://images.unsplash.com/photo-1600262300671-295cb21f6d06?auto=format&fit=crop&w=600&q=80',
+    tags: ['满减', '门票'],
+    stock: 500,
+  },
+  {
+    id: 6003,
+    type: 'couponPackage',
+    title: '满500减50',
+    subtitle: '仅限酒店使用',
+    price: 0,
+    originPrice: 0,
+    coverUrl: 'https://images.unsplash.com/photo-1549638441-b787d2e11f14?auto=format&fit=crop&w=600&q=80',
+    tags: ['满减', '酒店'],
+    stock: 300,
+  },
+  {
+    id: 6004,
+    type: 'couponPackage',
+    title: '满300减30',
+    subtitle: '仅限年卡使用',
+    price: 0,
+    originPrice: 0,
+    coverUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=600&q=80',
+    tags: ['满减', '年卡'],
+    stock: 200,
+  },
+  {
+    id: 6005,
+    type: 'couponPackage',
+    title: '满50减5',
+    subtitle: '仅限餐饮使用',
+    price: 0,
+    originPrice: 0,
+    coverUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+    tags: ['满减', '餐饮'],
+    stock: 800,
+  },
+  {
+    id: 6006,
+    type: 'couponPackage',
+    title: '满100减15',
+    subtitle: '仅限文创使用',
+    price: 0,
+    originPrice: 0,
+    coverUrl: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=600&q=80',
+    tags: ['满减', '文创'],
+    stock: 400,
+  },
+]
+
 const allStaticProducts: Record<string, Product[]> = {
   ticket: staticTicketProducts,
   hotel: staticHotelProducts,
   food: staticFoodProducts,
   creative: staticCreativeProducts,
   annualCard: staticAnnualCardProducts,
-  couponPackage: [],
+  couponPackage: staticCouponProducts,
 }
 
 export async function fetchProducts(params: ProductListParams = {}): Promise<PaginatedResult<Product>> {
@@ -393,4 +462,15 @@ export async function fetchProductDetail(id: number): Promise<ProductDetail> {
     notice: '请以景区现场公告为准。',
     specs: [{ id: 0, name: '默认规格', price: product.price }],
   })
+}
+
+export async function collectCoupon(couponId: number): Promise<void> {
+  // TODO: 对接后端 POST /api/mall/coupons/:id/collect
+  // return http.post(`/api/mall/coupons/${couponId}/collect`, undefined, { auth: true })
+
+  const product = staticCouponProducts.find((p) => p.id === couponId)
+  if (!product) return Promise.reject(new Error('优惠券不存在'))
+  if (product.stock <= 0) return Promise.reject(new Error('已领完'))
+  product.stock--
+  return Promise.resolve()
 }
