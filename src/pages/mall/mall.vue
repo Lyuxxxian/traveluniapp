@@ -127,6 +127,10 @@ function goService() {
 }
 
 function goModule(item) {
+  if (item.key === 'ticket') {
+    uni.navigateTo({ url: '/pages/mall/ticket' })
+    return
+  }
   uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
 }
 </script>

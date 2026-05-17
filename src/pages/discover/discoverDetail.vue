@@ -70,6 +70,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { fetchDiscoverPostDetail } from '../../api/discover'
 
 const post = ref(null)
