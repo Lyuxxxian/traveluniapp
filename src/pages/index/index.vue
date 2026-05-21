@@ -52,7 +52,7 @@
           <view class="function-box">
             <scroll-view scroll-x class="matrix-scroll" :show-scrollbar="false">
               <view class="matrix-row">
-                <view class="matrix-item" v-for="item in matrixItems" :key="item.title">
+                <view class="matrix-item" v-for="item in matrixItems" :key="item.title" @tap="handleMatrixTap(item)">
                   <view class="matrix-icon">{{ item.icon }}</view>
                   <text class="matrix-title">{{ item.title }}</text>
                   <text class="matrix-desc">{{ item.desc }}</text>
@@ -61,7 +61,7 @@
             </scroll-view>
 
             <view class="action-grid">
-              <view class="action-card" v-for="item in actionCards" :key="item.title">
+              <view class="action-card" v-for="item in actionCards" :key="item.title" @tap="handleActionTap(item)">
                 <view>
                   <text class="action-title">{{ item.title }}</text>
                   <text class="action-desc">{{ item.desc }}</text>
@@ -199,23 +199,37 @@ function handleHeroScroll(event) {
   heroBlur.value = Math.min(24, Math.round((scrollTop / 220) * 24))
 }
 
+function handleMatrixTap(item) {
+  if (item.key === 'presaleTicket' || item.key === 'dailyTicket') {
+    uni.navigateTo({ url: '/pages/mall/ticket' })
+  }
+}
+
+function handleActionTap(item) {
+  if (item.key === 'buy') {
+    uni.navigateTo({ url: '/pages/mall/ticket' })
+  } else if (item.key === 'annualCard') {
+    uni.navigateTo({ url: '/pages/mall/annualCard' })
+  }
+}
+
 const matrixItems = [
-  { icon: '🎟️', title: '预售门票', desc: '票务小程序' },
-  { icon: '🎫', title: '当日门票', desc: '160元起' },
-  { icon: '🔔', title: '入园提醒', desc: '须知与检票点' },
-  { icon: '🕘', title: '运营时间', desc: '8:00-17:00' },
-  { icon: '🎧', title: '电子讲解器', desc: '扫码支付佩戴' },
-  { icon: '🙏', title: '考试祈福', desc: '摸掌祈福' },
-  { icon: '🛍️', title: '会员商品', desc: '文创与禅茶' },
-  { icon: '💬', title: '游客服务', desc: '热评与回复' },
-  { icon: '🗺️', title: '我的行程', desc: 'DIY优化路线' },
+  { key: 'presaleTicket', icon: '🎟️', title: '预售门票', desc: '票务小程序' },
+  { key: 'dailyTicket', icon: '🎫', title: '当日门票', desc: '160元起' },
+  { key: 'entryAlert', icon: '🔔', title: '入园提醒', desc: '须知与检票点' },
+  { key: 'openingHours', icon: '🕘', title: '运营时间', desc: '8:00-17:00' },
+  { key: 'audioGuide', icon: '🎧', title: '电子讲解器', desc: '扫码支付佩戴' },
+  { key: 'blessing', icon: '🙏', title: '考试祈福', desc: '摸掌祈福' },
+  { key: 'memberGoods', icon: '🛍️', title: '会员商品', desc: '文创与禅茶' },
+  { key: 'service', icon: '💬', title: '游客服务', desc: '热评与回复' },
+  { key: 'trip', icon: '🗺️', title: '我的行程', desc: 'DIY优化路线' },
 ]
 
 const actionCards = [
-  { icon: '购', title: '立即购买', desc: '门票与套票' },
-  { icon: '会', title: '会员俱乐部', desc: '功德等级权益' },
-  { icon: '年', title: '年卡', desc: '全年畅游' },
-  { icon: '香', title: '体验活动', desc: '藏香制作等' },
+  { key: 'buy', icon: '购', title: '立即购买', desc: '门票与套票' },
+  { key: 'memberClub', icon: '会', title: '会员俱乐部', desc: '功德等级权益' },
+  { key: 'annualCard', icon: '年', title: '年卡', desc: '全年畅游' },
+  { key: 'activity', icon: '香', title: '体验活动', desc: '藏香制作等' },
 ]
 
 const collectionSections = [
