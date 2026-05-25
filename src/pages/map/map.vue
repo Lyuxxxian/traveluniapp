@@ -68,11 +68,11 @@ const mapCenter = {
 }
 
 const categories = [
-  { key: 'spot', label: '景点', icon: '�', color: '#42c79c' },
-  { key: 'food', label: '素斋', icon: '🍜', color: '#ff7f7f' },
-  { key: 'toilet', label: '卫生间', icon: '🚻', color: '#66b6ff' },
-  { key: 'parking', label: '停车场', icon: '🅿️', color: '#6fd4b9' },
-  { key: 'service', label: '服务', icon: '🎧', color: '#f7bf51' },
+  { key: 'spot', label: '景点', icon: '⛩', color: '#8b6138' },
+  { key: 'food', label: '素斋', icon: '🍜', color: '#c77d45' },
+  { key: 'toilet', label: '卫生间', icon: '🚻', color: '#7b9eb3' },
+  { key: 'parking', label: '停车场', icon: '🅿️', color: '#8b9a6b' },
+  { key: 'service', label: '服务', icon: '🎧', color: '#c4a35a' },
 ]
 
 const leftMenuActions = [
@@ -332,7 +332,9 @@ function handleLeftAction(action) {
 .page {
   height: 100vh;
   position: relative;
-  background: #f3f6f9;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(225, 197, 145, 0.34), rgba(225, 197, 145, 0) 34%),
+    linear-gradient(180deg, #f6efe2 0%, #f4f5ef 45%, #f7f1e7 100%);
 }
 
 .map {
@@ -347,12 +349,13 @@ function handleLeftAction(action) {
   top: 30rpx;
   height: 72rpx;
   border-radius: 38rpx;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1rpx solid rgba(255, 255, 255, 0.72);
   display: flex;
   align-items: center;
   padding: 0 20rpx;
   box-sizing: border-box;
-  box-shadow: 0 6rpx 14rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 14rpx 34rpx rgba(94, 68, 35, 0.1);
 }
 
 .search-icon {
@@ -361,7 +364,7 @@ function handleLeftAction(action) {
 }
 
 .search-text {
-  color: #878787;
+  color: #9a8265;
   font-size: 26rpx;
 }
 
@@ -370,14 +373,16 @@ function handleLeftAction(action) {
   left: 16rpx;
   top: 140rpx;
   width: 104rpx;
-  background: rgba(222, 241, 232, 0.96);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1rpx solid rgba(255, 255, 255, 0.72);
   border-radius: 24rpx;
   overflow: hidden;
+  box-shadow: 0 16rpx 36rpx rgba(94, 68, 35, 0.08);
 }
 
 .left-item {
   min-height: 102rpx;
-  border-bottom: 1rpx solid rgba(61, 151, 98, 0.15);
+  border-bottom: 1rpx solid rgba(180, 150, 120, 0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -397,7 +402,7 @@ function handleLeftAction(action) {
 .left-label {
   white-space: pre-line;
   margin-top: 4rpx;
-  color: #2f3c35;
+  color: #7b5529;
   font-size: 21rpx;
   text-align: center;
 }
@@ -419,18 +424,20 @@ function handleLeftAction(action) {
   min-width: 106rpx;
   height: 106rpx;
   border-radius: 53rpx;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.86);
+  border: 2rpx solid rgba(255, 255, 255, 0.72);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2rpx solid transparent;
   box-sizing: border-box;
+  box-shadow: 0 10rpx 24rpx rgba(94, 68, 35, 0.08);
 }
 
 .category-item.active {
-  border-color: #28bf7d;
-  background: #e8fff4;
+  border-color: #8b6138;
+  background: #fff7ec;
+  box-shadow: 0 10rpx 24rpx rgba(139, 97, 56, 0.18);
 }
 
 .category-icon {
@@ -441,7 +448,8 @@ function handleLeftAction(action) {
 .category-text {
   margin-top: 6rpx;
   font-size: 21rpx;
-  color: #3a3a3a;
+  color: #6f451d;
+  font-weight: 700;
 }
 
 .detail-card {
@@ -451,11 +459,13 @@ function handleLeftAction(action) {
   bottom: 120rpx;
   min-height: 220rpx;
   max-height: 44vh;
-  background: #fff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 238, 217, 0.98) 100%);
   border-radius: 28rpx 28rpx 0 0;
+  border-top: 1rpx solid rgba(182, 138, 75, 0.2);
   padding: 24rpx 24rpx 28rpx;
   box-sizing: border-box;
-  box-shadow: 0 -6rpx 18rpx rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -10rpx 30rpx rgba(72, 50, 24, 0.08);
 }
 
 .detail-header {
@@ -467,8 +477,8 @@ function handleLeftAction(action) {
 
 .detail-title {
   font-size: 36rpx;
-  font-weight: 700;
-  color: #212121;
+  font-weight: 800;
+  color: #312416;
 }
 
 .detail-tag {
@@ -476,14 +486,15 @@ function handleLeftAction(action) {
   padding: 8rpx 16rpx;
   border-radius: 20rpx;
   font-size: 22rpx;
-  color: #2a9f70;
-  background: #eafaf2;
+  color: #7b5529;
+  background: #f1dfc1;
+  font-weight: 700;
 }
 
 .detail-desc {
   margin-top: 16rpx;
   display: block;
-  color: #4e4e4e;
+  color: #5c4530;
   font-size: 26rpx;
   line-height: 1.6;
   max-height: 170rpx;
@@ -499,7 +510,7 @@ function handleLeftAction(action) {
 
 .detail-address {
   flex: 1;
-  color: #666;
+  color: #9a8265;
   font-size: 24rpx;
 }
 
@@ -507,13 +518,14 @@ function handleLeftAction(action) {
   flex: 0 0 auto;
   min-width: 132rpx;
   height: 64rpx;
-  border-radius: 32rpx;
-  color: #fff;
-  background: linear-gradient(135deg, #35d087 0%, #24b774 100%);
+  border-radius: 999rpx;
+  color: #fffaf0;
+  background: linear-gradient(135deg, #8b6138 0%, #d8ad6b 100%);
+  box-shadow: 0 10rpx 24rpx rgba(139, 97, 56, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28rpx;
-  font-weight: 600;
+  font-weight: 800;
 }
 </style>
