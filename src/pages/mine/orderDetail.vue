@@ -114,7 +114,7 @@ onLoad((options) => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  padding: 0 0 0;
+  overflow-x: hidden;
   box-sizing: border-box;
   background:
     radial-gradient(circle at 12% 0%, rgba(225, 197, 145, 0.34), rgba(225, 197, 145, 0) 34%),
@@ -198,6 +198,7 @@ onLoad((options) => {
   flex: 1;
   min-height: 0;
   padding: 20rpx 24rpx;
+  box-sizing: border-box;
 }
 
 .loading-state,
