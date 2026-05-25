@@ -346,7 +346,7 @@ function handleLeftAction(action) {
   position: absolute;
   left: 24rpx;
   right: 24rpx;
-  top: 30rpx;
+  top: calc(var(--status-bar-height) + 20rpx);
   height: 72rpx;
   border-radius: 38rpx;
   background: rgba(255, 255, 255, 0.86);
@@ -371,7 +371,7 @@ function handleLeftAction(action) {
 .left-menu {
   position: absolute;
   left: 16rpx;
-  top: 140rpx;
+  top: calc(var(--status-bar-height) + 130rpx);
   width: 104rpx;
   background: rgba(255, 255, 255, 0.82);
   border: 1rpx solid rgba(255, 255, 255, 0.72);

@@ -112,7 +112,7 @@ onLoad(async (options) => {
 
 .top-actions {
   position: absolute;
-  top: 44rpx;
+  top: calc(var(--status-bar-height) + 20rpx);
   left: 24rpx;
   right: 24rpx;
   display: flex;
