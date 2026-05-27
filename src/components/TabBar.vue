@@ -71,12 +71,22 @@ const centerAgent = {
 }
 
 function onAiTap() {
-  uni.showToast({ title: '数字人AI全屏对话待开发', icon: 'none' })
+  uni.navigateTo({
+    url: '/pages/ai/index'
+  })
 }
 
 function onTabTap(item) {
-  if (item.isAi) return
-  
+
+  if (item.isAi) {
+
+    uni.navigateTo({
+      url: '/pages/ai/index'
+    })
+
+    return
+  }
+
   emit('tab-change', item.key)
 
   if (item.key === 'home') {
@@ -99,7 +109,10 @@ function onTabTap(item) {
     return
   }
 
-  uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
+  uni.showToast({
+    title: `${item.label}页面待开发`,
+    icon: 'none'
+  })
 }
 </script>
 

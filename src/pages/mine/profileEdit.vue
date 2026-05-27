@@ -103,7 +103,7 @@ async function saveProfile() {
 <style scoped>
 .page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 28rpx) 24rpx 28rpx;
+  padding: 28rpx 24rpx;
   box-sizing: border-box;
   background:
     radial-gradient(circle at 12% 0%, rgba(225, 197, 145, 0.32), rgba(225, 197, 145, 0) 34%),

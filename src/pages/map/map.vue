@@ -6,7 +6,7 @@
       class="map"
       :latitude="mapCenter.latitude"
       :longitude="mapCenter.longitude"
-      :scale="16"
+      :scale="14"
       :markers="currentMarkers"
       :show-location="true"
       :enable-3D="false"
@@ -63,16 +63,16 @@ import { computed, ref } from 'vue'
 import TabBar from '../../components/TabBar.vue'
 
 const mapCenter = {
-  latitude: 31.421,
-  longitude: 120.108,
+  latitude: 30.547456,
+  longitude: 114.312147,
 }
 
 const categories = [
-  { key: 'spot', label: '景点', icon: '⛩', color: '#8b6138' },
-  { key: 'food', label: '素斋', icon: '🍜', color: '#c77d45' },
-  { key: 'toilet', label: '卫生间', icon: '🚻', color: '#7b9eb3' },
-  { key: 'parking', label: '停车场', icon: '🅿️', color: '#8b9a6b' },
-  { key: 'service', label: '服务', icon: '🎧', color: '#c4a35a' },
+  { key: 'spot', label: '景区', icon: '🏞️', color: '#42c79c' },
+  { key: 'food', label: '餐厅', icon: '🍜', color: '#ff7f7f' },
+  { key: 'toilet', label: '卫生间', icon: '🚻', color: '#66b6ff' },
+  { key: 'parking', label: '停车场', icon: '🅿️', color: '#6fd4b9' },
+  { key: 'service', label: '服务中心', icon: '🎧', color: '#f7bf51' },
 ]
 
 const leftMenuActions = [
@@ -89,171 +89,147 @@ const pointsMap = {
   spot: [
     {
       id: 101,
-      title: '灵山大佛',
-      latitude: 31.421,
-      longitude: 120.108,
-      address: '无锡市滨湖区马山灵山路1号',
-      desc: '世界露天青铜释迦牟尼立像，高88米，瞻礼灵山大佛感受佛教文化的庄严与宁静。',
+      title: '武汉长江大桥桥头堡',
+      latitude: 30.54798,
+      longitude: 114.30865,
+      address: '武昌区临江大道附近',
+      desc: '武汉地标之一，登桥可远眺两江交汇景观，适合城市风光打卡。',
     },
     {
       id: 102,
-      title: '灵山梵宫',
-      latitude: 31.4222,
-      longitude: 120.1075,
-      address: '灵山大佛景区内东侧',
-      desc: '金色穹顶、壁画与木雕交织成东方美学，是佛教文化艺术的神圣殿堂。',
+      title: '黄鹤楼公园',
+      latitude: 30.54457,
+      longitude: 114.30673,
+      address: '武昌区蛇山西山坡特1号',
+      desc: '江南三大名楼之一，历史文化底蕴深厚，夜景视角也很出片。',
     },
     {
       id: 103,
-      title: '祥符禅寺',
-      latitude: 31.4205,
-      longitude: 120.1072,
-      address: '灵山大佛景区入口北侧',
-      desc: '千年古刹，灵山胜境发祥地，寺内古树参天殿宇庄严，是祈福朝圣起点。',
+      title: '户部巷',
+      latitude: 30.54994,
+      longitude: 114.30407,
+      address: '武昌区自由路',
+      desc: '武汉经典小吃街，热干面、豆皮等地方美食集中，步行可达。',
     },
     {
       id: 104,
-      title: '五印坛城',
-      latitude: 31.423,
-      longitude: 120.1065,
-      address: '灵山梵宫北侧临水',
-      desc: '藏式风格佛教建筑，金顶白墙倒映湖中，展示藏传佛教文化艺术精华。',
-    },
-    {
-      id: 105,
-      title: '九龙灌浴广场',
-      latitude: 31.4225,
-      longitude: 120.1082,
-      address: '灵山大佛景区中轴线',
-      desc: '大型音乐动态群雕表演，以吉祥庄严氛围展现佛祖诞生的故事，每日多场次。',
-    },
-    {
-      id: 106,
-      title: '天下第一掌',
-      latitude: 31.4208,
-      longitude: 120.1078,
-      address: '祥符禅寺广场',
-      desc: '大佛右手1:1复制铜掌，摸掌祈福文化代表点位，寓意摸掌增福添寿。',
-    },
-    {
-      id: 107,
-      title: '拈花湾禅意小镇',
-      latitude: 31.401,
-      longitude: 120.078,
-      address: '无锡市滨湖区环山西路68号',
-      desc: '以禅意生活方式为主题的度假小镇，花海铺展夜景迷人，适合慢游打卡。',
+      title: '晴川阁',
+      latitude: 30.54937,
+      longitude: 114.29878,
+      address: '汉阳区洗马长街86号',
+      desc: '隔江与黄鹤楼相望，古建筑群与江景结合，适合休闲拍照。',
     },
   ],
   food: [
     {
       id: 201,
-      title: '梵宫素斋自助',
-      latitude: 31.422,
-      longitude: 120.1078,
-      address: '灵山梵宫一层东侧',
-      desc: '禅意空间内精致素食自助，品类丰富，是游览中途休憩用餐首选。',
+      title: '老通城豆皮',
+      latitude: 30.5511,
+      longitude: 114.3044,
+      address: '武昌区司门口商圈',
+      desc: '本地老字号，招牌三鲜豆皮外酥里糯，口味偏传统。',
     },
     {
       id: 202,
-      title: '灵山精舍素斋',
-      latitude: 31.4215,
-      longitude: 120.106,
-      address: '灵山精舍院内',
-      desc: '清雅素斋配以禅意园林景观，适合午间静心用餐，需提前预约。',
+      title: '蔡林记',
+      latitude: 30.5488,
+      longitude: 114.3032,
+      address: '武昌区解放路',
+      desc: '热干面经典品牌，出餐快，适合游客快速体验武汉早餐文化。',
     },
     {
       id: 203,
-      title: '景区素面馆',
-      latitude: 31.4205,
-      longitude: 120.109,
-      address: '祥符禅寺南侧商街',
-      desc: '灵山特色素面一碗，快速补给继续游览，价格实惠出餐快。',
+      title: '四季美汤包',
+      latitude: 30.5522,
+      longitude: 114.3008,
+      address: '汉阳门附近',
+      desc: '老武汉人常去的汤包店，汤汁饱满，搭配蛋酒更地道。',
     },
     {
       id: 204,
-      title: '五观堂素斋厅',
-      latitude: 31.4198,
-      longitude: 120.1068,
-      address: '景区入口西侧',
-      desc: '大型素斋餐厅，适合团队用餐，提供套餐与点单服务。',
+      title: '江滩码头餐吧',
+      latitude: 30.5465,
+      longitude: 114.315,
+      address: '临江大道沿线',
+      desc: '江景餐厅，晚间氛围好，适合聚餐和夜游前后停留。',
     },
   ],
   toilet: [
     {
       id: 301,
-      title: '大佛脚下公厕',
-      latitude: 31.4215,
-      longitude: 120.1085,
-      address: '灵山大佛登云道旁',
-      desc: '距离主游览区最近，便于登佛前后使用。',
+      title: '长江大桥游客公厕',
+      latitude: 30.5483,
+      longitude: 114.3106,
+      address: '桥头游客集散点',
+      desc: '距离主游览区较近，便于中途补给与休整。',
     },
     {
       id: 302,
-      title: '梵宫东侧公厕',
-      latitude: 31.4225,
-      longitude: 120.1068,
-      address: '梵宫东门外侧',
-      desc: '梵宫参观路线配套公厕，环境整洁设施完善。',
+      title: '黄鹤楼东门公厕',
+      latitude: 30.544,
+      longitude: 114.3074,
+      address: '黄鹤楼东门内侧',
+      desc: '景区内配套公厕，环境整洁，客流高峰时会排队。',
     },
     {
       id: 303,
-      title: '九龙灌浴公厕',
-      latitude: 31.423,
-      longitude: 120.1085,
-      address: '九龙灌浴广场北侧',
-      desc: '观看演出前后可就近使用，客流高峰时会排队。',
+      title: '司门口便民公厕',
+      latitude: 30.5515,
+      longitude: 114.3052,
+      address: '司门口步行街口',
+      desc: '商圈公共设施，适合逛街路线中途使用。',
     },
   ],
   parking: [
     {
       id: 401,
-      title: 'P1 主停车场',
-      latitude: 31.4185,
-      longitude: 120.109,
-      address: '景区正门入口南侧',
-      desc: '距离景区入口最近的大型停车场，含新能源充电桩，节假日建议尽早到达。',
+      title: '黄鹤楼停车场',
+      latitude: 30.5432,
+      longitude: 114.3079,
+      address: '黄鹤楼景区南门',
+      desc: '距离黄鹤楼近，节假日建议尽早到达。',
     },
     {
       id: 402,
-      title: 'P2 东停车场',
-      latitude: 31.418,
-      longitude: 120.111,
-      address: '景区东侧辅路',
-      desc: '备选停车区，适合高峰分流，步行至入口约8分钟。',
+      title: '司门口地下停车场',
+      latitude: 30.5509,
+      longitude: 114.3049,
+      address: '司门口核心商圈',
+      desc: '商业综合体配套车位，适合购物与用餐换乘。',
     },
     {
       id: 403,
-      title: 'P3 大巴停车场',
-      latitude: 31.4195,
-      longitude: 120.1065,
-      address: '景区西侧大巴专用区',
-      desc: '团队与旅游大巴专用停车场，配备团队集合区与卫生间。',
+      title: '临江大道公共停车点',
+      latitude: 30.5474,
+      longitude: 114.3138,
+      address: '临江大道辅路',
+      desc: '靠近江边步道，适合步行观光与拍照打卡。',
     },
   ],
   service: [
     {
       id: 501,
-      title: '游客服务中心',
-      latitude: 31.4192,
-      longitude: 120.108,
-      address: '景区主入口右侧',
-      desc: '提供导览咨询、行程建议、失物登记与轮椅租借服务。',
+      title: '游客服务中心（桥头）',
+      latitude: 30.5472,
+      longitude: 114.3097,
+      address: '长江大桥武昌桥头',
+      desc: '提供导览咨询、行程建议和失物登记。',
     },
     {
       id: 502,
-      title: '电子讲解器租赁',
-      latitude: 31.4205,
-      longitude: 120.1075,
-      address: '祥符禅寺广场入口',
-      desc: '扫码支付佩戴，支持多语种讲解，覆盖景区主要文化节点。',
+      title: '文旅咨询点（司门口）',
+      latitude: 30.5517,
+      longitude: 114.3038,
+      address: '司门口人流集散区',
+      desc: '提供周边景点推荐与公共交通指引。',
     },
     {
       id: 503,
-      title: '应急医疗点',
-      latitude: 31.422,
-      longitude: 120.1085,
-      address: '九龙灌浴广场附近',
-      desc: '配备基础急救物资与值班医护人员，方便处理轻微突发情况。',
+      title: '应急医疗服务点',
+      latitude: 30.5459,
+      longitude: 114.3111,
+      address: '大桥步行观景带',
+      desc: '配备基础急救物资，方便处理轻微突发情况。',
     },
   ],
 }
@@ -321,7 +297,7 @@ function handleLeftAction(action) {
     return
   }
   if (action === 'locate') {
-    uni.showToast({ title: '已定位到灵山大佛', icon: 'none' })
+    uni.showToast({ title: '已定位到武汉长江大桥', icon: 'none' })
     return
   }
   uni.showToast({ title: '功能开发中', icon: 'none' })
@@ -332,9 +308,7 @@ function handleLeftAction(action) {
 .page {
   height: 100vh;
   position: relative;
-  background:
-    radial-gradient(circle at 14% 0%, rgba(225, 197, 145, 0.34), rgba(225, 197, 145, 0) 34%),
-    linear-gradient(180deg, #f6efe2 0%, #f4f5ef 45%, #f7f1e7 100%);
+  background: #f3f6f9;
 }
 
 .map {
@@ -346,16 +320,15 @@ function handleLeftAction(action) {
   position: absolute;
   left: 24rpx;
   right: 24rpx;
-  top: calc(var(--status-bar-height) + 20rpx);
+  top: 30rpx;
   height: 72rpx;
   border-radius: 38rpx;
-  background: rgba(255, 255, 255, 0.86);
-  border: 1rpx solid rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.96);
   display: flex;
   align-items: center;
   padding: 0 20rpx;
   box-sizing: border-box;
-  box-shadow: 0 14rpx 34rpx rgba(94, 68, 35, 0.1);
+  box-shadow: 0 6rpx 14rpx rgba(0, 0, 0, 0.1);
 }
 
 .search-icon {
@@ -364,25 +337,23 @@ function handleLeftAction(action) {
 }
 
 .search-text {
-  color: #9a8265;
+  color: #878787;
   font-size: 26rpx;
 }
 
 .left-menu {
   position: absolute;
   left: 16rpx;
-  top: calc(var(--status-bar-height) + 130rpx);
+  top: 140rpx;
   width: 104rpx;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1rpx solid rgba(255, 255, 255, 0.72);
+  background: rgba(222, 241, 232, 0.96);
   border-radius: 24rpx;
   overflow: hidden;
-  box-shadow: 0 16rpx 36rpx rgba(94, 68, 35, 0.08);
 }
 
 .left-item {
   min-height: 102rpx;
-  border-bottom: 1rpx solid rgba(180, 150, 120, 0.15);
+  border-bottom: 1rpx solid rgba(61, 151, 98, 0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -402,7 +373,7 @@ function handleLeftAction(action) {
 .left-label {
   white-space: pre-line;
   margin-top: 4rpx;
-  color: #7b5529;
+  color: #2f3c35;
   font-size: 21rpx;
   text-align: center;
 }
@@ -424,20 +395,18 @@ function handleLeftAction(action) {
   min-width: 106rpx;
   height: 106rpx;
   border-radius: 53rpx;
-  background: rgba(255, 255, 255, 0.86);
-  border: 2rpx solid rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border: 2rpx solid transparent;
   box-sizing: border-box;
-  box-shadow: 0 10rpx 24rpx rgba(94, 68, 35, 0.08);
 }
 
 .category-item.active {
-  border-color: #8b6138;
-  background: #fff7ec;
-  box-shadow: 0 10rpx 24rpx rgba(139, 97, 56, 0.18);
+  border-color: #28bf7d;
+  background: #e8fff4;
 }
 
 .category-icon {
@@ -448,8 +417,7 @@ function handleLeftAction(action) {
 .category-text {
   margin-top: 6rpx;
   font-size: 21rpx;
-  color: #6f451d;
-  font-weight: 700;
+  color: #3a3a3a;
 }
 
 .detail-card {
@@ -459,13 +427,11 @@ function handleLeftAction(action) {
   bottom: 120rpx;
   min-height: 220rpx;
   max-height: 44vh;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 238, 217, 0.98) 100%);
+  background: #fff;
   border-radius: 28rpx 28rpx 0 0;
-  border-top: 1rpx solid rgba(182, 138, 75, 0.2);
   padding: 24rpx 24rpx 28rpx;
   box-sizing: border-box;
-  box-shadow: 0 -10rpx 30rpx rgba(72, 50, 24, 0.08);
+  box-shadow: 0 -6rpx 18rpx rgba(0, 0, 0, 0.08);
 }
 
 .detail-header {
@@ -477,8 +443,8 @@ function handleLeftAction(action) {
 
 .detail-title {
   font-size: 36rpx;
-  font-weight: 800;
-  color: #312416;
+  font-weight: 700;
+  color: #212121;
 }
 
 .detail-tag {
@@ -486,15 +452,14 @@ function handleLeftAction(action) {
   padding: 8rpx 16rpx;
   border-radius: 20rpx;
   font-size: 22rpx;
-  color: #7b5529;
-  background: #f1dfc1;
-  font-weight: 700;
+  color: #2a9f70;
+  background: #eafaf2;
 }
 
 .detail-desc {
   margin-top: 16rpx;
   display: block;
-  color: #5c4530;
+  color: #4e4e4e;
   font-size: 26rpx;
   line-height: 1.6;
   max-height: 170rpx;
@@ -510,7 +475,7 @@ function handleLeftAction(action) {
 
 .detail-address {
   flex: 1;
-  color: #9a8265;
+  color: #666;
   font-size: 24rpx;
 }
 
@@ -518,14 +483,13 @@ function handleLeftAction(action) {
   flex: 0 0 auto;
   min-width: 132rpx;
   height: 64rpx;
-  border-radius: 999rpx;
-  color: #fffaf0;
-  background: linear-gradient(135deg, #8b6138 0%, #d8ad6b 100%);
-  box-shadow: 0 10rpx 24rpx rgba(139, 97, 56, 0.22);
+  border-radius: 32rpx;
+  color: #fff;
+  background: linear-gradient(135deg, #35d087 0%, #24b774 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28rpx;
-  font-weight: 800;
+  font-weight: 600;
 }
 </style>

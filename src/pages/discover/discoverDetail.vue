@@ -70,7 +70,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 import { fetchDiscoverPostDetail } from '../../api/discover'
 
 const post = ref(null)
@@ -112,7 +111,7 @@ onLoad(async (options) => {
 
 .top-actions {
   position: absolute;
-  top: calc(var(--status-bar-height) + 20rpx);
+  top: 44rpx;
   left: 24rpx;
   right: 24rpx;
   display: flex;

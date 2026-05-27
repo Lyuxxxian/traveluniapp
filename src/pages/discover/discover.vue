@@ -55,8 +55,6 @@ function goDetail(id) {
 .page {
   min-height: 100vh;
   position: relative;
-  padding-top: var(--status-bar-height);
-  box-sizing: border-box;
   background: #f3f6f9;
 }
 

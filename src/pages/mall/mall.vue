@@ -127,22 +127,6 @@ function goService() {
 }
 
 function goModule(item) {
-  if (item.key === 'ticket') {
-    uni.navigateTo({ url: '/pages/mall/ticket' })
-    return
-  }
-  if (item.key === 'hotel') {
-    uni.navigateTo({ url: '/pages/mall/hotel' })
-    return
-  }
-  if (item.key === 'annualCard') {
-    uni.navigateTo({ url: '/pages/mall/annualCard' })
-    return
-  }
-  if (item.key === 'coupon') {
-    uni.navigateTo({ url: '/pages/mall/coupon' })
-    return
-  }
   uni.showToast({ title: `${item.label}页面待开发`, icon: 'none' })
 }
 </script>
@@ -150,7 +134,7 @@ function goModule(item) {
 <style scoped>
 .page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 28rpx) 24rpx 160rpx;
+  padding: 28rpx 24rpx 160rpx;
   box-sizing: border-box;
   background:
     radial-gradient(circle at 12% 0%, rgba(225, 197, 145, 0.34), rgba(225, 197, 145, 0) 34%),

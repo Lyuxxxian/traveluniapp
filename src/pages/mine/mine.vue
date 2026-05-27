@@ -181,14 +181,10 @@ function logout() {
 }
 
 function goOrderList(status) {
-  uni.navigateTo({ url: `/pages/mine/orderDetail?status=${status}` })
+  uni.showToast({ title: `${status}订单页面待开发`, icon: 'none' })
 }
 
 function goFunction(key) {
-  if (key === 'coupons') {
-    uni.navigateTo({ url: '/pages/mine/coupons' })
-    return
-  }
   uni.showToast({ title: `${key}页面待开发`, icon: 'none' })
 }
 </script>
@@ -196,7 +192,7 @@ function goFunction(key) {
 <style scoped>
 .page {
   min-height: 100vh;
-  padding: calc(var(--status-bar-height) + 28rpx) 24rpx 160rpx;
+  padding: 28rpx 24rpx 160rpx;
   box-sizing: border-box;
   background:
     radial-gradient(circle at 14% 0%, rgba(225, 197, 145, 0.34), rgba(225, 197, 145, 0) 34%),
