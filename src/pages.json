@@ -1,5 +1,5 @@
 {
-	"pages": [ 
+	"pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -51,7 +51,7 @@
 				"navigationStyle": "custom"
 			}
 		},
-				{
+		{
 			"path": "pages/mall/ticket",
 			"style": {
 				"navigationBarTitleText": "",
@@ -107,7 +107,7 @@
 				"navigationStyle": "custom"
 			}
 		},
-				{
+		{
 			"path": "pages/mine/orderInfo",
 			"style": {
 				"navigationBarTitleText": "",
@@ -122,10 +122,10 @@
 			}
 		},
 		{
-		  "path": "pages/ai/index",
-		  "style": {
-		    "navigationBarTitleText": "数字人AI导游"
-		  }
+			"path": "pages/ai/index",
+			"style": {
+				"navigationBarTitleText": "数字人AI导游"
+			}
 		}
 	],
 	"globalStyle": {
