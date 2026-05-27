@@ -31,20 +31,28 @@
             <text class="hero-subtitle">{{ currentHero.subtitle }}</text>
           </view>
           <view class="top-bar">
-            <view class="location">
-              <view class="location-icon">▲</view>
-              <view class="location-text">
-                <text class="city">数字助手</text>
-                <text class="city-sub">站式文旅服务</text>
+            <view class="weather-status">
+              <text class="weather-icon">☀</text>
+              <view class="weather-copy">
+                <text class="temperature">26°C</text>
+                <text class="air-quality">良</text>
               </view>
             </view>
 
-            <view class="search">
+            <view class="search" @tap="handleSearchTap">
               <text class="search-icon">🔍</text>
-              <text class="search-text">找景区/酒店</text>
+              <text class="search-text">搜索景点、演出、餐厅</text>
             </view>
 
-            <view class="camera">◉</view>
+            <view class="top-actions">
+              <view class="action-icon-btn notice-btn" @tap="handleNoticeTap">
+                <text class="notice-icon">🔔</text>
+                <view class="notice-dot" />
+              </view>
+              <view class="action-icon-btn scan-icon-btn" @tap="handleScanTap">
+                <text class="scan-icon">▣</text>
+              </view>
+            </view>
           </view>
         </view>
 
@@ -52,7 +60,7 @@
           <view class="function-box">
             <scroll-view scroll-x class="matrix-scroll" :show-scrollbar="false">
               <view class="matrix-row">
-                <view class="matrix-item" v-for="item in matrixItems" :key="item.title">
+                <view class="matrix-item" v-for="item in matrixItems" :key="item.title" @tap="handleMatrixTap(item)">
                   <view class="matrix-icon">{{ item.icon }}</view>
                   <text class="matrix-title">{{ item.title }}</text>
                   <text class="matrix-desc">{{ item.desc }}</text>
@@ -61,7 +69,7 @@
             </scroll-view>
 
             <view class="action-grid">
-              <view class="action-card" v-for="item in actionCards" :key="item.title">
+              <view class="action-card" v-for="item in actionCards" :key="item.title" @tap="handleActionTap(item)">
                 <view>
                   <text class="action-title">{{ item.title }}</text>
                   <text class="action-desc">{{ item.desc }}</text>
@@ -199,23 +207,56 @@ function handleHeroScroll(event) {
   heroBlur.value = Math.min(24, Math.round((scrollTop / 220) * 24))
 }
 
+function handleMatrixTap(item) {
+  if (item.key === 'presaleTicket' || item.key === 'dailyTicket') {
+    uni.navigateTo({ url: '/pages/mall/ticket' })
+  }
+}
+
+function handleActionTap(item) {
+  if (item.key === 'buy') {
+    uni.navigateTo({ url: '/pages/mall/ticket' })
+  } else if (item.key === 'annualCard') {
+    uni.navigateTo({ url: '/pages/mall/annualCard' })
+  }
+}
+
+function handleSearchTap() {
+  uni.showToast({ title: '搜索功能开发中', icon: 'none' })
+}
+
+function handleNoticeTap() {
+  uni.showToast({ title: '暂无新消息', icon: 'none' })
+}
+
+function handleScanTap() {
+  uni.scanCode({
+    success: () => {
+      uni.showToast({ title: '扫码成功', icon: 'none' })
+    },
+    fail: () => {
+      uni.showToast({ title: '扫码已取消', icon: 'none' })
+    },
+  })
+}
+
 const matrixItems = [
-  { icon: '🎟️', title: '预售门票', desc: '票务小程序' },
-  { icon: '🎫', title: '当日门票', desc: '160元起' },
-  { icon: '🔔', title: '入园提醒', desc: '须知与检票点' },
-  { icon: '🕘', title: '运营时间', desc: '8:00-17:00' },
-  { icon: '🎧', title: '电子讲解器', desc: '扫码支付佩戴' },
-  { icon: '🙏', title: '考试祈福', desc: '摸掌祈福' },
-  { icon: '🛍️', title: '会员商品', desc: '文创与禅茶' },
-  { icon: '💬', title: '游客服务', desc: '热评与回复' },
-  { icon: '🗺️', title: '我的行程', desc: 'DIY优化路线' },
+  { key: 'presaleTicket', icon: '🎟️', title: '预售门票', desc: '票务小程序' },
+  { key: 'dailyTicket', icon: '🎫', title: '当日门票', desc: '160元起' },
+  { key: 'entryAlert', icon: '🔔', title: '入园提醒', desc: '须知与检票点' },
+  { key: 'openingHours', icon: '🕘', title: '运营时间', desc: '8:00-17:00' },
+  { key: 'audioGuide', icon: '🎧', title: '电子讲解器', desc: '扫码支付佩戴' },
+  { key: 'blessing', icon: '🙏', title: '考试祈福', desc: '摸掌祈福' },
+  { key: 'memberGoods', icon: '🛍️', title: '会员商品', desc: '文创与禅茶' },
+  { key: 'service', icon: '💬', title: '游客服务', desc: '热评与回复' },
+  { key: 'trip', icon: '🗺️', title: '我的行程', desc: 'DIY优化路线' },
 ]
 
 const actionCards = [
-  { icon: '购', title: '立即购买', desc: '门票与套票' },
-  { icon: '会', title: '会员俱乐部', desc: '功德等级权益' },
-  { icon: '年', title: '年卡', desc: '全年畅游' },
-  { icon: '香', title: '体验活动', desc: '藏香制作等' },
+  { key: 'buy', icon: '购', title: '立即购买', desc: '门票与套票' },
+  { key: 'memberClub', icon: '会', title: '会员俱乐部', desc: '功德等级权益' },
+  { key: 'annualCard', icon: '年', title: '年卡', desc: '全年畅游' },
+  { key: 'activity', icon: '香', title: '体验活动', desc: '藏香制作等' },
 ]
 
 const collectionSections = [
@@ -400,7 +441,7 @@ const feedItems = [
 .hero {
   height: 52vh;
   min-height: 520rpx;
-  padding: 26rpx 24rpx 0;
+  padding: calc(var(--status-bar-height) + 20rpx) 24rpx 0;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
@@ -480,45 +521,63 @@ const feedItems = [
   gap: 14rpx;
 }
 
-.location {
-  min-width: 166rpx;
+.weather-status {
+  flex: 0 0 154rpx;
+  height: 64rpx;
+  padding: 0 14rpx;
+  border-radius: 34rpx;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1rpx solid rgba(255, 255, 255, 0.26);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
+  -webkit-backdrop-filter: blur(18rpx);
+  backdrop-filter: blur(18rpx);
 }
 
-.location-icon {
-  width: 52rpx;
-  height: 52rpx;
+.weather-icon {
+  width: 42rpx;
+  height: 42rpx;
   border-radius: 50%;
-  background: #2ea8ff;
-  color: #fff;
+  background: linear-gradient(135deg, #ffe08a 0%, #ff9f38 100%);
+  color: #fff9df;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20rpx;
+  font-size: 24rpx;
+  line-height: 1;
   margin-right: 10rpx;
+  box-shadow: 0 6rpx 16rpx rgba(163, 104, 25, 0.22);
 }
 
-.location-text {
+.weather-copy {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  min-width: 0;
 }
 
-.city {
+.temperature {
   color: #fff;
   font-weight: 700;
-  font-size: 30rpx;
+  font-size: 26rpx;
+  line-height: 1;
 }
 
-.city-sub {
-  color: rgba(255, 255, 255, 0.85);
+.air-quality {
+  padding: 3rpx 8rpx;
+  border-radius: 999rpx;
+  color: #5e451d;
+  background: rgba(255, 239, 189, 0.92);
   font-size: 20rpx;
+  line-height: 1;
+  font-weight: 700;
 }
 
 .search {
   flex: 1;
   height: 64rpx;
-  border-radius: 40rpx;
+  border-radius: 32rpx 32rpx 32rpx 12rpx;
   background: rgba(255, 255, 255, 0.95);
   display: flex;
   align-items: center;
@@ -529,22 +588,56 @@ const feedItems = [
 .search-icon {
   margin-right: 10rpx;
   font-size: 24rpx;
+  line-height: 1;
 }
 
 .search-text {
   color: #777;
-  font-size: 26rpx;
+  font-size: 25rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.camera {
-  width: 64rpx;
-  height: 64rpx;
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.action-icon-btn {
+  width: 62rpx;
+  height: 62rpx;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
+  color: #5f4323;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26rpx;
+  position: relative;
+  box-shadow: 0 8rpx 18rpx rgba(66, 47, 26, 0.12);
+}
+
+.notice-icon,
+.scan-icon {
+  font-size: 28rpx;
+  line-height: 1;
+}
+
+.notice-dot {
+  position: absolute;
+  right: 9rpx;
+  top: 8rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #ef3f3f;
+  border: 3rpx solid #fff;
+}
+
+.scan-icon {
+  font-size: 30rpx;
+  font-weight: 700;
 }
 
 .main-card {
@@ -1041,33 +1134,5 @@ const feedItems = [
   color: #8a5b25;
   font-size: 20rpx;
   font-weight: 700;
-}
-
-.human-img.talking {
-  animation: talkingMove 0.45s infinite alternate;
-}
-
-.human-img.thinking {
-  animation: thinkingMove 0.8s infinite alternate;
-}
-
-@keyframes talkingMove {
-  from {
-    transform: translateY(0) scale(1);
-  }
-
-  to {
-    transform: translateY(-8rpx) scale(1.03);
-  }
-}
-
-@keyframes thinkingMove {
-  from {
-    opacity: 0.65;
-  }
-
-  to {
-    opacity: 1;
-  }
 }
 </style>

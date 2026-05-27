@@ -1,9 +1,10 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [ 
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -50,6 +51,41 @@
 				"navigationStyle": "custom"
 			}
 		},
+				{
+			"path": "pages/mall/ticket",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mall/hotel",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mall/annualCard",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mall/coupon",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mall/productDetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
 		{
 			"path": "pages/mine/mine",
 			"style": {
@@ -66,6 +102,20 @@
 		},
 		{
 			"path": "pages/mine/profileEdit",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+				{
+			"path": "pages/mine/orderInfo",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/coupons",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"
