@@ -19,6 +19,19 @@ export const API_PATHS = {
   upload: {
     image: '/api/upload/image',
   },
+  home: {
+    config: '/api/home/config',
+    shows: '/api/shows',
+    weather: '/api/home/weather',
+  },
+  discover: {
+    posts: '/api/discover/posts',
+    detail: '/api/discover/posts',
+  },
+  search: {
+    hotKeywords: '/api/search/hot-keywords',
+    global: '/api/search',
+  },
 } as const
 
 // Never expose third-party API keys in frontend code.
