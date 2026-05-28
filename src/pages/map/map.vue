@@ -13,7 +13,9 @@
       @markertap="onMarkerTap"
     />
 
-    <view class="top-search">
+    <view v-if="canGoBack" class="map-back" @tap="goBack">‹</view>
+
+    <view class="top-search" :class="{ 'with-back': canGoBack }">
       <text class="search-icon">🔍</text>
       <text class="search-text">点击输入搜索</text>
     </view>
@@ -60,6 +62,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import TabBar from '../../components/TabBar.vue'
 
 const mapCenter = {
@@ -260,6 +263,11 @@ const pointsMap = {
 
 const activeCategory = ref('spot')
 const selectedPoint = ref(pointsMap.spot[0])
+const canGoBack = ref(false)
+
+onLoad(() => {
+  canGoBack.value = getCurrentPages().length > 1
+})
 
 const activeCategoryLabel = computed(() => {
   const target = categories.find((item) => item.key === activeCategory.value)
@@ -315,6 +323,10 @@ function openNavigation(point) {
   })
 }
 
+function goBack() {
+  uni.navigateBack({ delta: 1 })
+}
+
 function handleLeftAction(action) {
   if (action === 'refresh') {
     uni.showToast({ title: '已刷新附近点位', icon: 'none' })
@@ -342,6 +354,24 @@ function handleLeftAction(action) {
   height: 100%;
 }
 
+.map-back {
+  position: absolute;
+  left: 24rpx;
+  top: calc(var(--status-bar-height) + 20rpx);
+  z-index: 12;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #6f451d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 58rpx;
+  line-height: 1;
+  box-shadow: 0 14rpx 34rpx rgba(94, 68, 35, 0.1);
+}
+
 .top-search {
   position: absolute;
   left: 24rpx;
@@ -356,6 +386,10 @@ function handleLeftAction(action) {
   padding: 0 20rpx;
   box-sizing: border-box;
   box-shadow: 0 14rpx 34rpx rgba(94, 68, 35, 0.1);
+}
+
+.top-search.with-back {
+  left: 112rpx;
 }
 
 .search-icon {
