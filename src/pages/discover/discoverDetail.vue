@@ -66,7 +66,7 @@
             class="related-card"
             v-for="item in post.relatedTargets"
             :key="item.title"
-            @tap="openTarget(item.target)"
+            @tap="goContentTarget(item.target)"
           >
             <view class="related-copy">
               <text class="related-card-title">{{ item.title }}</text>
@@ -88,6 +88,7 @@
 import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { fetchDiscoverPostDetail } from '../../api/discover'
+import { goContentTarget } from '../../utils/navigation'
 
 const post = ref(null)
 const activeSegment = ref('detail')
@@ -150,72 +151,20 @@ function onShare() {
 
 function onNavigate() {
   const target = post.value?.relatedTargets?.[0]?.target || post.value?.target
-  openTarget(target)
+  goContentTarget(target)
 }
 
 function onReserve() {
   const target = post.value?.target || post.value?.relatedTargets?.[0]?.target
   if (target) {
-    openTarget(target)
-    return
-  }
-  uni.showToast({ title: '操作成功', icon: 'success' })
-}
-
-function openTarget(target) {
-  if (!target) {
-    uni.showToast({ title: '功能开发中', icon: 'none' })
-    return
-  }
-
-  if (target.type === 'map') {
-    const query = [
-      target.category ? `category=${encodeURIComponent(target.category)}` : '',
-      target.pointId ? `pointId=${encodeURIComponent(String(target.pointId))}` : '',
-      target.keyword ? `keyword=${encodeURIComponent(target.keyword)}` : '',
-    ].filter(Boolean).join('&')
-    uni.navigateTo({ url: `/pages/map/map${query ? `?${query}` : ''}` })
-    return
-  }
-
-  if (target.type === 'discoverPost') {
-    if (post.value?.id === target.id) {
+    if (target.type === 'discoverPost' && post.value?.id === target.id) {
       uni.showToast({ title: '预约成功', icon: 'success' })
       return
     }
-    uni.navigateTo({ url: `/pages/discover/discoverDetail?id=${target.id}` })
+    goContentTarget(target)
     return
   }
-
-  if (target.type === 'search') {
-    const query = target.keyword ? `?keyword=${encodeURIComponent(target.keyword)}` : ''
-    uni.navigateTo({ url: `/pages/search/search${query}` })
-    return
-  }
-
-  if (target.type === 'mall') {
-    uni.reLaunch({ url: '/pages/mall/mall' })
-    return
-  }
-
-  if (target.type === 'ticket') {
-    uni.navigateTo({ url: '/pages/mall/ticket' })
-    return
-  }
-
-  if (target.type === 'hotel') {
-    uni.navigateTo({ url: '/pages/mall/hotel' })
-    return
-  }
-
-  if (target.type === 'annualCard') {
-    uni.navigateTo({ url: '/pages/mall/annualCard' })
-    return
-  }
-
-  if (target.type === 'toast') {
-    uni.showToast({ title: target.message, icon: 'none' })
-  }
+  uni.showToast({ title: '操作成功', icon: 'success' })
 }
 
 onLoad(async (options) => {

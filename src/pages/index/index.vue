@@ -157,6 +157,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { fetchHomeConfig, fetchHomeWeather } from '../../api/home'
 import TabBar from '../../components/TabBar.vue'
+import { goContentTarget } from '../../utils/navigation'
 
 const activeTab = ref('home')
 const activeHeroIndex = ref(0)
@@ -227,58 +228,6 @@ function handleSearchTap() {
 
 function handleContentTap(item) {
   goContentTarget(item.target)
-}
-
-function goContentTarget(target) {
-  if (!target) {
-    uni.showToast({ title: '功能开发中', icon: 'none' })
-    return
-  }
-
-  if (target.type === 'ticket') {
-    uni.navigateTo({ url: '/pages/mall/ticket' })
-    return
-  }
-
-  if (target.type === 'hotel') {
-    uni.navigateTo({ url: '/pages/mall/hotel' })
-    return
-  }
-
-  if (target.type === 'annualCard') {
-    uni.navigateTo({ url: '/pages/mall/annualCard' })
-    return
-  }
-
-  if (target.type === 'mall') {
-    uni.reLaunch({ url: '/pages/mall/mall' })
-    return
-  }
-
-  if (target.type === 'discoverPost') {
-    uni.navigateTo({ url: `/pages/discover/discoverDetail?id=${target.id}` })
-    return
-  }
-
-  if (target.type === 'search') {
-    const keywordQuery = target.keyword ? `?keyword=${encodeURIComponent(target.keyword)}` : ''
-    uni.navigateTo({ url: `/pages/search/search${keywordQuery}` })
-    return
-  }
-
-  if (target.type === 'map') {
-    const query = [
-      target.category ? `category=${encodeURIComponent(target.category)}` : '',
-      target.pointId ? `pointId=${encodeURIComponent(String(target.pointId))}` : '',
-      target.keyword ? `keyword=${encodeURIComponent(target.keyword)}` : '',
-    ].filter(Boolean).join('&')
-    uni.navigateTo({ url: `/pages/map/map${query ? `?${query}` : ''}` })
-    return
-  }
-
-  if (target.type === 'toast') {
-    uni.showToast({ title: target.message, icon: 'none' })
-  }
 }
 
 function handleNoticeTap() {

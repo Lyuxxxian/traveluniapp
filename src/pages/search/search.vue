@@ -77,6 +77,7 @@
 import { onMounted, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { fetchHotKeywords, searchContent, searchTypeOptions } from '../../api/search'
+import { goContentTarget } from '../../utils/navigation'
 
 const HISTORY_KEY = 'traveluniapp_search_history'
 
@@ -151,53 +152,7 @@ function switchType(type) {
 }
 
 function openResult(item) {
-  openTarget(item.target)
-}
-
-function openTarget(target) {
-  if (!target) {
-    uni.showToast({ title: '功能开发中', icon: 'none' })
-    return
-  }
-
-  if (target.type === 'map') {
-    const query = [
-      target.category ? `category=${encodeURIComponent(target.category)}` : '',
-      target.pointId ? `pointId=${encodeURIComponent(String(target.pointId))}` : '',
-      target.keyword ? `keyword=${encodeURIComponent(target.keyword)}` : '',
-    ].filter(Boolean).join('&')
-    uni.navigateTo({ url: `/pages/map/map${query ? `?${query}` : ''}` })
-    return
-  }
-
-  if (target.type === 'discoverPost') {
-    uni.navigateTo({ url: `/pages/discover/discoverDetail?id=${target.id}` })
-    return
-  }
-
-  if (target.type === 'ticket') {
-    uni.navigateTo({ url: '/pages/mall/ticket' })
-    return
-  }
-
-  if (target.type === 'hotel') {
-    uni.navigateTo({ url: '/pages/mall/hotel' })
-    return
-  }
-
-  if (target.type === 'annualCard') {
-    uni.navigateTo({ url: '/pages/mall/annualCard' })
-    return
-  }
-
-  if (target.type === 'mall') {
-    uni.reLaunch({ url: '/pages/mall/mall' })
-    return
-  }
-
-  if (target.type === 'toast') {
-    uni.showToast({ title: target.message, icon: 'none' })
-  }
+  goContentTarget(item.target)
 }
 </script>
 
