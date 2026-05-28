@@ -32,10 +32,10 @@
           </view>
           <view class="top-bar">
             <view class="weather-status">
-              <text class="weather-icon">☀</text>
+              <text class="weather-icon">{{ weather.icon }}</text>
               <view class="weather-copy">
-                <text class="temperature">26°C</text>
-                <text class="air-quality">良</text>
+                <text class="temperature">{{ weather.temperature }}</text>
+                <text class="air-quality">{{ weather.airQuality }}</text>
               </view>
             </view>
 
@@ -105,7 +105,7 @@
 
               <scroll-view scroll-x class="collection-scroll" :show-scrollbar="false">
                 <view class="collection-row">
-                  <view class="collection-card" v-for="item in section.items" :key="item.title">
+                  <view class="collection-card" v-for="item in section.items" :key="item.title" @tap="handleContentTap(item)">
                     <view class="collection-cover" :style="{ background: item.bg }">
                       <text class="collection-tag">{{ item.tag }}</text>
                     </view>
@@ -132,7 +132,7 @@
             </view>
 
             <view class="feed-grid">
-              <view class="feed-card" v-for="item in feedItems" :key="item.title">
+              <view class="feed-card" v-for="item in feedItems" :key="item.title" @tap="handleContentTap(item)">
                 <view class="feed-cover" :style="{ background: item.bg }">
                   <text class="feed-type">{{ item.type }}</text>
                 </view>
@@ -154,12 +154,18 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { fetchHomeConfig, fetchHomeWeather } from '../../api/home'
 import TabBar from '../../components/TabBar.vue'
 
 const activeTab = ref('home')
 const activeHeroIndex = ref(0)
 const heroBlur = ref(0)
+const weather = ref({
+  icon: '☀',
+  temperature: '26°C',
+  airQuality: '良',
+})
 
 const heroSlides = [
   {
@@ -208,21 +214,71 @@ function handleHeroScroll(event) {
 }
 
 function handleMatrixTap(item) {
-  if (item.key === 'presaleTicket' || item.key === 'dailyTicket') {
-    uni.navigateTo({ url: '/pages/mall/ticket' })
-  }
+  goContentTarget(item.target)
 }
 
 function handleActionTap(item) {
-  if (item.key === 'buy') {
-    uni.navigateTo({ url: '/pages/mall/ticket' })
-  } else if (item.key === 'annualCard') {
-    uni.navigateTo({ url: '/pages/mall/annualCard' })
-  }
+  goContentTarget(item.target)
 }
 
 function handleSearchTap() {
-  uni.showToast({ title: '搜索功能开发中', icon: 'none' })
+  goContentTarget({ type: 'search' })
+}
+
+function handleContentTap(item) {
+  goContentTarget(item.target)
+}
+
+function goContentTarget(target) {
+  if (!target) {
+    uni.showToast({ title: '功能开发中', icon: 'none' })
+    return
+  }
+
+  if (target.type === 'ticket') {
+    uni.navigateTo({ url: '/pages/mall/ticket' })
+    return
+  }
+
+  if (target.type === 'hotel') {
+    uni.navigateTo({ url: '/pages/mall/hotel' })
+    return
+  }
+
+  if (target.type === 'annualCard') {
+    uni.navigateTo({ url: '/pages/mall/annualCard' })
+    return
+  }
+
+  if (target.type === 'mall') {
+    uni.reLaunch({ url: '/pages/mall/mall' })
+    return
+  }
+
+  if (target.type === 'discoverPost') {
+    uni.navigateTo({ url: `/pages/discover/discoverDetail?id=${target.id}` })
+    return
+  }
+
+  if (target.type === 'search') {
+    const keywordQuery = target.keyword ? `?keyword=${encodeURIComponent(target.keyword)}` : ''
+    uni.navigateTo({ url: `/pages/search/search${keywordQuery}` })
+    return
+  }
+
+  if (target.type === 'map') {
+    const query = [
+      target.category ? `category=${encodeURIComponent(target.category)}` : '',
+      target.pointId ? `pointId=${encodeURIComponent(String(target.pointId))}` : '',
+      target.keyword ? `keyword=${encodeURIComponent(target.keyword)}` : '',
+    ].filter(Boolean).join('&')
+    uni.navigateTo({ url: `/pages/map/map${query ? `?${query}` : ''}` })
+    return
+  }
+
+  if (target.type === 'toast') {
+    uni.showToast({ title: target.message, icon: 'none' })
+  }
 }
 
 function handleNoticeTap() {
@@ -426,6 +482,66 @@ const feedItems = [
     bg: 'linear-gradient(140deg, #4e637a 0%, #a7bfd4 100%)',
   },
 ]
+
+const iconMap = {
+  ticket: '🎟️',
+  ticketToday: '🎫',
+  notice: '🔔',
+  time: '🕘',
+  audio: '🎧',
+  service: '💬',
+  buy: '购',
+  member: '会',
+  card: '年',
+  activity: '香',
+}
+
+function normalizeHeroSlide(item) {
+  return {
+    ...item,
+    image: item.image || item.imageUrl,
+  }
+}
+
+function normalizeEntryItem(item) {
+  return {
+    ...item,
+    icon: iconMap[item.icon] || item.icon,
+  }
+}
+
+function normalizeCollectionSection(section) {
+  return {
+    ...section,
+    items: (section.items || []).map((item) => ({
+      ...item,
+      bg: item.bg || item.background,
+      notice: item.notice || item.nextShowText,
+    })),
+  }
+}
+
+function normalizeFeedItem(item) {
+  return {
+    ...item,
+    bg: item.bg || item.background,
+    action: item.action || item.actionText,
+  }
+}
+
+onMounted(async () => {
+  try {
+    const [homeConfig, homeWeather] = await Promise.all([fetchHomeConfig(), fetchHomeWeather()])
+    heroSlides.splice(0, heroSlides.length, ...homeConfig.heroSlides.map(normalizeHeroSlide))
+    matrixItems.splice(0, matrixItems.length, ...homeConfig.matrixItems.map(normalizeEntryItem))
+    actionCards.splice(0, actionCards.length, ...homeConfig.actionCards.map(normalizeEntryItem))
+    collectionSections.splice(0, collectionSections.length, ...homeConfig.collectionSections.map(normalizeCollectionSection))
+    feedItems.splice(0, feedItems.length, ...homeConfig.feedItems.map(normalizeFeedItem))
+    weather.value = homeWeather
+  } catch {
+    uni.showToast({ title: '首页内容已使用本地数据', icon: 'none' })
+  }
+})
 </script>
 
 <style scoped>
