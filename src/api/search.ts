@@ -1,7 +1,7 @@
 import { API_PATHS } from '../config/api'
 import type { ContentTarget } from './home'
 
-export type SearchType = 'all' | 'ticket' | 'hotel' | 'product' | 'spot' | 'food' | 'article'
+export type SearchType = 'all' | 'ticket' | 'hotel' | 'product' | 'spot' | 'show' | 'food' | 'article'
 
 export type SearchTypeOption = {
   key: SearchType
@@ -38,7 +38,8 @@ export const searchTypeOptions: SearchTypeOption[] = [
   { key: 'hotel', label: '酒店' },
   { key: 'product', label: '商品' },
   { key: 'spot', label: '景点' },
-  { key: 'food', label: '美食' },
+  { key: 'show', label: '演出' },
+  { key: 'food', label: '餐厅' },
   { key: 'article', label: '攻略' },
 ]
 
@@ -80,6 +81,15 @@ const mockSearchResults: SearchResult[] = [
     coverUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80',
     tagText: '景点',
     target: { type: 'map', keyword: '灵山大佛' },
+  },
+  {
+    id: 301,
+    type: 'show',
+    title: '九龙灌浴',
+    subtitle: '今日 11:30 下一场',
+    coverUrl: 'https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=400&q=80',
+    tagText: '演出',
+    target: { type: 'map', keyword: '九龙灌浴' },
   },
   {
     id: 201,

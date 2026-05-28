@@ -45,6 +45,13 @@
 			}
 		},
 		{
+			"path": "pages/search/search",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/mall/mall",
 			"style": {
 				"navigationBarTitleText": "商城",

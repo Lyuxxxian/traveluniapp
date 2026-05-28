@@ -119,7 +119,7 @@ const recommendItems = [
 ]
 
 function goSearch() {
-  uni.showToast({ title: '搜索专题页待开发', icon: 'none' })
+  uni.navigateTo({ url: '/pages/search/search' })
 }
 
 function goService() {
