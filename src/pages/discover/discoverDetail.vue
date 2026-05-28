@@ -39,24 +39,40 @@
 
         <view class="info">
           <view class="info-row">
-            <text class="info-label">活动地点：</text>
+            <text class="info-label">{{ infoLabels.place }}：</text>
             <text class="info-value">{{ post?.place }}</text>
           </view>
           <view class="info-row">
-            <text class="info-label">参与方式：</text>
+            <text class="info-label">{{ infoLabels.joinWay }}：</text>
             <text class="info-value">{{ post?.joinWay }}</text>
           </view>
           <view class="info-row">
-            <text class="info-label">活动时长：</text>
+            <text class="info-label">{{ infoLabels.duration }}：</text>
             <text class="info-value">{{ post?.durationText }}</text>
           </view>
           <view class="info-row">
-            <text class="info-label">活动内容：</text>
+            <text class="info-label">{{ infoLabels.content }}：</text>
             <text class="info-value">{{ post?.contentText }}</text>
           </view>
           <view class="info-row">
-            <text class="info-label">活动意义：</text>
+            <text class="info-label">{{ infoLabels.meaning }}：</text>
             <text class="info-value">{{ post?.meaningText }}</text>
+          </view>
+        </view>
+
+        <view v-if="post?.relatedTargets?.length" class="related-section">
+          <text class="related-title">相关入口</text>
+          <view
+            class="related-card"
+            v-for="item in post.relatedTargets"
+            :key="item.title"
+            @tap="openTarget(item.target)"
+          >
+            <view class="related-copy">
+              <text class="related-card-title">{{ item.title }}</text>
+              <text class="related-card-desc">{{ item.desc }}</text>
+            </view>
+            <text class="related-arrow">›</text>
           </view>
         </view>
 
@@ -64,17 +80,65 @@
       </view>
     </scroll-view>
 
-    <view class="reserve-btn" @tap="onReserve">立即预约</view>
+    <view class="reserve-btn" @tap="onReserve">{{ post?.buttonText || actionText }}</view>
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { fetchDiscoverPostDetail } from '../../api/discover'
 
 const post = ref(null)
 const activeSegment = ref('detail')
+
+const actionText = computed(() => {
+  if (!post.value) return '立即预约'
+  if (post.value.category === 'guide') return '收藏攻略'
+  if (post.value.category === 'show') return '查看演出位置'
+  if (post.value.category === 'food') return '查看餐厅位置'
+  return post.value.buttonText || post.value.actionText || '立即预约'
+})
+
+const infoLabels = computed(() => {
+  if (post.value?.category === 'guide') {
+    return {
+      place: '适用范围',
+      joinWay: '游玩方式',
+      duration: '推荐时长',
+      content: '攻略内容',
+      meaning: '推荐理由',
+    }
+  }
+
+  if (post.value?.category === 'show') {
+    return {
+      place: '演出地点',
+      joinWay: '观看方式',
+      duration: '演出时长',
+      content: '演出内容',
+      meaning: '看点说明',
+    }
+  }
+
+  if (post.value?.category === 'food') {
+    return {
+      place: '餐厅位置',
+      joinWay: '预约方式',
+      duration: '用餐建议',
+      content: '餐厅介绍',
+      meaning: '推荐理由',
+    }
+  }
+
+  return {
+    place: '活动地点',
+    joinWay: '参与方式',
+    duration: '活动时长',
+    content: '活动内容',
+    meaning: '活动意义',
+  }
+})
 
 function goBack() {
   uni.navigateBack({ delta: 1 })
@@ -85,11 +149,73 @@ function onShare() {
 }
 
 function onNavigate() {
-  uni.showToast({ title: '导航功能待开发', icon: 'none' })
+  const target = post.value?.relatedTargets?.[0]?.target || post.value?.target
+  openTarget(target)
 }
 
 function onReserve() {
-  uni.showToast({ title: '预约成功', icon: 'success' })
+  const target = post.value?.target || post.value?.relatedTargets?.[0]?.target
+  if (target) {
+    openTarget(target)
+    return
+  }
+  uni.showToast({ title: '操作成功', icon: 'success' })
+}
+
+function openTarget(target) {
+  if (!target) {
+    uni.showToast({ title: '功能开发中', icon: 'none' })
+    return
+  }
+
+  if (target.type === 'map') {
+    const query = [
+      target.category ? `category=${encodeURIComponent(target.category)}` : '',
+      target.pointId ? `pointId=${encodeURIComponent(String(target.pointId))}` : '',
+      target.keyword ? `keyword=${encodeURIComponent(target.keyword)}` : '',
+    ].filter(Boolean).join('&')
+    uni.navigateTo({ url: `/pages/map/map${query ? `?${query}` : ''}` })
+    return
+  }
+
+  if (target.type === 'discoverPost') {
+    if (post.value?.id === target.id) {
+      uni.showToast({ title: '预约成功', icon: 'success' })
+      return
+    }
+    uni.navigateTo({ url: `/pages/discover/discoverDetail?id=${target.id}` })
+    return
+  }
+
+  if (target.type === 'search') {
+    const query = target.keyword ? `?keyword=${encodeURIComponent(target.keyword)}` : ''
+    uni.navigateTo({ url: `/pages/search/search${query}` })
+    return
+  }
+
+  if (target.type === 'mall') {
+    uni.reLaunch({ url: '/pages/mall/mall' })
+    return
+  }
+
+  if (target.type === 'ticket') {
+    uni.navigateTo({ url: '/pages/mall/ticket' })
+    return
+  }
+
+  if (target.type === 'hotel') {
+    uni.navigateTo({ url: '/pages/mall/hotel' })
+    return
+  }
+
+  if (target.type === 'annualCard') {
+    uni.navigateTo({ url: '/pages/mall/annualCard' })
+    return
+  }
+
+  if (target.type === 'toast') {
+    uni.showToast({ title: target.message, icon: 'none' })
+  }
 }
 
 onLoad(async (options) => {
@@ -282,6 +408,57 @@ onLoad(async (options) => {
   height: 260rpx;
   border-radius: 18rpx;
   overflow: hidden;
+}
+
+.related-section {
+  margin-top: 28rpx;
+}
+
+.related-title {
+  display: block;
+  color: #222;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.related-card {
+  margin-top: 16rpx;
+  padding: 20rpx 22rpx;
+  border-radius: 18rpx;
+  background: #fff1e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.related-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.related-card-title,
+.related-card-desc {
+  display: block;
+}
+
+.related-card-title {
+  color: #8a5a2f;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.related-card-desc {
+  margin-top: 6rpx;
+  color: #a15f30;
+  font-size: 23rpx;
+  line-height: 1.4;
+}
+
+.related-arrow {
+  color: #c58b55;
+  font-size: 42rpx;
+  margin-left: 16rpx;
 }
 
 .reserve-btn {

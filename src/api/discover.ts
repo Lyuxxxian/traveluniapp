@@ -136,6 +136,21 @@ const staticPosts: DiscoverPost[] = [
     actionText: '查看',
     target: { type: 'mall' },
   },
+  {
+    id: 6,
+    category: 'activity',
+    title: '藏香制作体验',
+    subtitle: '非遗手作',
+    priceText: '¥39起',
+    coverUrl:
+      'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=800&q=80',
+    tagText: '体验活动',
+    summary: '跟随老师了解香文化，完成一份可带走的藏香作品。',
+    location: '灵山文创体验区',
+    publishTime: '周末可约',
+    actionText: '预约',
+    target: { type: 'discoverPost', id: 6 },
+  },
 ]
 
 const detailMap: Record<number, Omit<DiscoverPostDetail, keyof DiscoverPost>> = {
@@ -163,6 +178,45 @@ const detailMap: Record<number, Omit<DiscoverPostDetail, keyof DiscoverPost>> = 
     buttonText: '收藏攻略',
     relatedTargets: [
       { title: '打开地图路线', desc: '从地图继续查看相关点位', target: { type: 'map', keyword: '集章' } },
+    ],
+  },
+  3: {
+    place: '九龙灌浴广场',
+    joinWay: '按当日演出场次提前到达广场观看',
+    durationText: '约20分钟',
+    contentText: '九龙灌浴以音乐、喷泉、动态群雕共同呈现佛祖诞生故事，是灵山景区标志性演出。',
+    meaningText: '通过演出把文化故事转化为易理解的现场体验，适合亲子与首次到访游客。',
+    detailImageUrl:
+      'https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80',
+    buttonText: '去地图查看',
+    relatedTargets: [
+      { title: '导航到九龙灌浴', desc: '在现有地图页中查看位置', target: { type: 'map', keyword: '九龙灌浴' } },
+    ],
+  },
+  4: {
+    place: '灵山梵宫一层东侧',
+    joinWay: '建议午餐高峰前预约或错峰前往',
+    durationText: '约45-60分钟',
+    contentText: '梵宫素斋自助提供多种素食、热菜与茶点，适合游览中途补给休憩。',
+    meaningText: '把饮食服务与禅意空间结合，让游客在用餐中延续灵山文化体验。',
+    detailImageUrl:
+      'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80',
+    buttonText: '查看位置',
+    relatedTargets: [
+      { title: '去地图查看餐厅', desc: '在现有地图页中查看梵宫素斋', target: { type: 'map', keyword: '梵宫素斋' } },
+    ],
+  },
+  6: {
+    place: '灵山文创体验区',
+    joinWay: '到店咨询或通过后续预约入口参与',
+    durationText: '约30分钟',
+    contentText: '体验区提供香料识别、配方讲解和手作环节，游客可完成一份藏香作品。',
+    meaningText: '用轻量手作承接文化内容，适合亲子家庭和年轻游客参与。',
+    detailImageUrl:
+      'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80',
+    buttonText: '立即预约',
+    relatedTargets: [
+      { title: '搜索文创体验', desc: '后续可接入搜索页或预约页', target: { type: 'search', keyword: '藏香制作' } },
     ],
   },
 }
