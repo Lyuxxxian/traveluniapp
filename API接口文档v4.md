@@ -39,6 +39,72 @@
    - 地图核心参数至少冻结：`category`、`pointId`、`keyword`、经纬度、点位基础属性。
    - 冻结后进入并行开发；若必须变更，走“版本升级或兼容字段”流程，不允许直接破坏现有字段。
 
+#### 2.1.0 接口契约冻结结果（已冻结）
+
+本次冻结范围：地图、首页、发现、搜索。冻结后，前端 mock、后端真实接口、管理员端录入字段必须保持同一字段名、字段类型和语义。
+
+通用响应结构冻结：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| code | number | 是 | 业务状态码，`200` 表示成功 |
+| message | string | 是 | 状态说明 |
+| data | any | 是 | 业务数据；列表、详情和分页结构按各接口定义 |
+
+地图入口参数冻结：
+
+| 参数 | 类型 | 必填 | 来源 | 说明 |
+| --- | --- | --- | --- | --- |
+| category | string | 否 | 首页、发现、搜索、地图分类 | 点位分类，当前至少保留 `spot`、`food`、`toilet`、`parking`、`service` |
+| pointId | number | 否 | 搜索、发现、详情入口 | 指定点位 ID，进入地图后优先定位并选中该点位 |
+| keyword | string | 否 | 首页、发现、搜索、地图搜索框 | 地图点位搜索关键词 |
+| latitude | number | 否 | 用户定位 | 当前纬度，用于距离计算或附近点位 |
+| longitude | number | 否 | 用户定位 | 当前经度，用于距离计算或附近点位 |
+
+地图接口冻结：
+
+| 接口 | 方法 | 冻结参数/字段 | 说明 |
+| --- | --- | --- | --- |
+| `/api/map/categories` | GET | `key`、`label`、`icon`、`color`、`sort` | 获取地图分类；不得删除现有分类 |
+| `/api/map/points` | GET | `category`、`keyword`、`latitude`、`longitude`、`includeClosed` | 获取地图点位；接口失败时前端保留本地兜底点位 |
+| `/api/map/points/:id` | GET | `id`、点位基础字段、详情增强字段 | 获取点位详情；失败时继续展示列表基础信息 |
+| `/api/map/routes` | GET | `scene`、`duration`、`pointIds` | 获取路线推荐；路线通过 `pointIds` 关联点位 |
+
+地图点位基础字段冻结：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 点位唯一 ID，必须和 marker `id` 对应 |
+| category | string | 是 | 点位分类 |
+| title | string | 是 | 点位名称 |
+| latitude | number | 是 | 纬度 |
+| longitude | number | 是 | 经度 |
+| address | string | 是 | 地址或景区内位置 |
+| desc | string | 是 | 简介 |
+| openTime | string | 否 | 开放或营业时间 |
+| status | string | 否 | `open`、`closed`、`busy` 等状态 |
+| tags | string[] | 否 | 点位标签 |
+| iconKey | string | 否 | 点位图标标识 |
+| distanceText | string | 否 | 距离文案 |
+
+点位详情增强字段冻结：
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| images | string[] | 否 | 点位图片 |
+| suggestedDuration | string | 否 | 推荐停留时长 |
+| serviceTags | string[] | 否 | 服务标签 |
+| relatedShowIds | number[] | 否 | 关联演出 ID |
+| relatedProductIds | number[] | 否 | 关联商品 ID |
+
+变更规则冻结：
+
+- 不允许删除 `category`、`pointId`、`keyword` 或改变其语义。
+- 不允许删除现有地图分类，尤其是 `toilet`、`parking`、`service`。
+- 不允许改变通用响应结构和分页结构。
+- 允许新增可选字段；不允许直接重命名、删字段、改字段类型。
+- 若必须发生不兼容变更，必须保留旧字段并新增兼容字段，或新增 `/v2` 接口。
+
 1. 内容层收尾与联调准备（可与地图真实数据并行）
    - 首页配置、发现内容、搜索接口字段稳定。
    - 页面跳转路径统一，尤其是地图返回栈。
@@ -703,6 +769,7 @@ Authorization: Bearer <token>
 - URL：`GET /api/map/points`
 - 认证：可选
 - 当前状态：前端地图仍使用静态点位，真实接口待地图专项接入。
+- 契约状态：已冻结，不允许重命名或删除现有请求参数和响应字段。
 
 请求参数：
 
@@ -743,6 +810,7 @@ Authorization: Bearer <token>
 
 - URL：`GET /api/map/points/:id`
 - 认证：可选
+- 契约状态：已冻结，详情字段只允许新增可选字段。
 
 响应示例：
 
@@ -772,6 +840,7 @@ Authorization: Bearer <token>
 
 - URL：`GET /api/map/categories`
 - 认证：可选
+- 契约状态：已冻结，必须保留现有 `spot`、`food`、`toilet`、`parking`、`service` 分类语义。
 
 响应示例：
 
@@ -802,6 +871,7 @@ Authorization: Bearer <token>
 
 - URL：`GET /api/map/routes`
 - 认证：可选
+- 契约状态：已冻结，路线通过 `pointIds` 关联地图点位。
 
 请求参数：
 

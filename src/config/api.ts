@@ -32,6 +32,12 @@ export const API_PATHS = {
     hotKeywords: '/api/search/hot-keywords',
     global: '/api/search',
   },
+  map: {
+    categories: '/api/map/categories',
+    points: '/api/map/points',
+    pointDetail: '/api/map/points',
+    routes: '/api/map/routes',
+  },
 } as const
 
 // Never expose third-party API keys in frontend code.
