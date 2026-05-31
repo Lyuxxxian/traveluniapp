@@ -112,8 +112,10 @@ const markerIcon =
 const categories = ref([])
 const currentPoints = ref([])
 const activeCategory = ref('spot')
+const activeKeyword = ref('')
 const selectedPoint = ref(null)
 const canGoBack = ref(false)
+const pointsLoading = ref(false)
 
 function toDisplayCategories(list) {
   return list.map((item) => ({
@@ -182,21 +184,9 @@ async function loadCategories() {
   }
 }
 
-async function loadPoints(category, options = {}) {
-  const keyword = options.keyword || ''
-  let list = []
-  try {
-    list = await fetchMapPoints({ category, keyword: keyword || undefined })
-  } catch {
-    list = getFallbackPoints(category, keyword)
-  }
-  if (!list.length) {
-    list = getFallbackPoints(category, keyword)
-  }
-  currentPoints.value = list
-
-  if (options.selectPointId) {
-    const target = list.find((item) => item.id === options.selectPointId)
+function applyPointSelection(list, options = {}) {
+  if (options.selectPointId !== undefined) {
+    const target = list.find((item) => Number(item.id) === Number(options.selectPointId))
     selectedPoint.value = target || list[0] || null
     if (selectedPoint.value) {
       mapCenter.value = {
@@ -208,8 +198,14 @@ async function loadPoints(category, options = {}) {
   }
 
   if (options.keepSelection && selectedPoint.value) {
-    const matched = list.find((item) => item.id === selectedPoint.value?.id)
+    const matched = list.find((item) => Number(item.id) === Number(selectedPoint.value.id))
     selectedPoint.value = matched || list[0] || null
+    if (selectedPoint.value && options.focusFirst !== false) {
+      mapCenter.value = {
+        latitude: selectedPoint.value.latitude,
+        longitude: selectedPoint.value.longitude,
+      }
+    }
     return
   }
 
@@ -222,62 +218,134 @@ async function loadPoints(category, options = {}) {
   }
 }
 
+/** 请求当前分类点位，失败时使用 fallback */
+async function loadPoints(category, options = {}) {
+  const keyword = options.keyword !== undefined ? options.keyword : activeKeyword.value
+  pointsLoading.value = true
+  let list = []
+
+  try {
+    list = await fetchMapPoints({
+      category,
+      keyword: keyword ? keyword : undefined,
+    })
+  } catch {
+    list = getFallbackPoints(category, keyword)
+  }
+
+  if (!list.length) {
+    list = getFallbackPoints(category, keyword)
+  }
+
+  currentPoints.value = list
+  pointsLoading.value = false
+  applyPointSelection(list, options)
+
+  if (!list.length && options.showEmptyToast) {
+    uni.showToast({ title: '该分类暂无点位', icon: 'none' })
+  }
+
+  return list
+}
+
+/** 切换分类或刷新时重新拉取点位 */
+async function reloadCurrentCategoryPoints(options = {}) {
+  const category = activeCategory.value
+
+  if (options.clearKeyword) {
+    activeKeyword.value = ''
+  } else if (options.keyword !== undefined) {
+    activeKeyword.value = options.keyword
+  }
+
+  const showLoading = options.showLoading !== false
+  if (showLoading) {
+    uni.showLoading({ title: '加载中', mask: true })
+  }
+
+  try {
+    await loadPoints(category, {
+      keyword: activeKeyword.value,
+      keepSelection: options.keepSelection,
+      selectPointId: options.selectPointId,
+      focusFirst: options.focusFirst,
+      showEmptyToast: options.showEmptyToast,
+    })
+  } finally {
+    if (showLoading) {
+      uni.hideLoading()
+    }
+  }
+}
+
 async function applyEntryParams(options = {}) {
   const categoryParam = parseOption(options.category)
   const keyword = parseOption(options.keyword)
   const pointId = parsePointId(options.pointId)
 
-  await loadCategories()
+  activeKeyword.value = keyword
+  uni.showLoading({ title: '加载中', mask: true })
 
-  if (pointId !== undefined) {
-    const point = await findPointById(pointId)
-    if (point) {
-      activeCategory.value = point.category
-      await loadPoints(point.category, { selectPointId: pointId })
-      return
-    }
-  }
+  try {
+    await loadCategories()
 
-  if (keyword) {
-    let matchedList = []
-    try {
-      matchedList = await fetchMapPoints({ keyword })
-    } catch {
-      matchedList = fallbackMapPoints.filter((item) =>
-        [item.title, item.desc, item.address, ...(item.tags || [])].some((text) =>
-          String(text).toLowerCase().includes(keyword.toLowerCase()),
-        ),
-      )
+    if (pointId !== undefined) {
+      const point = await findPointById(pointId)
+      if (point) {
+        activeCategory.value = point.category
+        activeKeyword.value = keyword
+        await loadPoints(point.category, { keyword, selectPointId: pointId, showLoading: false })
+        return
+      }
     }
 
-    if (matchedList.length) {
-      const targetCategory = categoryParam
-        ? resolveCategoryKey(categoryParam)
-        : matchedList[0].category
-      activeCategory.value = targetCategory
-      const preferId = pointId !== undefined ? pointId : matchedList.find((p) => p.category === targetCategory)?.id
-      await loadPoints(targetCategory, {
-        keyword,
-        selectPointId: preferId,
-      })
-      return
+    if (keyword) {
+      let matchedList = []
+      try {
+        matchedList = await fetchMapPoints({ keyword })
+      } catch {
+        matchedList = fallbackMapPoints.filter((item) =>
+          [item.title, item.desc, item.address, ...(item.tags || [])].some((text) =>
+            String(text).toLowerCase().includes(keyword.toLowerCase()),
+          ),
+        )
+      }
+
+      if (matchedList.length) {
+        const targetCategory = categoryParam
+          ? resolveCategoryKey(categoryParam)
+          : matchedList[0].category
+        activeCategory.value = targetCategory
+        activeKeyword.value = keyword
+        const preferId = matchedList.find((p) => p.category === targetCategory)?.id
+        await loadPoints(targetCategory, {
+          keyword,
+          selectPointId: preferId,
+          showLoading: false,
+        })
+        return
+      }
+
+      if (categoryParam) {
+        activeCategory.value = resolveCategoryKey(categoryParam)
+        await loadPoints(activeCategory.value, { keyword, showLoading: false })
+        return
+      }
     }
 
     if (categoryParam) {
       activeCategory.value = resolveCategoryKey(categoryParam)
-      await loadPoints(activeCategory.value, { keyword })
+      activeKeyword.value = ''
+      await loadPoints(activeCategory.value, { showLoading: false })
       return
     }
-  }
 
-  if (categoryParam) {
-    activeCategory.value = resolveCategoryKey(categoryParam)
-    await loadPoints(activeCategory.value)
-    return
+    activeCategory.value = resolveCategoryKey('spot')
+    activeKeyword.value = ''
+    await loadPoints(activeCategory.value, { showLoading: false })
+  } finally {
+    uni.hideLoading()
   }
-
-  activeCategory.value = resolveCategoryKey('spot')
-  await loadPoints(activeCategory.value)
 }
 
 onLoad(async (options) => {
@@ -293,7 +361,7 @@ const activeCategoryLabel = computed(() => {
 const currentMarkers = computed(() => {
   const category = categories.value.find((item) => item.key === activeCategory.value)
   return currentPoints.value.map((point) => ({
-    id: point.id,
+    id: Number(point.id),
     latitude: point.latitude,
     longitude: point.longitude,
     iconPath: markerIcon,
@@ -316,12 +384,16 @@ const currentMarkers = computed(() => {
 async function switchCategory(key) {
   if (activeCategory.value === key) return
   activeCategory.value = key
-  await loadPoints(key, { focusFirst: true })
+  await reloadCurrentCategoryPoints({
+    clearKeyword: true,
+    focusFirst: true,
+    showEmptyToast: true,
+  })
 }
 
 function onMarkerTap(event) {
-  const markerId = event?.detail?.markerId
-  const target = currentPoints.value.find((item) => item.id === markerId)
+  const markerId = Number(event?.detail?.markerId)
+  const target = currentPoints.value.find((item) => Number(item.id) === markerId)
   if (target) {
     focusMapOnPoint(target)
   }
@@ -342,16 +414,30 @@ function goBack() {
 
 async function handleLeftAction(action) {
   if (action === 'refresh') {
-    await loadPoints(activeCategory.value, { keepSelection: true })
-    uni.showToast({ title: '已刷新附近点位', icon: 'none' })
+    try {
+      await loadCategories()
+      await reloadCurrentCategoryPoints({
+        keepSelection: true,
+        showLoading: false,
+        showEmptyToast: true,
+      })
+      uni.showToast({ title: '已刷新附近点位', icon: 'none' })
+    } catch {
+      await reloadCurrentCategoryPoints({ keepSelection: true, showLoading: false })
+      uni.showToast({ title: '已使用本地数据', icon: 'none' })
+    }
     return
   }
   if (action === 'locate') {
-    const defaultSpot = currentPoints.value.find((item) => item.id === 101)
-      || fallbackMapPoints.find((item) => item.id === 101)
+    const defaultSpot = fallbackMapPoints.find((item) => item.id === 101)
     if (defaultSpot) {
       activeCategory.value = defaultSpot.category
-      await loadPoints(defaultSpot.category, { selectPointId: 101 })
+      activeKeyword.value = ''
+      await reloadCurrentCategoryPoints({
+        selectPointId: 101,
+        clearKeyword: true,
+        showLoading: true,
+      })
     }
     uni.showToast({ title: '已定位到灵山大佛', icon: 'none' })
     return
