@@ -127,6 +127,36 @@ const detailExtras: Record<number, Omit<MapPointDetail, keyof MapPoint>> = {
   },
 }
 
+function getDistanceKm(lat1: number, lng1: number, lat2: number, lng2: number) {
+  const toRad = (deg: number) => (deg * Math.PI) / 180
+  const earthRadiusKm = 6371
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a =
+    Math.sin(dLat / 2) ** 2
+    + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+function formatDistanceText(km: number) {
+  if (km < 1) return `距您约${Math.round(km * 1000)}米`
+  return `距您约${km.toFixed(1)}公里`
+}
+
+function sortPointsByLocation(list: MapPoint[], latitude?: number, longitude?: number) {
+  if (latitude === undefined || longitude === undefined) return list
+  return [...list]
+    .map((item) => {
+      const km = getDistanceKm(latitude, longitude, item.latitude, item.longitude)
+      return { item, km }
+    })
+    .sort((a, b) => a.km - b.km)
+    .map(({ item, km }) => ({
+      ...item,
+      distanceText: formatDistanceText(km),
+    }))
+}
+
 function filterPoints(list: MapPoint[], params: MapPointQuery = {}): MapPoint[] {
   let result = [...list]
 
@@ -147,7 +177,7 @@ function filterPoints(list: MapPoint[], params: MapPointQuery = {}): MapPoint[] 
     result = result.filter((item) => item.status !== 'closed')
   }
 
-  return result
+  return sortPointsByLocation(result, params.latitude, params.longitude)
 }
 
 export async function fetchMapCategories(): Promise<MapCategory[]> {

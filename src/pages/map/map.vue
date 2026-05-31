@@ -57,6 +57,26 @@
       </view>
     </view>
 
+    <view v-if="activeRoute" class="route-banner">
+      <view class="route-banner-head">
+        <text class="route-banner-title">{{ activeRoute.title }}</text>
+        <text class="route-banner-exit" @tap="exitSpecialMapMode">退出</text>
+      </view>
+      <text class="route-banner-desc">{{ activeRoute.desc }} · {{ activeRoute.durationText }}</text>
+      <view class="route-banner-actions">
+        <text class="route-action-btn" @tap="showPrevRoutePoint">上一站</text>
+        <text class="route-action-btn primary" @tap="showNextRoutePoint">下一站</text>
+      </view>
+    </view>
+
+    <view v-else-if="mapMode === 'lifeCircle'" class="route-banner life">
+      <view class="route-banner-head">
+        <text class="route-banner-title">15分钟生活圈</text>
+        <text class="route-banner-exit" @tap="exitSpecialMapMode">退出</text>
+      </view>
+      <text class="route-banner-desc">卫生间 · 停车场 · 游客服务 · 饮用水 · 母婴室 · 医务</text>
+    </view>
+
     <view class="detail-card" v-if="displayPoint">
       <view class="detail-header">
         <text class="detail-title">{{ displayPoint.title }}</text>
@@ -98,6 +118,7 @@ import {
   fetchMapCategories,
   fetchMapPointDetail,
   fetchMapPoints,
+  fetchMapRoutes,
 } from '../../api/map'
 
 const DEFAULT_MAP_CENTER = {
@@ -128,6 +149,8 @@ const categoryIconEmoji = {
   parking: '🅿️',
 }
 
+const LIFE_CIRCLE_CATEGORIES = ['service', 'toilet', 'parking', 'drinking', 'nursery', 'medical']
+
 const leftMenuActions = [
   { key: 'life', label: '15分钟\n生活圈', icon: '🧺' },
   { key: 'line', label: '线路推荐', icon: '🧭' },
@@ -148,6 +171,10 @@ const selectedPointDetail = ref(null)
 const detailLoading = ref(false)
 const canGoBack = ref(false)
 const pointsLoading = ref(false)
+const mapMode = ref('category')
+const activeRoute = ref(null)
+const routePointIndex = ref(0)
+const userLocation = ref(null)
 
 let detailRequestSeq = 0
 
@@ -268,8 +295,33 @@ function applyPointSelection(list, options = {}) {
 }
 
 /** 请求当前分类点位，失败时使用 fallback */
+function sortPointsByLocation(list, latitude, longitude) {
+  if (latitude === undefined || longitude === undefined) return list
+  const toRad = (deg) => (deg * Math.PI) / 180
+  const earthRadiusKm = 6371
+  const distanceKm = (lat1, lng1, lat2, lng2) => {
+    const dLat = toRad(lat2 - lat1)
+    const dLng = toRad(lng2 - lng1)
+    const a =
+      Math.sin(dLat / 2) ** 2
+      + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
+    return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  }
+  const formatDistance = (km) => (km < 1 ? `距您约${Math.round(km * 1000)}米` : `距您约${km.toFixed(1)}公里`)
+
+  return [...list]
+    .map((item) => {
+      const km = distanceKm(latitude, longitude, item.latitude, item.longitude)
+      return { item, km }
+    })
+    .sort((a, b) => a.km - b.km)
+    .map(({ item, km }) => ({ ...item, distanceText: formatDistance(km) }))
+}
+
 async function loadPoints(category, options = {}) {
   const keyword = options.keyword !== undefined ? options.keyword : activeKeyword.value
+  const latitude = options.latitude ?? userLocation.value?.latitude
+  const longitude = options.longitude ?? userLocation.value?.longitude
   pointsLoading.value = true
   let list = []
 
@@ -277,13 +329,16 @@ async function loadPoints(category, options = {}) {
     list = await fetchMapPoints({
       category,
       keyword: keyword ? keyword : undefined,
+      latitude,
+      longitude,
     })
   } catch {
     list = getFallbackPoints(category, keyword)
+    list = sortPointsByLocation(list, latitude, longitude)
   }
 
   if (!list.length) {
-    list = getFallbackPoints(category, keyword)
+    list = sortPointsByLocation(getFallbackPoints(category, keyword), latitude, longitude)
   }
 
   currentPoints.value = list
@@ -514,7 +569,15 @@ const showDetailMeta = computed(() => {
 
 const currentMarkers = computed(() => {
   const category = categories.value.find((item) => item.key === activeCategory.value)
-  return currentPoints.value.map((point) => ({
+  const routeColor = '#5c7a9e'
+  const lifeColor = '#7b9eb3'
+  const markerColor = mapMode.value === 'route'
+    ? routeColor
+    : mapMode.value === 'lifeCircle'
+      ? lifeColor
+      : (category ? category.color : '#42c79c')
+
+  return currentPoints.value.map((point, index) => ({
     id: Number(point.id),
     latitude: point.latitude,
     longitude: point.longitude,
@@ -522,21 +585,190 @@ const currentMarkers = computed(() => {
     width: 28,
     height: 28,
     callout: {
-      content: point.title,
+      content: mapMode.value === 'route' ? `${index + 1}. ${point.title}` : point.title,
       color: '#ffffff',
       fontSize: 12,
       borderRadius: 12,
-      borderColor: category ? category.color : '#42c79c',
+      borderColor: markerColor,
       borderWidth: 1,
-      bgColor: category ? category.color : '#42c79c',
+      bgColor: markerColor,
       padding: 8,
       display: 'BYCLICK',
     },
   }))
 })
 
+function exitSpecialMapMode() {
+  mapMode.value = 'category'
+  activeRoute.value = null
+  routePointIndex.value = 0
+}
+
+function getRoutePoints(route) {
+  return route.pointIds
+    .map((id) => fallbackMapPoints.find((item) => Number(item.id) === Number(id)))
+    .filter(Boolean)
+}
+
+function applyRoute(route) {
+  mapMode.value = 'route'
+  activeRoute.value = route
+  activeKeyword.value = ''
+  mapSearchKeyword.value = ''
+
+  const points = getRoutePoints(route)
+  currentPoints.value = points
+  routePointIndex.value = 0
+  if (points.length) {
+    selectPoint(points[0])
+  } else {
+    selectPoint(null)
+    uni.showToast({ title: '线路点位暂无数据', icon: 'none' })
+  }
+}
+
+async function openRoutePicker() {
+  try {
+    const routes = await fetchMapRoutes()
+    if (!routes.length) {
+      uni.showToast({ title: '暂无推荐线路', icon: 'none' })
+      return
+    }
+    uni.showActionSheet({
+      itemList: routes.map((item) => `${item.title}（${item.durationText}）`),
+      success: (res) => {
+        const route = routes[res.tapIndex]
+        if (route) applyRoute(route)
+      },
+    })
+  } catch {
+    uni.showToast({ title: '线路加载失败', icon: 'none' })
+  }
+}
+
+function showRoutePointByIndex(index) {
+  const points = currentPoints.value
+  if (!points.length) return
+  const nextIndex = (index + points.length) % points.length
+  routePointIndex.value = nextIndex
+  selectPoint(points[nextIndex])
+}
+
+function showNextRoutePoint() {
+  showRoutePointByIndex(routePointIndex.value + 1)
+}
+
+function showPrevRoutePoint() {
+  showRoutePointByIndex(routePointIndex.value - 1)
+}
+
+async function openLifeCircle() {
+  exitSpecialMapMode()
+  mapMode.value = 'lifeCircle'
+  activeRoute.value = null
+  activeKeyword.value = ''
+  mapSearchKeyword.value = ''
+
+  uni.showLoading({ title: '加载中', mask: true })
+  try {
+    let points = []
+    try {
+      const batches = await Promise.all(
+        LIFE_CIRCLE_CATEGORIES.map((key) => fetchMapPoints({
+          category: key,
+          latitude: userLocation.value?.latitude,
+          longitude: userLocation.value?.longitude,
+        })),
+      )
+      points = batches.flat()
+    } catch {
+      points = fallbackMapPoints.filter((item) => LIFE_CIRCLE_CATEGORIES.includes(item.category))
+      points = sortPointsByLocation(points, userLocation.value?.latitude, userLocation.value?.longitude)
+    }
+
+    currentPoints.value = points
+    if (points.length) {
+      selectPoint(points[0])
+      uni.showToast({ title: `已显示${points.length}个生活设施`, icon: 'none' })
+    } else {
+      selectPoint(null)
+      uni.showToast({ title: '暂无生活圈设施', icon: 'none' })
+    }
+  } finally {
+    uni.hideLoading()
+  }
+}
+
+async function locateUser() {
+  uni.showLoading({ title: '定位中', mask: true })
+  try {
+    const location = await new Promise((resolve, reject) => {
+      uni.getLocation({
+        type: 'gcj02',
+        success: resolve,
+        fail: reject,
+      })
+    })
+
+    userLocation.value = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+    }
+    mapCenter.value = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+    }
+
+    exitSpecialMapMode()
+    mapSearchKeyword.value = ''
+    activeKeyword.value = ''
+
+    let list = []
+    try {
+      list = await fetchMapPoints({
+        category: activeCategory.value,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      })
+    } catch {
+      list = sortPointsByLocation(
+        getFallbackPoints(activeCategory.value),
+        location.latitude,
+        location.longitude,
+      )
+    }
+
+    if (!list.length) {
+      list = sortPointsByLocation(fallbackMapPoints, location.latitude, location.longitude).slice(0, 30)
+    }
+
+    currentPoints.value = list
+    if (list.length) {
+      selectPoint(list[0])
+      uni.showToast({ title: '已定位到附近点位', icon: 'none' })
+    } else {
+      selectPoint(null)
+      uni.showToast({ title: '附近暂无点位', icon: 'none' })
+    }
+  } catch {
+    const defaultSpot = fallbackMapPoints.find((item) => item.id === 101)
+    if (defaultSpot) {
+      activeCategory.value = defaultSpot.category
+      await reloadCurrentCategoryPoints({
+        selectPointId: 101,
+        clearKeyword: true,
+        showLoading: false,
+      })
+    }
+    uni.showToast({ title: '定位失败，已显示默认位置', icon: 'none' })
+  } finally {
+    uni.hideLoading()
+  }
+}
+
 async function switchCategory(key) {
-  if (activeCategory.value === key) return
+  if (activeCategory.value === key && mapMode.value === 'category') return
+  exitSpecialMapMode()
   activeCategory.value = key
   mapSearchKeyword.value = ''
   await reloadCurrentCategoryPoints({
@@ -568,7 +800,24 @@ function goBack() {
 }
 
 async function handleLeftAction(action) {
+  if (action === 'line') {
+    await openRoutePicker()
+    return
+  }
+  if (action === 'life') {
+    await openLifeCircle()
+    return
+  }
   if (action === 'refresh') {
+    if (mapMode.value === 'route' && activeRoute.value) {
+      applyRoute(activeRoute.value)
+      uni.showToast({ title: '已刷新线路点位', icon: 'none' })
+      return
+    }
+    if (mapMode.value === 'lifeCircle') {
+      await openLifeCircle()
+      return
+    }
     try {
       await loadCategories()
       await reloadCurrentCategoryPoints({
@@ -584,17 +833,7 @@ async function handleLeftAction(action) {
     return
   }
   if (action === 'locate') {
-    const defaultSpot = fallbackMapPoints.find((item) => item.id === 101)
-    if (defaultSpot) {
-      activeCategory.value = defaultSpot.category
-      activeKeyword.value = ''
-      await reloadCurrentCategoryPoints({
-        selectPointId: 101,
-        clearKeyword: true,
-        showLoading: true,
-      })
-    }
-    uni.showToast({ title: '已定位到灵山大佛', icon: 'none' })
+    await locateUser()
     return
   }
   uni.showToast({ title: '功能开发中', icon: 'none' })
@@ -813,6 +1052,75 @@ async function handleLeftAction(action) {
   font-size: 21rpx;
   color: #6f451d;
   font-weight: 700;
+}
+
+.route-banner {
+  position: absolute;
+  left: 16rpx;
+  right: 16rpx;
+  bottom: 430rpx;
+  z-index: 10;
+  padding: 18rpx 20rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1rpx solid rgba(92, 122, 158, 0.25);
+  box-shadow: 0 10rpx 28rpx rgba(72, 50, 24, 0.1);
+  box-sizing: border-box;
+}
+
+.route-banner.life {
+  border-color: rgba(123, 158, 179, 0.35);
+}
+
+.route-banner-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.route-banner-title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #312416;
+}
+
+.route-banner-exit {
+  font-size: 22rpx;
+  color: #8b6138;
+  font-weight: 700;
+}
+
+.route-banner-desc {
+  margin-top: 8rpx;
+  display: block;
+  font-size: 22rpx;
+  color: #7b5529;
+  line-height: 1.5;
+}
+
+.route-banner-actions {
+  margin-top: 12rpx;
+  display: flex;
+  gap: 12rpx;
+}
+
+.route-action-btn {
+  flex: 1;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background: #f1dfc1;
+  color: #7b5529;
+  font-size: 24rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.route-action-btn.primary {
+  color: #fffaf0;
+  background: linear-gradient(135deg, #5c7a9e 0%, #8fbdda 100%);
 }
 
 .detail-card {
