@@ -40,7 +40,7 @@
         :class="{ active: activeCategory === item.key }"
         @tap="switchCategory(item.key)"
       >
-        <view class="category-icon">{{ item.icon }}</view>
+        <view class="category-icon">{{ item.displayIcon }}</view>
         <text class="category-text">{{ item.label }}</text>
       </view>
     </view>
@@ -64,19 +64,25 @@
 import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import TabBar from '../../components/TabBar.vue'
+import {
+  fallbackMapCategories,
+  fallbackMapPoints,
+  fetchMapCategories,
+  fetchMapPoints,
+} from '../../api/map'
 
 const mapCenter = {
   latitude: 31.421,
   longitude: 120.108,
 }
 
-const categories = [
-  { key: 'spot', label: '景点', icon: '⛩', color: '#8b6138' },
-  { key: 'food', label: '素斋', icon: '🍜', color: '#c77d45' },
-  { key: 'toilet', label: '卫生间', icon: '🚻', color: '#7b9eb3' },
-  { key: 'parking', label: '停车场', icon: '🅿️', color: '#8b9a6b' },
-  { key: 'service', label: '服务', icon: '🎧', color: '#c4a35a' },
-]
+const categoryIconEmoji = {
+  spot: '⛩',
+  food: '🍜',
+  toilet: '🚻',
+  parking: '🅿️',
+  service: '🎧',
+}
 
 const leftMenuActions = [
   { key: 'life', label: '15分钟\n生活圈', icon: '🧺' },
@@ -88,196 +94,68 @@ const leftMenuActions = [
 const markerIcon =
   'https://cdn-icons-png.flaticon.com/512/684/684908.png'
 
-const pointsMap = {
-  spot: [
-    {
-      id: 101,
-      title: '灵山大佛',
-      latitude: 31.421,
-      longitude: 120.108,
-      address: '无锡市滨湖区马山灵山路1号',
-      desc: '世界露天青铜释迦牟尼立像，高88米，瞻礼灵山大佛感受佛教文化的庄严与宁静。',
-    },
-    {
-      id: 102,
-      title: '灵山梵宫',
-      latitude: 31.4222,
-      longitude: 120.1075,
-      address: '灵山大佛景区内东侧',
-      desc: '金色穹顶、壁画与木雕交织成东方美学，是佛教文化艺术的神圣殿堂。',
-    },
-    {
-      id: 103,
-      title: '祥符禅寺',
-      latitude: 31.4205,
-      longitude: 120.1072,
-      address: '灵山大佛景区入口北侧',
-      desc: '千年古刹，灵山胜境发祥地，寺内古树参天殿宇庄严，是祈福朝圣起点。',
-    },
-    {
-      id: 104,
-      title: '五印坛城',
-      latitude: 31.423,
-      longitude: 120.1065,
-      address: '灵山梵宫北侧临水',
-      desc: '藏式风格佛教建筑，金顶白墙倒映湖中，展示藏传佛教文化艺术精华。',
-    },
-    {
-      id: 105,
-      title: '九龙灌浴广场',
-      latitude: 31.4225,
-      longitude: 120.1082,
-      address: '灵山大佛景区中轴线',
-      desc: '大型音乐动态群雕表演，以吉祥庄严氛围展现佛祖诞生的故事，每日多场次。',
-    },
-    {
-      id: 106,
-      title: '天下第一掌',
-      latitude: 31.4208,
-      longitude: 120.1078,
-      address: '祥符禅寺广场',
-      desc: '大佛右手1:1复制铜掌，摸掌祈福文化代表点位，寓意摸掌增福添寿。',
-    },
-    {
-      id: 107,
-      title: '拈花湾禅意小镇',
-      latitude: 31.401,
-      longitude: 120.078,
-      address: '无锡市滨湖区环山西路68号',
-      desc: '以禅意生活方式为主题的度假小镇，花海铺展夜景迷人，适合慢游打卡。',
-    },
-  ],
-  food: [
-    {
-      id: 201,
-      title: '梵宫素斋自助',
-      latitude: 31.422,
-      longitude: 120.1078,
-      address: '灵山梵宫一层东侧',
-      desc: '禅意空间内精致素食自助，品类丰富，是游览中途休憩用餐首选。',
-    },
-    {
-      id: 202,
-      title: '灵山精舍素斋',
-      latitude: 31.4215,
-      longitude: 120.106,
-      address: '灵山精舍院内',
-      desc: '清雅素斋配以禅意园林景观，适合午间静心用餐，需提前预约。',
-    },
-    {
-      id: 203,
-      title: '景区素面馆',
-      latitude: 31.4205,
-      longitude: 120.109,
-      address: '祥符禅寺南侧商街',
-      desc: '灵山特色素面一碗，快速补给继续游览，价格实惠出餐快。',
-    },
-    {
-      id: 204,
-      title: '五观堂素斋厅',
-      latitude: 31.4198,
-      longitude: 120.1068,
-      address: '景区入口西侧',
-      desc: '大型素斋餐厅，适合团队用餐，提供套餐与点单服务。',
-    },
-  ],
-  toilet: [
-    {
-      id: 301,
-      title: '大佛脚下公厕',
-      latitude: 31.4215,
-      longitude: 120.1085,
-      address: '灵山大佛登云道旁',
-      desc: '距离主游览区最近，便于登佛前后使用。',
-    },
-    {
-      id: 302,
-      title: '梵宫东侧公厕',
-      latitude: 31.4225,
-      longitude: 120.1068,
-      address: '梵宫东门外侧',
-      desc: '梵宫参观路线配套公厕，环境整洁设施完善。',
-    },
-    {
-      id: 303,
-      title: '九龙灌浴公厕',
-      latitude: 31.423,
-      longitude: 120.1085,
-      address: '九龙灌浴广场北侧',
-      desc: '观看演出前后可就近使用，客流高峰时会排队。',
-    },
-  ],
-  parking: [
-    {
-      id: 401,
-      title: 'P1 主停车场',
-      latitude: 31.4185,
-      longitude: 120.109,
-      address: '景区正门入口南侧',
-      desc: '距离景区入口最近的大型停车场，含新能源充电桩，节假日建议尽早到达。',
-    },
-    {
-      id: 402,
-      title: 'P2 东停车场',
-      latitude: 31.418,
-      longitude: 120.111,
-      address: '景区东侧辅路',
-      desc: '备选停车区，适合高峰分流，步行至入口约8分钟。',
-    },
-    {
-      id: 403,
-      title: 'P3 大巴停车场',
-      latitude: 31.4195,
-      longitude: 120.1065,
-      address: '景区西侧大巴专用区',
-      desc: '团队与旅游大巴专用停车场，配备团队集合区与卫生间。',
-    },
-  ],
-  service: [
-    {
-      id: 501,
-      title: '游客服务中心',
-      latitude: 31.4192,
-      longitude: 120.108,
-      address: '景区主入口右侧',
-      desc: '提供导览咨询、行程建议、失物登记与轮椅租借服务。',
-    },
-    {
-      id: 502,
-      title: '电子讲解器租赁',
-      latitude: 31.4205,
-      longitude: 120.1075,
-      address: '祥符禅寺广场入口',
-      desc: '扫码支付佩戴，支持多语种讲解，覆盖景区主要文化节点。',
-    },
-    {
-      id: 503,
-      title: '应急医疗点',
-      latitude: 31.422,
-      longitude: 120.1085,
-      address: '九龙灌浴广场附近',
-      desc: '配备基础急救物资与值班医护人员，方便处理轻微突发情况。',
-    },
-  ],
-}
-
+const categories = ref([])
+const currentPoints = ref([])
 const activeCategory = ref('spot')
-const selectedPoint = ref(pointsMap.spot[0])
+const selectedPoint = ref(null)
 const canGoBack = ref(false)
 
-onLoad(() => {
+function toDisplayCategories(list) {
+  return list.map((item) => ({
+    ...item,
+    displayIcon: categoryIconEmoji[item.key] || '📍',
+  }))
+}
+
+function getFallbackPoints(category) {
+  return fallbackMapPoints.filter((item) => item.category === category)
+}
+
+async function loadCategories() {
+  try {
+    const list = await fetchMapCategories()
+    categories.value = toDisplayCategories(list.length ? list : fallbackMapCategories)
+  } catch {
+    categories.value = toDisplayCategories(fallbackMapCategories)
+  }
+}
+
+async function loadPoints(category, options = {}) {
+  let list = []
+  try {
+    list = await fetchMapPoints({ category })
+  } catch {
+    list = getFallbackPoints(category)
+  }
+  if (!list.length) {
+    list = getFallbackPoints(category)
+  }
+  currentPoints.value = list
+
+  if (options.keepSelection && selectedPoint.value) {
+    const matched = list.find((item) => item.id === selectedPoint.value?.id)
+    selectedPoint.value = matched || list[0] || null
+    return
+  }
+  selectedPoint.value = list[0] || null
+}
+
+onLoad(async () => {
   canGoBack.value = getCurrentPages().length > 1
+  await loadCategories()
+  const defaultCategory = categories.value[0]?.key || 'spot'
+  activeCategory.value = defaultCategory
+  await loadPoints(defaultCategory)
 })
 
 const activeCategoryLabel = computed(() => {
-  const target = categories.find((item) => item.key === activeCategory.value)
+  const target = categories.value.find((item) => item.key === activeCategory.value)
   return target ? target.label : ''
 })
 
 const currentMarkers = computed(() => {
-  const category = categories.find((item) => item.key === activeCategory.value)
-  const points = pointsMap[activeCategory.value] || []
-  return points.map((point) => ({
+  const category = categories.value.find((item) => item.key === activeCategory.value)
+  return currentPoints.value.map((point) => ({
     id: point.id,
     latitude: point.latitude,
     longitude: point.longitude,
@@ -298,17 +176,15 @@ const currentMarkers = computed(() => {
   }))
 })
 
-function switchCategory(key) {
+async function switchCategory(key) {
   if (activeCategory.value === key) return
   activeCategory.value = key
-  const list = pointsMap[key] || []
-  selectedPoint.value = list[0] || null
+  await loadPoints(key)
 }
 
 function onMarkerTap(event) {
   const markerId = event?.detail?.markerId
-  const list = pointsMap[activeCategory.value] || []
-  const target = list.find((item) => item.id === markerId)
+  const target = currentPoints.value.find((item) => item.id === markerId)
   if (target) {
     selectedPoint.value = target
   }
@@ -327,8 +203,9 @@ function goBack() {
   uni.navigateBack({ delta: 1 })
 }
 
-function handleLeftAction(action) {
+async function handleLeftAction(action) {
   if (action === 'refresh') {
+    await loadPoints(activeCategory.value, { keepSelection: true })
     uni.showToast({ title: '已刷新附近点位', icon: 'none' })
     return
   }
