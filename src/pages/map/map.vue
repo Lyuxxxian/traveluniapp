@@ -15,12 +15,24 @@
 
     <view v-if="canGoBack" class="map-back" @tap="goBack">‹</view>
 
-    <view class="top-search" :class="{ 'with-back': canGoBack }">
+    <view class="top-search" :class="{ 'with-back': canGoBack, 'with-filter': activeKeyword }">
       <text class="search-icon">🔍</text>
-      <text class="search-text">点击输入搜索</text>
+      <input
+        class="search-input"
+        v-model="mapSearchKeyword"
+        placeholder="搜索地图点位"
+        placeholder-style="color: #9a8265"
+        confirm-type="search"
+        @confirm="submitMapSearch"
+      />
+      <view class="search-global-btn" @tap.stop="goGlobalSearch">全站</view>
+    </view>
+    <view v-if="activeKeyword" class="keyword-filter-bar" :class="{ 'with-back': canGoBack }" @tap="clearMapSearch">
+      <text class="keyword-filter-text">筛选：{{ activeKeyword }}</text>
+      <text class="keyword-filter-clear">清除</text>
     </view>
 
-    <view class="left-menu">
+    <view class="left-menu" :class="{ 'has-filter': activeKeyword }">
       <view
         class="left-item"
         v-for="item in leftMenuActions"
@@ -130,6 +142,7 @@ const categories = ref([])
 const currentPoints = ref([])
 const activeCategory = ref('spot')
 const activeKeyword = ref('')
+const mapSearchKeyword = ref('')
 const selectedPoint = ref(null)
 const selectedPointDetail = ref(null)
 const detailLoading = ref(false)
@@ -314,12 +327,85 @@ async function reloadCurrentCategoryPoints(options = {}) {
   }
 }
 
+function matchPointsByKeyword(keyword) {
+  const kw = keyword.trim().toLowerCase()
+  if (!kw) return []
+  return fallbackMapPoints.filter((item) =>
+    [item.title, item.desc, item.address, ...(item.tags || [])].some((text) =>
+      String(text).toLowerCase().includes(kw),
+    ),
+  )
+}
+
+async function applyMapKeywordSearch(keyword) {
+  const kw = keyword.trim()
+  activeKeyword.value = kw
+  mapSearchKeyword.value = kw
+
+  if (!kw) {
+    await clearMapSearch()
+    return
+  }
+
+  uni.showLoading({ title: '搜索中', mask: true })
+  try {
+    let matchedList = []
+    try {
+      matchedList = await fetchMapPoints({ keyword: kw })
+    } catch {
+      matchedList = matchPointsByKeyword(kw)
+    }
+
+    if (!matchedList.length) {
+      currentPoints.value = []
+      selectPoint(null)
+      uni.showToast({ title: '未找到相关点位', icon: 'none' })
+      return
+    }
+
+    const keepCurrentCategory = matchedList.some((item) => item.category === activeCategory.value)
+    const targetCategory = keepCurrentCategory ? activeCategory.value : matchedList[0].category
+    const preferId = matchedList.find((item) => item.category === targetCategory)?.id
+
+    activeCategory.value = targetCategory
+    await reloadCurrentCategoryPoints({
+      keyword: kw,
+      selectPointId: preferId,
+      showLoading: false,
+      showEmptyToast: true,
+    })
+  } finally {
+    uni.hideLoading()
+  }
+}
+
+async function submitMapSearch() {
+  await applyMapKeywordSearch(mapSearchKeyword.value)
+}
+
+async function clearMapSearch() {
+  mapSearchKeyword.value = ''
+  activeKeyword.value = ''
+  await reloadCurrentCategoryPoints({
+    clearKeyword: true,
+    focusFirst: true,
+    showEmptyToast: false,
+  })
+}
+
+function goGlobalSearch() {
+  const kw = mapSearchKeyword.value.trim()
+  const query = kw ? `?keyword=${encodeURIComponent(kw)}` : ''
+  uni.navigateTo({ url: `/pages/search/search${query}` })
+}
+
 async function applyEntryParams(options = {}) {
   const categoryParam = parseOption(options.category)
   const keyword = parseOption(options.keyword)
   const pointId = parsePointId(options.pointId)
 
   activeKeyword.value = keyword
+  mapSearchKeyword.value = keyword
   uni.showLoading({ title: '加载中', mask: true })
 
   try {
@@ -340,11 +426,7 @@ async function applyEntryParams(options = {}) {
       try {
         matchedList = await fetchMapPoints({ keyword })
       } catch {
-        matchedList = fallbackMapPoints.filter((item) =>
-          [item.title, item.desc, item.address, ...(item.tags || [])].some((text) =>
-            String(text).toLowerCase().includes(keyword.toLowerCase()),
-          ),
-        )
+        matchedList = matchPointsByKeyword(keyword)
       }
 
       if (matchedList.length) {
@@ -456,6 +538,7 @@ const currentMarkers = computed(() => {
 async function switchCategory(key) {
   if (activeCategory.value === key) return
   activeCategory.value = key
+  mapSearchKeyword.value = ''
   await reloadCurrentCategoryPoints({
     clearKeyword: true,
     focusFirst: true,
@@ -570,14 +653,68 @@ async function handleLeftAction(action) {
   left: 112rpx;
 }
 
+.top-search.with-filter {
+  top: calc(var(--status-bar-height) + 20rpx);
+}
+
 .search-icon {
+  flex: 0 0 auto;
   margin-right: 10rpx;
   font-size: 28rpx;
 }
 
-.search-text {
-  color: #9a8265;
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 72rpx;
   font-size: 26rpx;
+  color: #5c4530;
+}
+
+.search-global-btn {
+  flex: 0 0 auto;
+  margin-left: 10rpx;
+  padding: 0 16rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  border-radius: 24rpx;
+  font-size: 22rpx;
+  color: #7b5529;
+  background: #f1dfc1;
+  font-weight: 700;
+}
+
+.keyword-filter-bar {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  top: calc(var(--status-bar-height) + 100rpx);
+  z-index: 11;
+  height: 52rpx;
+  padding: 0 20rpx;
+  border-radius: 26rpx;
+  background: rgba(255, 247, 236, 0.94);
+  border: 1rpx solid rgba(139, 97, 56, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  box-shadow: 0 8rpx 20rpx rgba(94, 68, 35, 0.08);
+}
+
+.keyword-filter-bar.with-back {
+  left: 112rpx;
+}
+
+.keyword-filter-text {
+  font-size: 22rpx;
+  color: #7b5529;
+}
+
+.keyword-filter-clear {
+  font-size: 22rpx;
+  color: #8b6138;
+  font-weight: 700;
 }
 
 .left-menu {
@@ -605,6 +742,10 @@ async function handleLeftAction(action) {
 
 .left-item:last-child {
   border-bottom: none;
+}
+
+.left-menu.has-filter {
+  top: calc(var(--status-bar-height) + 168rpx);
 }
 
 .left-icon {
