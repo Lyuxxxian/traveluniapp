@@ -71,10 +71,12 @@ import {
   fetchMapPoints,
 } from '../../api/map'
 
-const mapCenter = {
+const DEFAULT_MAP_CENTER = {
   latitude: 31.421,
   longitude: 120.108,
 }
+
+const mapCenter = ref({ ...DEFAULT_MAP_CENTER })
 
 const categoryIconEmoji = {
   spot: '⛩',
@@ -120,8 +122,55 @@ function toDisplayCategories(list) {
   }))
 }
 
-function getFallbackPoints(category) {
-  return fallbackMapPoints.filter((item) => item.category === category)
+function getFallbackPoints(category, keyword = '') {
+  let list = fallbackMapPoints.filter((item) => item.category === category)
+  const kw = keyword.trim().toLowerCase()
+  if (kw) {
+    list = list.filter((item) =>
+      [item.title, item.desc, item.address, ...(item.tags || [])].some((text) =>
+        String(text).toLowerCase().includes(kw),
+      ),
+    )
+  }
+  return list
+}
+
+function parseOption(value) {
+  if (value === undefined || value === null || value === '') return ''
+  return decodeURIComponent(String(value))
+}
+
+function parsePointId(value) {
+  const raw = parseOption(value)
+  if (!raw) return undefined
+  const id = Number(raw)
+  return Number.isFinite(id) ? id : undefined
+}
+
+function resolveCategoryKey(categoryKey) {
+  if (categoryKey && categories.value.some((item) => item.key === categoryKey)) {
+    return categoryKey
+  }
+  const spot = categories.value.find((item) => item.key === 'spot')
+  return spot?.key || categories.value[0]?.key || 'spot'
+}
+
+function focusMapOnPoint(point) {
+  if (!point) return
+  mapCenter.value = {
+    latitude: point.latitude,
+    longitude: point.longitude,
+  }
+  selectedPoint.value = point
+}
+
+async function findPointById(pointId) {
+  try {
+    const list = await fetchMapPoints({})
+    return list.find((item) => item.id === pointId) || null
+  } catch {
+    return fallbackMapPoints.find((item) => item.id === pointId) || null
+  }
 }
 
 async function loadCategories() {
@@ -134,31 +183,106 @@ async function loadCategories() {
 }
 
 async function loadPoints(category, options = {}) {
+  const keyword = options.keyword || ''
   let list = []
   try {
-    list = await fetchMapPoints({ category })
+    list = await fetchMapPoints({ category, keyword: keyword || undefined })
   } catch {
-    list = getFallbackPoints(category)
+    list = getFallbackPoints(category, keyword)
   }
   if (!list.length) {
-    list = getFallbackPoints(category)
+    list = getFallbackPoints(category, keyword)
   }
   currentPoints.value = list
+
+  if (options.selectPointId) {
+    const target = list.find((item) => item.id === options.selectPointId)
+    selectedPoint.value = target || list[0] || null
+    if (selectedPoint.value) {
+      mapCenter.value = {
+        latitude: selectedPoint.value.latitude,
+        longitude: selectedPoint.value.longitude,
+      }
+    }
+    return
+  }
 
   if (options.keepSelection && selectedPoint.value) {
     const matched = list.find((item) => item.id === selectedPoint.value?.id)
     selectedPoint.value = matched || list[0] || null
     return
   }
+
   selectedPoint.value = list[0] || null
+  if (options.focusFirst !== false && selectedPoint.value) {
+    mapCenter.value = {
+      latitude: selectedPoint.value.latitude,
+      longitude: selectedPoint.value.longitude,
+    }
+  }
 }
 
-onLoad(async () => {
-  canGoBack.value = getCurrentPages().length > 1
+async function applyEntryParams(options = {}) {
+  const categoryParam = parseOption(options.category)
+  const keyword = parseOption(options.keyword)
+  const pointId = parsePointId(options.pointId)
+
   await loadCategories()
-  const defaultCategory = categories.value[0]?.key || 'spot'
-  activeCategory.value = defaultCategory
-  await loadPoints(defaultCategory)
+
+  if (pointId !== undefined) {
+    const point = await findPointById(pointId)
+    if (point) {
+      activeCategory.value = point.category
+      await loadPoints(point.category, { selectPointId: pointId })
+      return
+    }
+  }
+
+  if (keyword) {
+    let matchedList = []
+    try {
+      matchedList = await fetchMapPoints({ keyword })
+    } catch {
+      matchedList = fallbackMapPoints.filter((item) =>
+        [item.title, item.desc, item.address, ...(item.tags || [])].some((text) =>
+          String(text).toLowerCase().includes(keyword.toLowerCase()),
+        ),
+      )
+    }
+
+    if (matchedList.length) {
+      const targetCategory = categoryParam
+        ? resolveCategoryKey(categoryParam)
+        : matchedList[0].category
+      activeCategory.value = targetCategory
+      const preferId = pointId !== undefined ? pointId : matchedList.find((p) => p.category === targetCategory)?.id
+      await loadPoints(targetCategory, {
+        keyword,
+        selectPointId: preferId,
+      })
+      return
+    }
+
+    if (categoryParam) {
+      activeCategory.value = resolveCategoryKey(categoryParam)
+      await loadPoints(activeCategory.value, { keyword })
+      return
+    }
+  }
+
+  if (categoryParam) {
+    activeCategory.value = resolveCategoryKey(categoryParam)
+    await loadPoints(activeCategory.value)
+    return
+  }
+
+  activeCategory.value = resolveCategoryKey('spot')
+  await loadPoints(activeCategory.value)
+}
+
+onLoad(async (options) => {
+  canGoBack.value = getCurrentPages().length > 1
+  await applyEntryParams(options || {})
 })
 
 const activeCategoryLabel = computed(() => {
@@ -192,14 +316,14 @@ const currentMarkers = computed(() => {
 async function switchCategory(key) {
   if (activeCategory.value === key) return
   activeCategory.value = key
-  await loadPoints(key)
+  await loadPoints(key, { focusFirst: true })
 }
 
 function onMarkerTap(event) {
   const markerId = event?.detail?.markerId
   const target = currentPoints.value.find((item) => item.id === markerId)
   if (target) {
-    selectedPoint.value = target
+    focusMapOnPoint(target)
   }
 }
 
@@ -223,6 +347,12 @@ async function handleLeftAction(action) {
     return
   }
   if (action === 'locate') {
+    const defaultSpot = currentPoints.value.find((item) => item.id === 101)
+      || fallbackMapPoints.find((item) => item.id === 101)
+    if (defaultSpot) {
+      activeCategory.value = defaultSpot.category
+      await loadPoints(defaultSpot.category, { selectPointId: 101 })
+    }
     uni.showToast({ title: '已定位到灵山大佛', icon: 'none' })
     return
   }
