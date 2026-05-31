@@ -113,8 +113,17 @@ const mockRoutes: MapRoute[] = MAP_ROUTES as MapRoute[]
 /** 粗数据阶段仅保留核心景点略详说明，其余走列表基础字段 */
 const detailExtras: Record<number, Omit<MapPointDetail, keyof MapPoint>> = {
   101: {
+    images: ['https://cdn.example.com/map/101.jpg'],
     suggestedDuration: '45分钟',
-    serviceTags: ['讲解', '拍照'],
+    serviceTags: ['讲解', '拍照', '无障碍'],
+  },
+  103: {
+    suggestedDuration: '20分钟',
+    serviceTags: ['演出'],
+  },
+  104: {
+    suggestedDuration: '40分钟',
+    serviceTags: ['参观', '讲解'],
   },
 }
 

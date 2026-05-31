@@ -45,15 +45,31 @@
       </view>
     </view>
 
-    <view class="detail-card" v-if="selectedPoint">
+    <view class="detail-card" v-if="displayPoint">
       <view class="detail-header">
-        <text class="detail-title">{{ selectedPoint.title }}</text>
+        <text class="detail-title">{{ displayPoint.title }}</text>
         <view class="detail-tag">{{ activeCategoryLabel }}</view>
       </view>
-      <text class="detail-desc">{{ selectedPoint.desc }}</text>
+      <image
+        v-if="displayPoint.images && displayPoint.images[0]"
+        class="detail-cover"
+        :src="displayPoint.images[0]"
+        mode="aspectFill"
+      />
+      <view class="detail-meta" v-if="showDetailMeta">
+        <text v-if="statusLabel" class="meta-chip status">{{ statusLabel }}</text>
+        <text v-if="displayPoint.openTime" class="meta-chip">营业时间 {{ displayPoint.openTime }}</text>
+        <text v-if="displayPoint.distanceText" class="meta-chip">{{ displayPoint.distanceText }}</text>
+        <text v-if="displayPoint.suggestedDuration" class="meta-chip">建议停留 {{ displayPoint.suggestedDuration }}</text>
+      </view>
+      <view class="detail-tags" v-if="displayTags.length">
+        <text v-for="tag in displayTags" :key="tag" class="tag-chip">{{ tag }}</text>
+      </view>
+      <text class="detail-desc">{{ displayPoint.desc }}</text>
+      <text v-if="detailLoading" class="detail-loading">详情加载中...</text>
       <view class="detail-footer">
-        <text class="detail-address">{{ selectedPoint.address }}</text>
-        <view class="nav-btn" @tap="openNavigation(selectedPoint)">导航</view>
+        <text class="detail-address">{{ displayPoint.address }}</text>
+        <view class="nav-btn" @tap="openNavigation(displayPoint)">导航</view>
       </view>
     </view>
   </view>
@@ -68,6 +84,7 @@ import {
   fallbackMapCategories,
   fallbackMapPoints,
   fetchMapCategories,
+  fetchMapPointDetail,
   fetchMapPoints,
 } from '../../api/map'
 
@@ -114,8 +131,12 @@ const currentPoints = ref([])
 const activeCategory = ref('spot')
 const activeKeyword = ref('')
 const selectedPoint = ref(null)
+const selectedPointDetail = ref(null)
+const detailLoading = ref(false)
 const canGoBack = ref(false)
 const pointsLoading = ref(false)
+
+let detailRequestSeq = 0
 
 function toDisplayCategories(list) {
   return list.map((item) => ({
@@ -157,13 +178,46 @@ function resolveCategoryKey(categoryKey) {
   return spot?.key || categories.value[0]?.key || 'spot'
 }
 
-function focusMapOnPoint(point) {
+async function loadPointDetail(point) {
   if (!point) return
+  const seq = ++detailRequestSeq
+  detailLoading.value = true
+
+  try {
+    const detail = await fetchMapPointDetail(point.id)
+    if (seq !== detailRequestSeq) return
+    if (detail && Number(detail.id) === Number(point.id)) {
+      selectedPointDetail.value = detail
+    }
+  } catch {
+    if (seq === detailRequestSeq) {
+      selectedPointDetail.value = null
+    }
+  } finally {
+    if (seq === detailRequestSeq) {
+      detailLoading.value = false
+    }
+  }
+}
+
+function selectPoint(point, options = {}) {
+  if (!point) {
+    detailRequestSeq += 1
+    selectedPoint.value = null
+    selectedPointDetail.value = null
+    detailLoading.value = false
+    return
+  }
+
   mapCenter.value = {
     latitude: point.latitude,
     longitude: point.longitude,
   }
   selectedPoint.value = point
+
+  if (options.loadDetail !== false) {
+    loadPointDetail(point)
+  }
 }
 
 async function findPointById(pointId) {
@@ -187,35 +241,17 @@ async function loadCategories() {
 function applyPointSelection(list, options = {}) {
   if (options.selectPointId !== undefined) {
     const target = list.find((item) => Number(item.id) === Number(options.selectPointId))
-    selectedPoint.value = target || list[0] || null
-    if (selectedPoint.value) {
-      mapCenter.value = {
-        latitude: selectedPoint.value.latitude,
-        longitude: selectedPoint.value.longitude,
-      }
-    }
+    selectPoint(target || list[0] || null, { loadDetail: true })
     return
   }
 
   if (options.keepSelection && selectedPoint.value) {
     const matched = list.find((item) => Number(item.id) === Number(selectedPoint.value.id))
-    selectedPoint.value = matched || list[0] || null
-    if (selectedPoint.value && options.focusFirst !== false) {
-      mapCenter.value = {
-        latitude: selectedPoint.value.latitude,
-        longitude: selectedPoint.value.longitude,
-      }
-    }
+    selectPoint(matched || list[0] || null, { loadDetail: true })
     return
   }
 
-  selectedPoint.value = list[0] || null
-  if (options.focusFirst !== false && selectedPoint.value) {
-    mapCenter.value = {
-      latitude: selectedPoint.value.latitude,
-      longitude: selectedPoint.value.longitude,
-    }
-  }
+  selectPoint(list[0] || null, { loadDetail: options.loadDetail !== false })
 }
 
 /** 请求当前分类点位，失败时使用 fallback */
@@ -358,6 +394,42 @@ const activeCategoryLabel = computed(() => {
   return target ? target.label : ''
 })
 
+const displayPoint = computed(() => {
+  const base = selectedPoint.value
+  if (!base) return null
+  const detail = selectedPointDetail.value
+  if (detail && Number(detail.id) === Number(base.id)) {
+    return { ...base, ...detail }
+  }
+  return base
+})
+
+const statusLabel = computed(() => {
+  const status = displayPoint.value?.status
+  if (status === 'open') return '开放'
+  if (status === 'closed') return '关闭'
+  if (status === 'busy') return '繁忙'
+  return ''
+})
+
+const displayTags = computed(() => {
+  const point = displayPoint.value
+  if (!point) return []
+  const merged = [...(point.tags || []), ...(point.serviceTags || [])]
+  return [...new Set(merged)]
+})
+
+const showDetailMeta = computed(() => {
+  const point = displayPoint.value
+  if (!point) return false
+  return Boolean(
+    statusLabel.value
+      || point.openTime
+      || point.distanceText
+      || point.suggestedDuration,
+  )
+})
+
 const currentMarkers = computed(() => {
   const category = categories.value.find((item) => item.key === activeCategory.value)
   return currentPoints.value.map((point) => ({
@@ -395,7 +467,7 @@ function onMarkerTap(event) {
   const markerId = Number(event?.detail?.markerId)
   const target = currentPoints.value.find((item) => Number(item.id) === markerId)
   if (target) {
-    focusMapOnPoint(target)
+    selectPoint(target)
   }
 }
 
@@ -641,6 +713,49 @@ async function handleLeftAction(action) {
   font-weight: 700;
 }
 
+.detail-cover {
+  width: 100%;
+  height: 200rpx;
+  margin-top: 16rpx;
+  border-radius: 16rpx;
+  background: #f1dfc1;
+}
+
+.detail-meta {
+  margin-top: 14rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.meta-chip {
+  padding: 6rpx 14rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  color: #7b5529;
+  background: #f7f0e3;
+}
+
+.meta-chip.status {
+  color: #fffaf0;
+  background: #8b6138;
+}
+
+.detail-tags {
+  margin-top: 12rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.tag-chip {
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 20rpx;
+  color: #6f5b3e;
+  background: rgba(241, 223, 193, 0.85);
+}
+
 .detail-desc {
   margin-top: 16rpx;
   display: block;
@@ -649,6 +764,13 @@ async function handleLeftAction(action) {
   line-height: 1.6;
   max-height: 170rpx;
   overflow: auto;
+}
+
+.detail-loading {
+  margin-top: 10rpx;
+  display: block;
+  font-size: 22rpx;
+  color: #9a8265;
 }
 
 .detail-footer {
