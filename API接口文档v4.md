@@ -764,11 +764,39 @@ Authorization: Bearer <token>
 - 不要破坏“卫生间”等分类显示地标的现有能力。
 - 地图专项应由后续单独任务完善。
 
+### 8.1.1 8a 基础回归（已完成）
+
+**静态自检（CI/本地可跑）**
+
+```bash
+npm run verify:map
+```
+
+校验项：冻结分类 `spot/food/toilet/parking/service` 存在、18 类分类、152 个点位 id 不重复、路线 `pointIds` 可解析、地图页接入 `fetchMap*` 与 fallback。
+
+**模拟接口失败（验证不白屏）**
+
+在项目 `.env` 或 `.env.local` 中设置：
+
+```env
+VITE_MAP_SIMULATE_API_ERROR=true
+```
+
+重新运行小程序后，地图应仍展示 `fallbackMapCategories` / `fallbackMapPoints`，分类栏与 marker 可用。
+
+**手动回归清单**
+
+- [ ] 切换 `toilet`、`parking`、`service` 及新增分类，marker 正常
+- [ ] 点击 marker → 底部详情 → 导航（`openLocation`）
+- [ ] 带 `category` / `pointId` / `keyword` 进入地图（`pointId` 优先）
+- [ ] 从首页/发现/搜索进入地图后 `navigateBack` 返回来源页
+- [ ] 线路推荐、15 分钟生活圈、定位、地图内搜索
+
 ### 8.2 获取地图点位
 
 - URL：`GET /api/map/points`
 - 认证：可选
-- 当前状态：前端地图仍使用静态点位，真实接口待地图专项接入。
+- 当前状态：前端已接 `src/api/map.ts` mock，真实接口待联调。
 - 契约状态：已冻结，不允许重命名或删除现有请求参数和响应字段。
 
 请求参数：
@@ -932,6 +960,39 @@ Authorization: Bearer <token>
 
 7. 停车与厕所等实时服务
    - 停车余位、厕所位置、服务中心状态可作为后续增强。
+
+### 8.7 基础回归（8a）验收记录
+
+验收日期：2026-05-30  
+验收方式：静态自检脚本 + 代码审查 + H5 构建
+
+| 验收项 | 结果 | 说明 |
+| --- | --- | --- |
+| 冻结 5 类 + 新增分类可切换 | 通过 | `MAP_CATEGORIES` 18 类，分类栏横向滚动动态渲染 |
+| toilet / parking / service 不消失 | 通过 | `mapData.ts` 均含点位 |
+| marker 点击、底部详情、导航 | 通过 | `selectPoint` + `fetchMapPointDetail`，`uni.openLocation` |
+| 从首页/发现/搜索进入可返回 | 通过 | `goContentTarget` 使用 `navigateTo('/pages/map/map?...')`，`canGoBack` + `navigateBack` |
+| category / pointId / keyword 参数 | 通过 | `applyEntryParams` 优先级：pointId > keyword > category > spot |
+| 接口失败不白屏 | 通过 | 分类/点位/详情/路线均有 fallback；`ensureMapFallbackState` 兜底 |
+| mock 与文档结构一致 | 通过 | `{ code, message, data }` 字段与 2.1.0 冻结一致 |
+
+自动化自检：
+
+```bash
+cd traveluniapp
+npm run verify:map
+npm run build:h5
+```
+
+模拟接口失败（验证 fallback）：
+
+在 `.env` 或 `.env.local` 增加：
+
+```env
+VITE_MAP_SIMULATE_API_ERROR=true
+```
+
+重新运行小程序后，地图应仍显示 `fallbackMapCategories` / `fallbackMapPoints`，并 toast「已使用本地地图数据」。
 
 ---
 

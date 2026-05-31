@@ -95,6 +95,11 @@ function onTabTap(item) {
   }
 
   if (item.key === 'map') {
+    const pages = getCurrentPages()
+    const currentRoute = pages[pages.length - 1]?.route || ''
+    if (currentRoute.includes('pages/map/map')) {
+      return
+    }
     uni.navigateTo({ url: '/pages/map/map' })
     return
   }

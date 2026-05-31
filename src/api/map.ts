@@ -1,6 +1,16 @@
 import { API_PATHS } from '../config/api'
 import { MAP_CATEGORIES, MAP_POINT_SEEDS, MAP_ROUTES } from './mapData'
 
+/** 开发联调：在 .env 设置 VITE_MAP_SIMULATE_API_ERROR=true 可验证 fallback */
+const SIMULATE_MAP_API_ERROR = import.meta.env.VITE_MAP_SIMULATE_API_ERROR === 'true'
+
+function simulateApiError() {
+  if (SIMULATE_MAP_API_ERROR) {
+    return Promise.reject(new Error('MAP_API_SIMULATED_ERROR'))
+  }
+  return null
+}
+
 /** 保留冻结的 5 类，并支持新增分类 key */
 export type MapCategoryKey =
   | 'spot'
@@ -87,14 +97,12 @@ type MapPointSeed = Omit<MapPoint, 'category' | 'iconKey' | 'status'> & {
 }
 
 function seedToPoint(category: string, seed: MapPointSeed): MapPoint {
+  const { category: seedCategory, iconKey, status, ...rest } = seed
   return {
-    category,
-    status: 'open',
-    iconKey: category,
-    ...seed,
-    category: seed.category ?? category,
-    iconKey: seed.iconKey ?? category,
-    status: seed.status ?? 'open',
+    ...rest,
+    category: seedCategory ?? category,
+    iconKey: iconKey ?? category,
+    status: status ?? 'open',
   }
 }
 
@@ -181,18 +189,24 @@ function filterPoints(list: MapPoint[], params: MapPointQuery = {}): MapPoint[] 
 }
 
 export async function fetchMapCategories(): Promise<MapCategory[]> {
+  const simulated = simulateApiError()
+  if (simulated) return simulated
   // TODO: 对接后端 GET ${API_PATHS.map.categories}
   // return http.get<MapCategory[]>(API_PATHS.map.categories, undefined, { auth: false })
   return Promise.resolve([...fallbackMapCategories])
 }
 
 export async function fetchMapPoints(params: MapPointQuery = {}): Promise<MapPoint[]> {
+  const simulated = simulateApiError()
+  if (simulated) return simulated
   // TODO: 对接后端 GET ${API_PATHS.map.points}
   // return http.get<MapPoint[]>(API_PATHS.map.points, params, { auth: false })
   return Promise.resolve(filterPoints(fallbackMapPoints, params))
 }
 
 export async function fetchMapPointDetail(id: number): Promise<MapPointDetail | null> {
+  const simulated = simulateApiError()
+  if (simulated) return simulated
   // TODO: 对接后端 GET ${API_PATHS.map.pointDetail}/:id
   // return http.get<MapPointDetail>(`${API_PATHS.map.pointDetail}/${id}`, undefined, { auth: false })
   const point = fallbackMapPoints.find((item) => item.id === id)
@@ -202,6 +216,8 @@ export async function fetchMapPointDetail(id: number): Promise<MapPointDetail | 
 }
 
 export async function fetchMapRoutes(params: MapRouteQuery = {}): Promise<MapRoute[]> {
+  const simulated = simulateApiError()
+  if (simulated) return simulated
   // TODO: 对接后端 GET ${API_PATHS.map.routes}
   // return http.get<MapRoute[]>(API_PATHS.map.routes, params, { auth: false })
   let list = [...mockRoutes]

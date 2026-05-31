@@ -44,7 +44,11 @@
       </view>
     </view>
 
-    <view class="category-bar">
+    <view v-if="!pageReady" class="map-loading-mask">
+      <text>地图加载中...</text>
+    </view>
+
+    <view class="category-bar" v-show="pageReady && categories.length">
       <view
         class="category-item"
         v-for="item in categories"
@@ -175,6 +179,7 @@ const mapMode = ref('category')
 const activeRoute = ref(null)
 const routePointIndex = ref(0)
 const userLocation = ref(null)
+const pageReady = ref(false)
 
 let detailRequestSeq = 0
 
@@ -275,6 +280,21 @@ async function loadCategories() {
     categories.value = toDisplayCategories(list.length ? list : fallbackMapCategories)
   } catch {
     categories.value = toDisplayCategories(fallbackMapCategories)
+  }
+  if (!categories.value.length) {
+    categories.value = toDisplayCategories(fallbackMapCategories)
+  }
+}
+
+async function ensureMapFallbackState() {
+  if (!categories.value.length) {
+    categories.value = toDisplayCategories(fallbackMapCategories)
+  }
+  if (!activeCategory.value || !categories.value.some((item) => item.key === activeCategory.value)) {
+    activeCategory.value = categories.value[0]?.key || 'spot'
+  }
+  if (!currentPoints.value.length) {
+    await loadPoints(activeCategory.value, { showLoading: false, loadDetail: true })
   }
 }
 
@@ -394,6 +414,7 @@ function matchPointsByKeyword(keyword) {
 
 async function applyMapKeywordSearch(keyword) {
   const kw = keyword.trim()
+  exitSpecialMapMode()
   activeKeyword.value = kw
   mapSearchKeyword.value = kw
 
@@ -455,6 +476,7 @@ function goGlobalSearch() {
 }
 
 async function applyEntryParams(options = {}) {
+  exitSpecialMapMode()
   const categoryParam = parseOption(options.category)
   const keyword = parseOption(options.keyword)
   const pointId = parsePointId(options.pointId)
@@ -516,14 +538,39 @@ async function applyEntryParams(options = {}) {
     activeCategory.value = resolveCategoryKey('spot')
     activeKeyword.value = ''
     await loadPoints(activeCategory.value, { showLoading: false })
+  } catch {
+    categories.value = toDisplayCategories(fallbackMapCategories)
+    activeCategory.value = 'spot'
+    activeKeyword.value = ''
+    mapSearchKeyword.value = ''
+    await loadPoints('spot', { showLoading: false })
   } finally {
+    await ensureMapFallbackState()
     uni.hideLoading()
+    pageReady.value = true
   }
 }
 
-onLoad(async (options) => {
+async function bootstrapMapPage(options = {}) {
+  pageReady.value = false
   canGoBack.value = getCurrentPages().length > 1
-  await applyEntryParams(options || {})
+  try {
+    await applyEntryParams(options)
+  } catch {
+    categories.value = toDisplayCategories(fallbackMapCategories)
+    activeCategory.value = 'spot'
+    activeKeyword.value = ''
+    mapSearchKeyword.value = ''
+    await loadPoints('spot', { showLoading: false })
+    await ensureMapFallbackState()
+    pageReady.value = true
+    uni.hideLoading()
+    uni.showToast({ title: '已使用本地地图数据', icon: 'none' })
+  }
+}
+
+onLoad((options) => {
+  bootstrapMapPage(options || {})
 })
 
 const activeCategoryLabel = computed(() => {
@@ -787,11 +834,15 @@ function onMarkerTap(event) {
 }
 
 function openNavigation(point) {
+  if (!point || !Number.isFinite(point.latitude) || !Number.isFinite(point.longitude)) {
+    uni.showToast({ title: '暂无法导航', icon: 'none' })
+    return
+  }
   uni.openLocation({
     latitude: point.latitude,
     longitude: point.longitude,
     name: point.title,
-    address: point.address,
+    address: point.address || point.title,
   })
 }
 
@@ -852,6 +903,20 @@ async function handleLeftAction(action) {
 .map {
   width: 100%;
   height: 100%;
+}
+
+.map-loading-mask {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+  padding: 20rpx 32rpx;
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.92);
+  color: #7b5529;
+  font-size: 26rpx;
+  box-shadow: 0 10rpx 28rpx rgba(94, 68, 35, 0.12);
 }
 
 .map-back {
