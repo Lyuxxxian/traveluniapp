@@ -78,10 +78,23 @@ const mapCenter = {
 
 const categoryIconEmoji = {
   spot: '⛩',
-  food: '🍜',
   toilet: '🚻',
-  parking: '🅿️',
+  entrance: '🚪',
+  drinking: '💧',
   service: '🎧',
+  nursery: '👶',
+  ticket: '🎫',
+  facility: '🔌',
+  guide: '📻',
+  food: '🍜',
+  shop: '🛍',
+  hotel: '🏨',
+  shuttle: '🚌',
+  medical: '⛑',
+  rest: '🪑',
+  smoking: '🚬',
+  plant: '🌿',
+  parking: '🅿️',
 }
 
 const leftMenuActions = [
@@ -324,10 +337,20 @@ async function handleLeftAction(action) {
   right: 16rpx;
   bottom: 350rpx;
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 12rpx;
-  padding: 0 4rpx;
+  padding: 0 4rpx 8rpx;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.category-bar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .category-item {
