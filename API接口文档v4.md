@@ -1378,6 +1378,13 @@ VITE_MAP_SIMULATE_API_ERROR=true
 - 环境变量：`VITE_SERVICE_USE_REMOTE_API`、`VITE_SERVICE_SIMULATE_API_ERROR`（见 `.env.example`）
 - 自检：`npm run verify:service`
 
+**前端页面（第 2 步已完成）**
+
+- 帮助中心：[`src/pages/service/help.vue`](src/pages/service/help.vue)
+- 工单：[`ticketCreate.vue`](src/pages/service/ticketCreate.vue)、[`ticketList.vue`](src/pages/service/ticketList.vue)
+- 点评/反馈/问卷：[`reviews.vue`](src/pages/mine/reviews.vue)、[`reviewEdit.vue`](src/pages/mine/reviewEdit.vue)、[`feedback.vue`](src/pages/mine/feedback.vue)、[`surveyList.vue`](src/pages/mine/surveyList.vue)、[`surveyFill.vue`](src/pages/mine/surveyFill.vue)
+- 我的页入口：[`mine.vue`](src/pages/mine/mine.vue) → `联系客服` 进帮助中心（非 AI 页）
+
 **业务目标**
 
 | 能力 | 用户场景 | 关联模块 |

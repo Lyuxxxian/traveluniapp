@@ -74,6 +74,26 @@ if (!envExample.includes('VITE_SERVICE_USE_REMOTE_API')) {
   errors.push('.env.example 缺少 VITE_SERVICE_USE_REMOTE_API 说明')
 }
 
+const pagesJson = read('src/pages.json')
+const requiredPages = [
+  'pages/service/help',
+  'pages/service/ticketCreate',
+  'pages/service/ticketList',
+  'pages/mine/reviews',
+  'pages/mine/reviewEdit',
+  'pages/mine/feedback',
+  'pages/mine/surveyList',
+  'pages/mine/surveyFill',
+]
+requiredPages.forEach((p) => {
+  if (!pagesJson.includes(p)) errors.push(`pages.json 缺少页面: ${p}`)
+})
+
+const mineVue = read('src/pages/mine/mine.vue')
+if (!mineVue.includes('/pages/service/help')) {
+  errors.push('mine.vue 联系客服应跳转帮助中心')
+}
+
 if (errors.length) {
   console.error('[service-api] FAILED')
   errors.forEach((e) => console.error(`  ✗ ${e}`))
@@ -84,3 +104,4 @@ console.log('[service-api] PASSED')
 console.log(`  ✓ 导出函数 ${requiredExports.length} 个`)
 console.log('  ✓ API_PATHS.service 已配置')
 console.log('  ✓ 未引用 ai.ts / FAQ 走 AI_PROXY_PATHS')
+console.log(`  ✓ 服务层页面已注册 ${requiredPages.length} 个`)

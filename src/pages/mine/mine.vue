@@ -185,11 +185,28 @@ function goOrderList(status) {
 }
 
 function goFunction(key) {
-  if (key === 'coupons') {
-    uni.navigateTo({ url: '/pages/mine/coupons' })
+  const routes = {
+    coupons: '/pages/mine/coupons',
+    reviews: '/pages/mine/reviews',
+    feedback: '/pages/mine/feedback',
+    service: '/pages/service/help',
+    survey: '/pages/mine/surveyList',
+    settings: '/pages/mine/profileEdit',
+  }
+
+  const url = routes[key]
+  if (!url) {
+    uni.showToast({ title: `${key}页面待开发`, icon: 'none' })
     return
   }
-  uni.showToast({ title: `${key}页面待开发`, icon: 'none' })
+
+  const needLogin = ['reviews', 'feedback', 'survey', 'coupons']
+  if (needLogin.includes(key) && !loggedIn.value) {
+    goLogin()
+    return
+  }
+
+  uni.navigateTo({ url })
 }
 </script>
 

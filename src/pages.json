@@ -129,6 +129,62 @@
 			}
 		},
 		{
+			"path": "pages/mine/reviews",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/reviewEdit",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/feedback",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/surveyList",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/surveyFill",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/service/help",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/service/ticketCreate",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/service/ticketList",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/ai/index",
 			"style": {
 				"navigationBarTitleText": "数字人AI导游"
