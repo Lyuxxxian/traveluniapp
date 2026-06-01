@@ -1393,6 +1393,14 @@ VITE_MAP_SIMULATE_API_ERROR=true
 - 地图详情卡「写点评」（`spot` + `pointId`）
 - 订单详情「已完成」：去评价（`order`）+ 联系客服
 
+**后端实现（第 4 步已完成）**
+
+- 目录：[`server/`](server/)（Express + JSON 存储）
+- 启动：`cd server && npm install && npm run dev`
+- 表结构说明：[`server/docs/SCHEMA.md`](server/docs/SCHEMA.md)
+- 冒烟测试：`cd server && npm run verify`
+- 联调：`.env.local` 设置 `VITE_API_BASE_URL=http://localhost:3000` 与 `VITE_SERVICE_USE_REMOTE_API=true`
+
 **业务目标**
 
 | 能力 | 用户场景 | 关联模块 |
@@ -2188,7 +2196,7 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 8. 优惠券接口。
 9. AI 代理接口。
 10. 上传接口。
-11. 服务层：点评、反馈、问卷、工单、`GET /api/service/config`；FAQ 只读复用 `ai-service/faqs`。
+11. 服务层（**已实现**，见 `server/`）：点评、反馈、问卷、工单、`GET /api/service/config`；FAQ 只读 `ai-service/faqs`；`POST /api/upload/image`；管理端 `GET/PUT /api/admin/feedback`、`/api/admin/support/tickets`。
 
 ### 17.3 必须优先修复的问题
 
@@ -2278,4 +2286,5 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 | 图片上传 | `src/utils/upload.ts` |
 | 统一跳转 | `src/utils/navigation.ts` |
 | 接口配置 | `src/config/api.ts` |
+| 服务层后端 | `server/src/index.js` |
 
