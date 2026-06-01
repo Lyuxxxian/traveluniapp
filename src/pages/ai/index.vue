@@ -9,35 +9,28 @@ import { askAI } from '@/api/ai'
         <view class="subtitle">智慧问答 · 景点讲解 · 个性路线推荐</view>
       </view>
     </view>
+<view class="human-section">
+  <view class="light-circle"></view>
 
-    <view class="human-section">
-      <view class="light-circle"></view>
+  <view class="human-card">
+    <image
+      class="human-img"
+      src="/static/ai/floating-guide.png"
+      mode="aspectFit"
+    />
 
-      <view class="human-card">
-        <image
-  class="human-img"
-  :class="{
-    talking: humanStatus === '正在讲解',
-    thinking: humanStatus === '思考中...',
-    listening: humanStatus === '正在聆听'
-  }"
-  src="/static/ai/guide.png"
-  mode="aspectFit"
-/>
-
-        <view class="human-status">
-          {{ humanStatus }}
-        </view>
-      </view>
-
-      <view class="intro-card">
-        <view class="intro-title">您好，我是灵儿</view>
-        <view class="intro-text">
-          我是灵山胜境数字人导游，可以为您讲解景点历史、推荐游览路线，也可以回答门票、演出、亲子游等问题。
-        </view>
-      </view>
+    <view class="human-status">
+      {{ humanStatus }}
     </view>
+  </view>
 
+  <view class="intro-card">
+    <view class="intro-title">您好，我是灵儿</view>
+    <view class="intro-text">
+      我是灵山胜境数字人导游，可以为您讲解景点历史、推荐游览路线，也可以回答门票、演出、亲子游等问题。
+    </view>
+  </view>
+</view>
     <view class="quick-section">
       <view class="section-title">快捷提问</view>
 

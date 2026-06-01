@@ -149,11 +149,13 @@
           </view>
         </view>
       </scroll-view>
+      <FloatingGuide />
     </view>
   </TabBar>
 </template>
 
 <script setup>
+import FloatingGuide from '@/components/FloatingGuide.vue'
 import { computed, onMounted, ref } from 'vue'
 import { fetchHomeConfig, fetchHomeWeather } from '../../api/home'
 import TabBar from '../../components/TabBar.vue'
