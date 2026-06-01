@@ -5,7 +5,7 @@
 - 项目名称：灵山文旅 AI 助手微信小程序
 - 前端技术栈：UniApp + Vue 3 + Vite
 - 文档版本：v4.0
-- 更新日期：2026-05-28
+- 更新日期：2026-05-30
 - 文档目标：基于当前前端状态，重新整理后续接口、开发顺序、地图改造范围、数字人 AI 接入方案和管理员端能力。
 
 ### 1.1 当前前端状态
@@ -121,9 +121,10 @@
    - 接入知识库、推荐问题、会话历史、景点讲解、路线推荐。
    - 后续再接语音识别、语音合成、数字人动作状态。
 
-4. 服务层
-   - 点评、反馈、问卷、客服 FAQ、人工客服转接。
+4. 服务层（**接口契约已冻结**，见 [2.1.3](#213-服务层接口契约冻结结果已冻结) 与 [第 13 章](#13-点评反馈问卷与客服服务)）
+   - 点评、反馈、问卷、客服 FAQ（只读）、人工客服（电话 + 工单）。
    - 与用户资料、上传、订单、地图点位关联。
+   - 本期不做数字人 AI 对话；帮助中心仅调用 `GET /api/ai-service/faqs`，不调用 `chat`。
 
 5. 管理员端
    - 首页运营位管理。
@@ -232,6 +233,37 @@
 - 涉及字段重命名、删字段、改类型、改分页结构，默认按“不兼容变更”处理。
 - 不兼容变更默认必须采用“保留旧字段 + 新字段”或“新增 `/v2` 接口”。
 - 地图相关参数 `category` / `pointId` / `keyword` 如需调整，必须专项评审并提供完整回归清单。
+
+### 2.1.3 服务层接口契约冻结结果（已冻结）
+
+- **冻结日期**：2026-05-30
+- **冻结范围**：点评、意见反馈、问卷、客服工单、帮助中心 FAQ（只读）、帮助中心静态配置。
+- **不在本期冻结**：`POST /api/ai-service/chat`、流式对话、会话、知识库检索、ASR/TTS（归属数字人 AI 专项，见第 9 章）。
+- **路径约定**：问卷以 v4 路径 `/api/questionnaires` 为准；v2/v3 的 `/api/surveys` 仅作历史参考，新实现不采用。
+
+服务层接口冻结一览：
+
+| 接口 | 方法 | 认证 | 说明 |
+| --- | --- | --- | --- |
+| `/api/reviews` | POST | 需要 | 提交点评 |
+| `/api/reviews` | GET | 可选 | 按对象查点评列表（发现详情 Tab） |
+| `/api/user/reviews` | GET | 需要 | 我的点评 |
+| `/api/feedback` | POST | 需要 | 意见反馈 |
+| `/api/questionnaires` | GET | 可选 | 进行中问卷列表 |
+| `/api/questionnaires/:id` | GET | 可选 | 问卷题目 |
+| `/api/questionnaires/:id/submit` | POST | 需要 | 提交问卷 |
+| `/api/support/tickets` | POST | 需要 | 提交客服工单 |
+| `/api/user/support/tickets` | GET | 需要 | 我的工单 |
+| `/api/ai-service/faqs` | GET | 可选 | 帮助中心 FAQ（**只读**，服务层本期禁止调 chat） |
+| `/api/service/config` | GET | 可选 | 帮助中心电话、工作时间（可与 faqs 合并返回） |
+
+变更规则（与 2.1.0 一致）：
+
+- 不允许删除或重命名上表路径及已冻结请求/响应字段。
+- 不允许改变通用响应 `{ code, message, data }` 与分页结构。
+- 允许新增**可选**字段；不兼容变更须保留旧字段或新增 `/v2`。
+- 前端联调期须保留 mock fallback，提交失败时保留表单内容、不白屏。
+- 图片须先 `POST /api/upload/image` 取得 `url`，再写入 `images` 数组（见第 14 章）。
 
 ### 2.2 本阶段开发边界
 
@@ -792,11 +824,47 @@ VITE_MAP_SIMULATE_API_ERROR=true
 - [ ] 从首页/发现/搜索进入地图后 `navigateBack` 返回来源页
 - [ ] 线路推荐、15 分钟生活圈、定位、地图内搜索
 
+### 8.1.2 后端联调（第 9 步，已完成）
+
+默认仍使用 `src/api/mapData.ts` mock，不依赖真实坐标精修。
+
+**开启远程地图 API**
+
+在项目 `.env` 或 `.env.local` 中设置（参见仓库根目录 `.env.example`）：
+
+```env
+VITE_MAP_USE_REMOTE_API=true
+```
+
+行为说明（`src/api/map.ts`）：
+
+- `fetchMapCategories` / `fetchMapPoints` / `fetchMapRoutes`：请求 `GET /api/map/*`，`auth: false`，失败不弹全局 toast。
+- 响应为空或 HTTP 失败时，自动回退 `fallbackMapCategories` / `filterPoints(fallbackMapPoints)` / 本地路线。
+- `fetchMapPointDetail`：远程失败时回退本地 `detailExtras` + 列表点位，不清空已展示的详情卡。
+- `isMapRemoteApiEnabled()`：供调试判断当前是否走远程。
+
+与 `VITE_MAP_SIMULATE_API_ERROR=true` 可同时用于联调前自测：模拟失败应仍展示 fallback。
+
+### 8.1.3 8b 全量回归（静态项已完成）
+
+**静态自检**（`npm run verify:map` 已包含）：
+
+- 18 类分类数据、152 点位、路线 `pointIds` 可解析。
+- `map.vue`：`scroll-view` 分类栏、`MAX_MAP_MARKERS=80` 截断与选中点优先保留。
+- 首页/发现/搜索中 `type: 'map'` 的 `keyword` 能在 mock 标题中命中。
+
+**手动回归**（数据仍为粗坐标时也可做）：
+
+- [ ] 分类过多时横向滑动，选中项自动滚入视区。
+- [ ] `facility` 等大类出现「当前显示 x/y 个点位」提示。
+- [ ] 地图内 keyword 筛选、多 marker 滑动流畅。
+- [ ] 首页/发现/搜索跳转与 `pointId`/`keyword` 一致。
+
 ### 8.2 获取地图点位
 
 - URL：`GET /api/map/points`
 - 认证：可选
-- 当前状态：前端已接 `src/api/map.ts` mock，真实接口待联调。
+- 当前状态：默认 mock；设置 `VITE_MAP_USE_REMOTE_API=true` 后走真实接口，失败自动 fallback。
 - 契约状态：已冻结，不允许重命名或删除现有请求参数和响应字段。
 
 请求参数：
@@ -1025,10 +1093,12 @@ VITE_MAP_SIMULATE_API_ERROR=true
 - 小程序端 `window.SpeechRecognition`、`speechSynthesis` 不适用，需要小程序能力或后端服务替代。
 - AI 回复没有流式输出、会话 ID、历史上下文、埋点和错误恢复。
 
-### 9.2 获取推荐问题
+### 9.2 获取推荐问题 / FAQ 列表
 
 - URL：`GET /api/ai-service/faqs`
 - 认证：可选
+- **字段契约**：以 [13.9 帮助中心 FAQ](#139-帮助中心-faq只读) 为准（含 `answer`、`type`、`sort`）；AI 页与服务层帮助中心共用本接口。
+- **服务层**：帮助中心仅只读调用本接口；数字人对话见 9.3。
 
 响应示例：
 
@@ -1040,12 +1110,18 @@ VITE_MAP_SIMULATE_API_ERROR=true
     {
       "id": 1,
       "question": "九龙灌浴几点演出",
-      "category": "show"
+      "answer": "每日平日 10:00、11:30、13:30、15:00 场次。",
+      "category": "show",
+      "type": "normal",
+      "sort": 1
     },
     {
       "id": 2,
       "question": "亲子游怎么玩",
-      "category": "route"
+      "answer": "建议从祥符禅寺出发，经九龙灌浴至梵宫。",
+      "category": "route",
+      "type": "normal",
+      "sort": 2
     }
   ]
 }
@@ -1289,12 +1365,62 @@ VITE_MAP_SIMULATE_API_ERROR=true
 
 ---
 
-## 13. 点评、反馈与问卷
+## 13. 点评、反馈、问卷与客服服务
+
+> **契约状态**：已冻结（2026-05-30）。详见 [2.1.3](#213-服务层接口契约冻结结果已冻结)、数据字典 [16.8–16.12](#168-reviewtargettype-点评对象类型)。
+
+### 13.0 模块说明
+
+**业务目标**
+
+| 能力 | 用户场景 | 关联模块 |
+| --- | --- | --- |
+| 点评 | 对景点/订单/商品/发现内容评分留言 | 地图 `pointId`、订单、商城、发现详情 |
+| 意见反馈 | 向景区提交建议/投诉/设施问题 | 上传图片、可选关联点位/订单 |
+| 问卷 | 满意度调研，完成后展示奖励提示 | 优惠券/积分（发奖逻辑可二期） |
+| 帮助中心 FAQ | 常见问题只读展示 | 复用 `GET /api/ai-service/faqs`，**不调 AI 对话** |
+| 人工客服 | 景区电话 + 工单留言 | `uni.makePhoneCall`、工单后台处理 |
+
+**前端页面规划（契约级，实现见第 19 章）**
+
+| 页面路径 | 说明 |
+| --- | --- |
+| `pages/service/help` | 帮助中心：FAQ + 电话 + 工单入口 |
+| `pages/service/ticketCreate` | 提交工单 |
+| `pages/service/ticketList` | 我的工单 |
+| `pages/mine/reviews` | 我的点评 |
+| `pages/mine/reviewEdit` | 写点评 |
+| `pages/mine/feedback` | 意见反馈 |
+| `pages/mine/surveyList` | 问卷列表 |
+| `pages/mine/surveyFill` | 填写问卷 |
+
+**入口 query 约定（冻结）**
+
+| 页面 | 参数 | 说明 |
+| --- | --- | --- |
+| `reviewEdit` | `targetType`, `targetId`, `title?`, `orderId?` | 地图/发现/订单带入对象 |
+| `ticketCreate` | `category?`, `relatedOrderId?`, `relatedPointId?` | 从 FAQ「人工」或订单页带入 |
+| `feedback` | `relatedPointId?`, `relatedOrderId?` | 可选预填 |
+
+---
 
 ### 13.1 提交点评
 
 - URL：`POST /api/reviews`
 - 认证：需要
+- 当前状态：契约已冻结，前端待实现 `src/api/service.ts`。
+- 说明：同一用户对同一 `targetType + targetId` 默认仅允许一条有效点评；重复提交返回业务错误码 `40901`（可由后端配置为覆盖更新，须在实现说明中写明）。
+
+**请求体**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| targetType | string | 是 | 见 [16.8 ReviewTargetType](#168-reviewtargettype-点评对象类型) |
+| targetId | number | 是 | 地图点位 id / 订单 id / 商品 id / 发现帖 id |
+| rating | number | 是 | 1–5 整数 |
+| content | string | 是 | 正文，1–500 字 |
+| images | string[] | 否 | 图片 URL 列表，最多 9 张；须先走 [14.1 上传图片](#141-上传图片) |
+| orderId | number | 否 | 关联订单 id（核销后点评、与 `targetType=order` 配合） |
 
 请求示例：
 
@@ -1304,29 +1430,420 @@ VITE_MAP_SIMULATE_API_ERROR=true
   "targetId": 101,
   "rating": 5,
   "content": "讲解很详细，适合亲子游。",
-  "images": []
+  "images": ["https://cdn.example.com/review/1.jpg"],
+  "orderId": null
 }
 ```
+
+**响应 data**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 点评 id |
+| createdAt | string | 是 | ISO8601 或 `YYYY-MM-DD HH:mm:ss` |
+
+响应示例：
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "id": 90001,
+    "createdAt": "2026-05-30 14:20:00"
+  }
+}
+```
+
+---
 
 ### 13.2 我的点评
 
 - URL：`GET /api/user/reviews`
 - 认证：需要
 
-### 13.3 提交意见反馈
+**查询参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| page | integer | 否 | 页码，默认 1 |
+| pageSize | integer | 否 | 每页条数，默认 10，最大 50 |
+| targetType | string | 否 | 按对象类型筛选 |
+
+**列表项（data.list[]）**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 点评 id |
+| targetType | string | 是 | 对象类型 |
+| targetId | number | 是 | 对象 id |
+| targetTitle | string | 是 | 展示用标题，如「灵山大佛」「灵山大佛成人票」 |
+| rating | number | 是 | 1–5 |
+| content | string | 是 | 正文 |
+| images | string[] | 否 | 图片 URL |
+| createdAt | string | 是 | 创建时间 |
+| status | string | 是 | 见 [16.9 ReviewStatus](#169-reviewstatus-点评状态) |
+
+**分页（data 外层，与全局分页一致）**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| list | array | 是 | 列表 |
+| page | integer | 是 | 当前页 |
+| pageSize | integer | 是 | 每页条数 |
+| total | integer | 是 | 总条数 |
+| hasMore | boolean | 是 | 是否还有下一页 |
+
+---
+
+### 13.3 按对象查询点评（发现详情「点评」Tab）
+
+- URL：`GET /api/reviews`
+- 认证：可选（未登录仅可读已发布内容）
+
+**查询参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| targetType | string | 是 | 对象类型 |
+| targetId | number | 是 | 对象 id |
+| page | integer | 否 | 默认 1 |
+| pageSize | integer | 否 | 默认 10 |
+
+**列表项**：与 13.2 相同，但可不返回 `status`（仅 `published`）；未登录不返回当前用户是否已评。
+
+**分页**：同 13.2。
+
+---
+
+### 13.4 提交意见反馈
 
 - URL：`POST /api/feedback`
 - 认证：需要
+- 说明：面向景区运营收集建议/投诉；与 13.7 工单区分——反馈偏「意见」，工单偏「需人工回复的售后/咨询」。
 
-### 13.4 问卷列表
+**请求体**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| type | string | 是 | 见 [16.10 FeedbackType](#1610-feedbacktype-反馈类型) |
+| content | string | 是 | 正文，1–1000 字 |
+| images | string[] | 否 | 最多 6 张，先上传 |
+| contact | string | 否 | 手机号，便于回访 |
+| relatedPointId | number | 否 | 关联地图点位 id（如卫生间、景点） |
+| relatedOrderId | number | 否 | 关联订单 id |
+
+请求示例：
+
+```json
+{
+  "type": "suggestion",
+  "content": "建议增加夜间导览路线。",
+  "images": ["https://cdn.example.com/feedback/1.jpg"],
+  "contact": "13800000000",
+  "relatedPointId": 301,
+  "relatedOrderId": null
+}
+```
+
+**响应 data**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 反馈 id |
+| createdAt | string | 是 | 创建时间 |
+
+---
+
+### 13.5 问卷列表
 
 - URL：`GET /api/questionnaires`
 - 认证：可选
+- 说明：仅返回状态为「进行中」的问卷；已截止、已填完的不出现在列表（或由后端标记 `submitted: true` 供前端置灰）。
 
-### 13.5 提交问卷
+**列表项（data[]，非分页，数量通常 ≤ 5）**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 问卷 id |
+| title | string | 是 | 标题 |
+| desc | string | 否 | 简短说明 |
+| rewardHint | string | 否 | 奖励提示文案，如「完成后可获赠小额优惠券」 |
+| deadline | string | 否 | 截止时间 |
+| submitted | boolean | 否 | 当前用户是否已提交（未登录恒为 false 或不返回） |
+
+响应示例：
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "id": 1,
+      "title": "灵山文旅满意度调研",
+      "desc": "约 2 分钟完成",
+      "rewardHint": "完成后随机赠送积功德星或小额优惠券",
+      "deadline": "2026-12-31 23:59:59",
+      "submitted": false
+    }
+  ]
+}
+```
+
+---
+
+### 13.6 问卷详情
+
+- URL：`GET /api/questionnaires/:id`
+- 认证：可选
+
+**响应 data**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 问卷 id |
+| title | string | 是 | 标题 |
+| desc | string | 否 | 说明 |
+| questions | array | 是 | 题目列表 |
+
+**questions[] 题目项**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 题目 id |
+| type | string | 是 | 见 [16.11 QuestionType](#1611-questiontype-问卷题型) |
+| title | string | 是 | 题干 |
+| required | boolean | 否 | 是否必答，默认 true |
+| options | array | 否 | 选择题选项，`type` 为 `single`/`multi` 时必填 |
+
+**options[]**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | string | 是 | 选项 id，如 `a`、`b` |
+| label | string | 是 | 展示文案 |
+
+---
+
+### 13.7 提交问卷
 
 - URL：`POST /api/questionnaires/:id/submit`
 - 认证：需要
+- 说明：同一用户同一问卷仅可提交一次；重复提交返回 `40902`。
+
+**路径参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 问卷 id |
+
+**请求体**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| answers | array | 是 | 答案列表 |
+
+**answers[]**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| questionId | number | 是 | 题目 id |
+| value | string \| string[] \| number | 是 | `single` 为选项 id 字符串；`multi` 为选项 id 数组；`text` 为字符串；`score` 为 1–5 数字 |
+
+请求示例：
+
+```json
+{
+  "answers": [
+    { "questionId": 1, "value": "5" },
+    { "questionId": 2, "value": ["a", "c"] },
+    { "questionId": 3, "value": "希望增加夜场导览" }
+  ]
+}
+```
+
+**响应 data**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| submissionId | number | 是 | 提交记录 id |
+| rewardHint | string | 否 | 提交成功后的奖励说明（可与发券结果联动） |
+| createdAt | string | 是 | 提交时间 |
+
+---
+
+### 13.8 客服工单（人工客服）
+
+#### 13.8.1 提交工单
+
+- URL：`POST /api/support/tickets`
+- 认证：需要
+- 说明：用户从帮助中心「转人工」、订单售后等入口提交；后台人工处理并更新状态（管理端见 15.9）。
+
+**请求体**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| category | string | 是 | 见 [16.12 SupportTicketCategory](#1612-supportticketcategory-工单分类) |
+| content | string | 是 | 问题描述，1–1000 字 |
+| contact | string | 是 | 联系电话 |
+| images | string[] | 否 | 最多 6 张 |
+| relatedOrderId | number | 否 | 关联订单 |
+| relatedPointId | number | 否 | 关联地图点位 |
+
+请求示例：
+
+```json
+{
+  "category": "ticket_refund",
+  "content": "订单未核销，申请退款咨询",
+  "contact": "13800000000",
+  "images": [],
+  "relatedOrderId": 10001,
+  "relatedPointId": null
+}
+```
+
+**响应 data**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 工单 id |
+| ticketNo | string | 是 | 工单编号，展示用 |
+| status | string | 是 | 初始为 `open` |
+| createdAt | string | 是 | 创建时间 |
+
+#### 13.8.2 我的工单
+
+- URL：`GET /api/user/support/tickets`
+- 认证：需要
+
+**查询参数**：`page`、`pageSize`（同 13.2）
+
+**列表项**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | 工单 id |
+| ticketNo | string | 是 | 工单编号 |
+| category | string | 是 | 分类 |
+| content | string | 是 | 问题摘要（可截断） |
+| status | string | 是 | `open` / `processing` / `closed` |
+| adminReply | string | 否 | 客服回复摘要 |
+| createdAt | string | 是 | 创建时间 |
+| updatedAt | string | 否 | 最后更新时间 |
+
+**分页**：同 13.2。
+
+---
+
+### 13.9 帮助中心 FAQ（只读）
+
+- URL：`GET /api/ai-service/faqs`
+- 认证：可选
+- **服务层约束**：帮助中心、我的-联系客服**仅允许**调用本接口；**禁止**在服务层页面调用 `POST /api/ai-service/chat`（数字人专项见第 9 章）。
+- 与第 9.2 关系：字段以本章为准；第 9.2 为 AI 页快捷问题场景，共用同一数据源。
+
+**响应 data[] 条目**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| id | number | 是 | FAQ id |
+| question | string | 是 | 问题文案 |
+| answer | string | 否 | 答案；`type=human` 时可空，前端展示「提交工单」 |
+| category | string | 否 | 分组：`ticket` / `show` / `route` / `parking` / `food` / `other` |
+| type | string | 否 | `normal`（默认，展示问答）或 `human`（转人工入口） |
+| sort | number | 否 | 排序，越小越靠前 |
+
+响应示例：
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "id": 1,
+      "question": "儿童和老年人门票价格",
+      "answer": "6-18周岁及60-69周岁半价（105元），6岁或1.4米以下及70岁以上免票。",
+      "category": "ticket",
+      "type": "normal",
+      "sort": 1
+    },
+    {
+      "id": 2,
+      "question": "人工客服",
+      "category": "other",
+      "type": "human",
+      "sort": 99
+    }
+  ]
+}
+```
+
+**前端行为约定**
+
+- `type=normal` 且有 `answer`：展开显示答案。
+- `type=human`：跳转 `pages/service/ticketCreate`，不发起 AI 对话。
+- 页面顶部固定展示景区电话（见 13.10）。
+
+---
+
+### 13.10 帮助中心静态配置
+
+- URL：`GET /api/service/config`
+- 认证：可选
+- 说明：可与 `faqs` 合并为单一接口；若拆分，本接口仅返回运营配置。前端 mock 阶段可写死在 `serviceData.ts`。
+
+**响应 data**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| servicePhone | string | 是 | 景区客服电话，用于 `uni.makePhoneCall` |
+| serviceHours | string | 是 | 工作时间文案，如「每日 08:30–17:00」 |
+| servicePhoneRemark | string | 否 | 补充说明 |
+
+响应示例：
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "servicePhone": "0510-85933333",
+    "serviceHours": "每日 08:30–17:00（节假日以景区公告为准）",
+    "servicePhoneRemark": "票务、退款、投诉均可致电"
+  }
+}
+```
+
+---
+
+### 13.11 服务层业务错误码（建议）
+
+| code | 说明 | 典型场景 |
+| --- | --- | --- |
+| 40001 | 参数校验失败 | 缺少 targetType、rating 超范围 |
+| 40101 | 未登录 | 提交类接口无 token |
+| 40301 | 无权限 | 非本人订单关联 |
+| 40401 | 对象不存在 | targetId 无效 |
+| 40901 | 重复点评 | 同一对象已评 |
+| 40902 | 重复提交问卷 | 同一问卷已填 |
+| 42901 | 提交过于频繁 | 反馈/工单限流 |
+
+HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast。
+
+---
+
+### 13.12 管理员端关联（规划，非用户端实现）
+
+用户端提交的数据由管理端处理，接口规划见 **15.9 反馈处理与数据统计**，建议扩展：
+
+- `GET /api/admin/feedback`、`PUT /api/admin/feedback/:id/status`
+- `GET /api/admin/support/tickets`、`PUT /api/admin/support/tickets/:id`（回复、改状态）
+- `GET /api/admin/reviews`、`PUT /api/admin/reviews/:id/status`（审核）
+- 问卷题目 CRUD：`/api/admin/questionnaires`（二期）
 
 ---
 
@@ -1338,6 +1855,7 @@ VITE_MAP_SIMULATE_API_ERROR=true
 - 认证：需要
 - Content-Type：`multipart/form-data`
 - 表单字段名：`file`
+- **服务层用法**：点评、意见反馈、客服工单的 `images` 均须先调用本接口取得 `url` 再提交（见第 13 章）。
 
 响应示例：
 
@@ -1460,6 +1978,9 @@ VITE_MAP_SIMULATE_API_ERROR=true
 
 - `GET /api/admin/feedback`
 - `PUT /api/admin/feedback/:id/status`
+- `GET /api/admin/support/tickets`（建议，对应 [13.8](#138-客服工单人工客服)）
+- `PUT /api/admin/support/tickets/:id`（回复、改状态）
+- `GET /api/admin/reviews`、`PUT /api/admin/reviews/:id/status`（点评审核，建议）
 - `GET /api/admin/statistics/overview`
 - `GET /api/admin/statistics/content`
 - `GET /api/admin/statistics/orders`
@@ -1480,6 +2001,7 @@ VITE_MAP_SIMULATE_API_ERROR=true
 | discoverPost | id | 跳转发现详情 |
 | search | keyword | 跳转搜索页 |
 | map | category、pointId、keyword | 跳转现有地图页 |
+| help | 无 | 跳转帮助中心 `pages/service/help`（服务层，见第 13 章） |
 | toast | message | 显示提示 |
 
 地图目标必须使用 `uni.navigateTo`，避免清空返回栈。
@@ -1559,7 +2081,50 @@ VITE_MAP_SIMULATE_API_ERROR=true
 | used | 已使用 |
 | expired | 已过期 |
 
----
+### 16.8 ReviewTargetType（点评对象类型）
+
+| 值 | 说明 | targetId 含义 |
+| --- | --- | --- |
+| spot | 地图景点/设施点位 | `map` 点位 id，如 101 |
+| order | 订单 | 订单 id |
+| product | 商城商品 | 商品 id |
+| discoverPost | 发现内容 | 发现帖 id |
+
+### 16.9 ReviewStatus（点评状态）
+
+| 值 | 说明 |
+| --- | --- |
+| pending | 待审核 |
+| published | 已发布 |
+| rejected | 已拒绝 |
+
+### 16.10 FeedbackType（反馈类型）
+
+| 值 | 说明 |
+| --- | --- |
+| suggestion | 建议 |
+| complaint | 投诉 |
+| facility | 设施/环境问题 |
+| other | 其他 |
+
+### 16.11 QuestionType（问卷题型）
+
+| 值 | 说明 | value 类型 |
+| --- | --- | --- |
+| single | 单选 | string（选项 id） |
+| multi | 多选 | string[] |
+| text | 简答 | string |
+| score | 评分 | number（1–5） |
+
+### 16.12 SupportTicketCategory（工单分类）
+
+| 值 | 说明 |
+| --- | --- |
+| ticket_refund | 门票退款/改期 |
+| order_issue | 订单/支付问题 |
+| facility | 景区设施 |
+| route_guide | 游览咨询 |
+| other | 其他 |
 
 ## 17. 下一阶段最小可交付范围
 
@@ -1584,10 +2149,10 @@ VITE_MAP_SIMULATE_API_ERROR=true
    - 接入 FAQ 和知识库。
    - 保留简易 UI，但优化错误提示和加载状态。
 
-4. 服务层
-   - 反馈提交。
-   - 点评提交。
-   - 问卷提交。
+4. 服务层（契约见第 13 章，**第 0 步已完成**）
+   - [ ] `src/api/service.ts` + mock fallback。
+   - [ ] 帮助中心、反馈、工单、点评、问卷页面。
+   - [ ] 与上传、订单、地图点位入口串联。
 
 ### 17.2 后端最小可交付
 
@@ -1601,6 +2166,7 @@ VITE_MAP_SIMULATE_API_ERROR=true
 8. 优惠券接口。
 9. AI 代理接口。
 10. 上传接口。
+11. 服务层：点评、反馈、问卷、工单、`GET /api/service/config`；FAQ 只读复用 `ai-service/faqs`。
 
 ### 17.3 必须优先修复的问题
 
@@ -1656,6 +2222,17 @@ VITE_MAP_SIMULATE_API_ERROR=true
 - AI 接口失败有友好提示。
 - 小程序端语音能力有兼容方案。
 
+### 18.6 服务层
+
+- [ ] 帮助中心展示 FAQ、`servicePhone` 可拨号。
+- [ ] FAQ `type=human` 进入工单页，不调用 AI chat。
+- [ ] 意见反馈可上传图片并提交；失败保留表单。
+- [ ] 工单可提交、我的工单可查看状态。
+- [ ] 点评可从地图/发现/订单入口进入；我的点评可列表查看。
+- [ ] 问卷列表、填写、提交成功提示 `rewardHint`。
+- [ ] 未登录访问需登录接口时跳转登录页。
+- [ ] 接口失败 mock fallback，页面不白屏。
+
 ---
 
 ## 19. 附：当前前端文件对应关系
@@ -1672,6 +2249,11 @@ VITE_MAP_SIMULATE_API_ERROR=true
 | 地图页 | `src/pages/map/map.vue` |
 | 数字人 AI 页 | `src/pages/ai/index.vue` |
 | 数字人 AI API | `src/api/ai.ts` |
+| 服务层 API（规划） | `src/api/service.ts` |
+| 帮助中心（规划） | `src/pages/service/help.vue` |
+| 工单（规划） | `src/pages/service/ticketCreate.vue`、`ticketList.vue` |
+| 点评/反馈/问卷（规划） | `src/pages/mine/reviews.vue`、`reviewEdit.vue`、`feedback.vue`、`surveyList.vue`、`surveyFill.vue` |
+| 图片上传 | `src/utils/upload.ts` |
 | 统一跳转 | `src/utils/navigation.ts` |
 | 接口配置 | `src/config/api.ts` |
 

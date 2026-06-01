@@ -48,17 +48,30 @@
       <text>地图加载中...</text>
     </view>
 
-    <view class="category-bar" v-show="pageReady && categories.length">
-      <view
-        class="category-item"
-        v-for="item in categories"
-        :key="item.key"
-        :class="{ active: activeCategory === item.key }"
-        @tap="switchCategory(item.key)"
-      >
-        <view class="category-icon">{{ item.displayIcon }}</view>
-        <text class="category-text">{{ item.label }}</text>
+    <scroll-view
+      v-show="pageReady && categories.length"
+      class="category-scroll"
+      scroll-x
+      scroll-with-animation
+      :show-scrollbar="false"
+      :scroll-into-view="categoryScrollIntoView"
+    >
+      <view class="category-bar-inner">
+        <view
+          class="category-item"
+          v-for="item in categories"
+          :key="item.key"
+          :id="'cat-' + item.key"
+          :class="{ active: activeCategory === item.key }"
+          @tap="switchCategory(item.key)"
+        >
+          <view class="category-icon">{{ item.displayIcon }}</view>
+          <text class="category-text">{{ item.label }}</text>
+        </view>
       </view>
+    </scroll-view>
+    <view v-if="markersTruncated" class="markers-hint">
+      <text>当前显示 {{ markerDisplayPoints.length }}/{{ currentPoints.length }} 个点位，可缩小筛选范围</text>
     </view>
 
     <view v-if="activeRoute" class="route-banner">
@@ -113,7 +126,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import TabBar from '../../components/TabBar.vue'
 import {
@@ -180,6 +193,10 @@ const activeRoute = ref(null)
 const routePointIndex = ref(0)
 const userLocation = ref(null)
 const pageReady = ref(false)
+const categoryScrollIntoView = ref('')
+
+/** 8b：限制同屏 marker 数量，避免上百点位卡顿 */
+const MAX_MAP_MARKERS = 80
 
 let detailRequestSeq = 0
 
@@ -614,6 +631,32 @@ const showDetailMeta = computed(() => {
   )
 })
 
+const markerDisplayPoints = computed(() => {
+  const points = currentPoints.value
+  if (points.length <= MAX_MAP_MARKERS) return points
+
+  const selectedId = selectedPoint.value?.id
+  let list = points.slice(0, MAX_MAP_MARKERS)
+  if (selectedId !== undefined && !list.some((item) => Number(item.id) === Number(selectedId))) {
+    const selected = points.find((item) => Number(item.id) === Number(selectedId))
+    if (selected) {
+      list = [selected, ...list.slice(0, MAX_MAP_MARKERS - 1)]
+    }
+  }
+  return list
+})
+
+const markersTruncated = computed(
+  () => currentPoints.value.length > markerDisplayPoints.value.length,
+)
+
+watch(activeCategory, async (key) => {
+  if (!key) return
+  categoryScrollIntoView.value = ''
+  await nextTick()
+  categoryScrollIntoView.value = `cat-${key}`
+})
+
 const currentMarkers = computed(() => {
   const category = categories.value.find((item) => item.key === activeCategory.value)
   const routeColor = '#5c7a9e'
@@ -624,7 +667,7 @@ const currentMarkers = computed(() => {
       ? lifeColor
       : (category ? category.color : '#42c79c')
 
-  return currentPoints.value.map((point, index) => ({
+  return markerDisplayPoints.value.map((point, index) => ({
     id: Number(point.id),
     latitude: point.latitude,
     longitude: point.longitude,
@@ -1064,26 +1107,34 @@ async function handleLeftAction(action) {
   text-align: center;
 }
 
-.category-bar {
+.category-scroll {
   position: absolute;
   left: 16rpx;
   right: 16rpx;
   bottom: 350rpx;
-  display: flex;
-  flex-wrap: nowrap;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.category-bar-inner {
+  display: inline-flex;
   align-items: center;
   gap: 12rpx;
   padding: 0 4rpx 8rpx;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
 }
 
-.category-bar::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
+.markers-hint {
+  position: absolute;
+  left: 16rpx;
+  right: 16rpx;
+  bottom: 300rpx;
+  z-index: 9;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+  background: rgba(255, 247, 236, 0.92);
+  font-size: 20rpx;
+  color: #9a8265;
+  text-align: center;
 }
 
 .category-item {

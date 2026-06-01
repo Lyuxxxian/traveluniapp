@@ -69,3 +69,40 @@ export function runMapRegressionChecks(): MapRegressionReport {
     },
   }
 }
+
+/** 8b：首页/发现/搜索跳转 keyword 与 pointId 在 mock 数据中可解析 */
+const NAV_KEYWORDS = ['灵山大佛', '九龙灌浴', '灵山梵宫', '历史文化深度游', '亲子家庭轻松游']
+const NAV_KEYWORDS_DEFERRED = ['梵宫素斋', '集章']
+const NAV_POINT_IDS = [101, 103]
+
+export function runMapNavigationChecks(): { passed: boolean; errors: string[]; warnings: string[] } {
+  const errors: string[] = []
+  const warnings: string[] = []
+
+  const searchable = Object.values(MAP_POINT_SEEDS)
+    .flat()
+    .flatMap((p) => [p.title, p.desc, p.address, ...(p.tags || [])])
+  MAP_ROUTES.forEach((r) => {
+    searchable.push(r.title, r.desc)
+  })
+
+  const keywordHits = (kw: string) => {
+    const k = kw.trim().toLowerCase()
+    return searchable.some((text) => String(text).toLowerCase().includes(k))
+  }
+
+  NAV_KEYWORDS.forEach((kw) => {
+    if (!keywordHits(kw)) errors.push(`跳转 keyword 无匹配点位: ${kw}`)
+  })
+
+  NAV_KEYWORDS_DEFERRED.forEach((kw) => {
+    if (!keywordHits(kw)) warnings.push(`跳转 keyword 待 2.6 补点位: ${kw}`)
+  })
+
+  NAV_POINT_IDS.forEach((id) => {
+    const found = Object.values(MAP_POINT_SEEDS).flat().some((p) => p.id === id)
+    if (!found) errors.push(`跳转 pointId 不存在: ${id}`)
+  })
+
+  return { passed: errors.length === 0, errors, warnings }
+}
