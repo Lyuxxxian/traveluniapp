@@ -1385,6 +1385,14 @@ VITE_MAP_SIMULATE_API_ERROR=true
 - 点评/反馈/问卷：[`reviews.vue`](src/pages/mine/reviews.vue)、[`reviewEdit.vue`](src/pages/mine/reviewEdit.vue)、[`feedback.vue`](src/pages/mine/feedback.vue)、[`surveyList.vue`](src/pages/mine/surveyList.vue)、[`surveyFill.vue`](src/pages/mine/surveyFill.vue)
 - 我的页入口：[`mine.vue`](src/pages/mine/mine.vue) → `联系客服` 进帮助中心（非 AI 页）
 
+**入口串联（第 3 步已完成）**
+
+- 首页矩阵「游客服务」：`ContentTarget.type = help` → [`navigation.ts`](src/utils/navigation.ts)
+- 商城客服图标 → 帮助中心
+- 发现详情「点评」Tab：列表 + 写点评（`discoverPost`）
+- 地图详情卡「写点评」（`spot` + `pointId`）
+- 订单详情「已完成」：去评价（`order`）+ 联系客服
+
 **业务目标**
 
 | 能力 | 用户场景 | 关联模块 |

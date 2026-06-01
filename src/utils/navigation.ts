@@ -1,4 +1,6 @@
 import type { ContentTarget } from '../api/home'
+import type { ReviewTargetType } from '../api/service'
+import { isLoggedIn } from './auth'
 
 function buildQuery(params: Record<string, string | number | undefined>): string {
   const query = Object.entries(params)
@@ -56,10 +58,43 @@ export function goContentTarget(target?: ContentTarget) {
     return
   }
 
+  if (target.type === 'help') {
+    goHelpCenter()
+    return
+  }
+
   if (target.type === 'toast') {
     uni.showToast({ title: target.message, icon: 'none' })
     return
   }
 
   uni.showToast({ title: '功能开发中', icon: 'none' })
+}
+
+/** 帮助中心（服务层，不调 AI 对话） */
+export function goHelpCenter() {
+  uni.navigateTo({ url: '/pages/service/help' })
+}
+
+export type ReviewEditQuery = {
+  targetType: ReviewTargetType
+  targetId: number
+  title?: string
+  orderId?: number
+}
+
+/** 写点评（需登录） */
+export function goReviewEdit(query: ReviewEditQuery) {
+  if (!isLoggedIn()) {
+    uni.navigateTo({ url: '/pages/login/login' })
+    return
+  }
+  uni.navigateTo({
+    url: `/pages/mine/reviewEdit${buildQuery({
+      targetType: query.targetType,
+      targetId: query.targetId,
+      title: query.title,
+      orderId: query.orderId,
+    })}`,
+  })
 }

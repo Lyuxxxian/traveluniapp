@@ -37,7 +37,7 @@
           </view>
         </view>
 
-        <view class="info">
+        <view v-if="activeSegment === 'detail'" class="info">
           <view class="info-row">
             <text class="info-label">{{ infoLabels.place }}：</text>
             <text class="info-value">{{ post?.place }}</text>
@@ -60,7 +60,29 @@
           </view>
         </view>
 
-        <view v-if="post?.relatedTargets?.length" class="related-section">
+        <view v-else class="review-panel">
+          <view class="review-toolbar">
+            <text class="review-count">共 {{ reviewTotal }} 条点评</text>
+            <view class="review-write-btn" @tap="goWriteReview">写点评</view>
+          </view>
+          <view v-if="reviewsLoading" class="review-state">
+            <text>加载中...</text>
+          </view>
+          <view v-else-if="!reviewList.length" class="review-state">
+            <text>暂无点评，来写第一条吧</text>
+          </view>
+          <view v-else>
+            <view v-for="item in reviewList" :key="item.id" class="review-card">
+              <view class="review-card-head">
+                <text class="review-stars">{{ starText(item.rating) }}</text>
+                <text class="review-date">{{ item.createdAt }}</text>
+              </view>
+              <text class="review-content">{{ item.content }}</text>
+            </view>
+          </view>
+        </view>
+
+        <view v-if="activeSegment === 'detail' && post?.relatedTargets?.length" class="related-section">
           <text class="related-title">相关入口</text>
           <view
             class="related-card"
@@ -76,7 +98,12 @@
           </view>
         </view>
 
-        <image v-if="post?.detailImageUrl" class="bottom-img" :src="post.detailImageUrl" mode="aspectFill" />
+        <image
+          v-if="activeSegment === 'detail' && post?.detailImageUrl"
+          class="bottom-img"
+          :src="post.detailImageUrl"
+          mode="aspectFill"
+        />
       </view>
     </scroll-view>
 
@@ -85,13 +112,17 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { fetchDiscoverPostDetail } from '../../api/discover'
-import { goContentTarget } from '../../utils/navigation'
+import { fetchReviewsByTarget } from '../../api/service'
+import { goContentTarget, goReviewEdit } from '../../utils/navigation'
 
 const post = ref(null)
 const activeSegment = ref('detail')
+const reviewList = ref([])
+const reviewTotal = ref(0)
+const reviewsLoading = ref(false)
 
 const actionText = computed(() => {
   if (!post.value) return '立即预约'
@@ -153,6 +184,45 @@ function onNavigate() {
   const target = post.value?.relatedTargets?.[0]?.target || post.value?.target
   goContentTarget(target)
 }
+
+function starText(rating) {
+  return '★'.repeat(rating) + '☆'.repeat(5 - rating)
+}
+
+async function loadReviews() {
+  if (!post.value?.id) return
+  reviewsLoading.value = true
+  try {
+    const result = await fetchReviewsByTarget({
+      targetType: 'discoverPost',
+      targetId: post.value.id,
+      page: 1,
+      pageSize: 20,
+    })
+    reviewList.value = result.list
+    reviewTotal.value = result.total
+  } catch {
+    reviewList.value = []
+    reviewTotal.value = 0
+  } finally {
+    reviewsLoading.value = false
+  }
+}
+
+function goWriteReview() {
+  if (!post.value?.id) return
+  goReviewEdit({
+    targetType: 'discoverPost',
+    targetId: post.value.id,
+    title: post.value.title,
+  })
+}
+
+watch(activeSegment, (segment) => {
+  if (segment === 'review') {
+    loadReviews()
+  }
+})
 
 function onReserve() {
   const target = post.value?.target || post.value?.relatedTargets?.[0]?.target
@@ -331,6 +401,71 @@ onLoad(async (options) => {
 
 .info {
   margin-top: 26rpx;
+}
+
+.review-panel {
+  margin-top: 26rpx;
+}
+
+.review-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.review-count {
+  font-size: 26rpx;
+  color: #6f5b3e;
+}
+
+.review-write-btn {
+  padding: 12rpx 28rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #8b6138, #d8ad6b);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.review-state {
+  min-height: 200rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9a8265;
+  font-size: 26rpx;
+}
+
+.review-card {
+  margin-bottom: 20rpx;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background: #f7f3eb;
+}
+
+.review-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-stars {
+  font-size: 24rpx;
+  color: #d8ad6b;
+}
+
+.review-date {
+  font-size: 22rpx;
+  color: #9a8265;
+}
+
+.review-content {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: #4e637a;
 }
 
 .info-row {

@@ -8,6 +8,7 @@ export type ContentTarget =
   | { type: 'discoverPost'; id: number }
   | { type: 'search'; keyword?: string }
   | { type: 'map'; category?: string; pointId?: number; keyword?: string }
+  | { type: 'help' }
   | { type: 'toast'; message: string }
 
 export type HomeHeroSlide = {
@@ -109,7 +110,7 @@ export const mockHomeConfig: HomeConfig = {
     { key: 'entryAlert', title: '入园提醒', desc: '须知与检票点', icon: 'notice', target: { type: 'toast', message: '入园提醒待开发' } },
     { key: 'openingHours', title: '运营时间', desc: '8:00-17:00', icon: 'time', target: { type: 'toast', message: '运营时间待开发' } },
     { key: 'audioGuide', title: '电子讲解器', desc: '扫码支付佩戴', icon: 'audio', target: { type: 'toast', message: '电子讲解器待开发' } },
-    { key: 'service', title: '游客服务', desc: '热评与回复', icon: 'service', target: { type: 'toast', message: '游客服务待开发' } },
+    { key: 'service', title: '游客服务', desc: '热评与回复', icon: 'service', target: { type: 'help' } },
   ],
   actionCards: [
     { key: 'buy', title: '立即购买', desc: '门票与套票', icon: 'buy', target: { type: 'ticket' } },

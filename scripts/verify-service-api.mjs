@@ -94,6 +94,30 @@ if (!mineVue.includes('/pages/service/help')) {
   errors.push('mine.vue 联系客服应跳转帮助中心')
 }
 
+const homeTs = read('src/api/home.ts')
+const navTs = read('src/utils/navigation.ts')
+if (!homeTs.includes("type: 'help'")) {
+  errors.push('home.ts ContentTarget 缺少 help')
+}
+if (!navTs.includes("target.type === 'help'")) {
+  errors.push('navigation.ts 缺少 help 跳转')
+}
+if (!navTs.includes('goReviewEdit')) {
+  errors.push('navigation.ts 缺少 goReviewEdit')
+}
+if (!read('src/pages/mall/mall.vue').includes('/pages/service/help')) {
+  errors.push('mall.vue 客服应跳转帮助中心')
+}
+if (!read('src/pages/discover/discoverDetail.vue').includes('fetchReviewsByTarget')) {
+  errors.push('discoverDetail.vue 点评 Tab 应接入 fetchReviewsByTarget')
+}
+if (!read('src/pages/map/map.vue').includes('goWriteReview')) {
+  errors.push('map.vue 详情卡应含写点评入口')
+}
+if (!read('src/pages/mine/orderInfo.vue').includes('goOrderReview')) {
+  errors.push('orderInfo.vue 已完成订单应含去评价入口')
+}
+
 if (errors.length) {
   console.error('[service-api] FAILED')
   errors.forEach((e) => console.error(`  ✗ ${e}`))
@@ -105,3 +129,4 @@ console.log(`  ✓ 导出函数 ${requiredExports.length} 个`)
 console.log('  ✓ API_PATHS.service 已配置')
 console.log('  ✓ 未引用 ai.ts / FAQ 走 AI_PROXY_PATHS')
 console.log(`  ✓ 服务层页面已注册 ${requiredPages.length} 个`)
+console.log('  ✓ 第 3 步入口：首页/商城/发现/地图/订单已串联')

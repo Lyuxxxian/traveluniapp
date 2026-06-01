@@ -253,7 +253,7 @@ const matrixItems = [
   { key: 'audioGuide', icon: '🎧', title: '电子讲解器', desc: '扫码支付佩戴' },
   { key: 'blessing', icon: '🙏', title: '考试祈福', desc: '摸掌祈福' },
   { key: 'memberGoods', icon: '🛍️', title: '会员商品', desc: '文创与禅茶' },
-  { key: 'service', icon: '💬', title: '游客服务', desc: '热评与回复' },
+  { key: 'service', icon: '💬', title: '游客服务', desc: '热评与回复', target: { type: 'help' } },
   { key: 'trip', icon: '🗺️', title: '我的行程', desc: 'DIY优化路线' },
 ]
 

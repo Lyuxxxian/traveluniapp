@@ -106,6 +106,14 @@
           <text>查看入园凭证</text>
         </view>
       </template>
+      <template v-else-if="detail.status === 'completed'">
+        <view class="bottom-btn secondary" @tap="goOrderReview">
+          <text>去评价</text>
+        </view>
+        <view class="bottom-btn pay" @tap="goHelp">
+          <text>联系客服</text>
+        </view>
+      </template>
     </view>
 
     <view class="pay-mask" v-if="payVisible" @tap="onPayCancel">
@@ -175,6 +183,7 @@
 import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { fetchOrderDetail, cancelOrder, mockPayOrder, getAvailableCouponsForOrder } from '../../api/mine'
+import { goHelpCenter, goReviewEdit } from '../../utils/navigation'
 
 const detail = ref(null)
 const payVisible = ref(false)
@@ -216,6 +225,21 @@ function statusIcon(status) {
 
 function goBack() {
   uni.navigateBack()
+}
+
+function goOrderReview() {
+  if (!detail.value?.id) return
+  const title = detail.value.items?.[0]?.title || detail.value.orderNo
+  goReviewEdit({
+    targetType: 'order',
+    targetId: detail.value.id,
+    title,
+    orderId: detail.value.id,
+  })
+}
+
+function goHelp() {
+  goHelpCenter()
 }
 
 function onPay() {

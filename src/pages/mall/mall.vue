@@ -123,7 +123,7 @@ function goSearch() {
 }
 
 function goService() {
-  uni.showToast({ title: '智能客服对话待开发', icon: 'none' })
+  uni.navigateTo({ url: '/pages/service/help' })
 }
 
 function goModule(item) {

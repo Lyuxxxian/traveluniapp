@@ -118,7 +118,10 @@
       <text v-if="detailLoading" class="detail-loading">详情加载中...</text>
       <view class="detail-footer">
         <text class="detail-address">{{ displayPoint.address }}</text>
-        <view class="nav-btn" @tap="openNavigation(displayPoint)">导航</view>
+        <view class="detail-actions">
+          <view class="action-btn outline" @tap="goWriteReview">写点评</view>
+          <view class="nav-btn" @tap="openNavigation(displayPoint)">导航</view>
+        </view>
       </view>
     </view>
   </view>
@@ -129,6 +132,7 @@
 import { computed, ref, watch, nextTick } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import TabBar from '../../components/TabBar.vue'
+import { goReviewEdit } from '../../utils/navigation'
 import {
   fallbackMapCategories,
   fallbackMapPoints,
@@ -889,6 +893,16 @@ function openNavigation(point) {
   })
 }
 
+function goWriteReview() {
+  const point = displayPoint.value
+  if (!point?.id) return
+  goReviewEdit({
+    targetType: 'spot',
+    targetId: Number(point.id),
+    title: point.title,
+  })
+}
+
 function goBack() {
   uni.navigateBack({ delta: 1 })
 }
@@ -1340,15 +1354,38 @@ async function handleLeftAction(action) {
 
 .detail-footer {
   margin-top: 18rpx;
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
 }
 
 .detail-address {
-  flex: 1;
+  display: block;
   color: #9a8265;
   font-size: 24rpx;
+}
+
+.detail-actions {
+  margin-top: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12rpx;
+}
+
+.action-btn {
+  flex: 0 0 auto;
+  min-width: 120rpx;
+  height: 64rpx;
+  border-radius: 999rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.action-btn.outline {
+  color: #6f451d;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1rpx solid rgba(139, 97, 56, 0.35);
 }
 
 .nav-btn {
