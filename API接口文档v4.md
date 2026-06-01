@@ -1371,6 +1371,13 @@ VITE_MAP_SIMULATE_API_ERROR=true
 
 ### 13.0 模块说明
 
+**前端 API 层（第 1 步已完成）**
+
+- 实现文件：[`src/api/service.ts`](src/api/service.ts)、[`src/api/serviceData.ts`](src/api/serviceData.ts)
+- 路径常量：[`src/config/api.ts`](src/config/api.ts) → `API_PATHS.service`
+- 环境变量：`VITE_SERVICE_USE_REMOTE_API`、`VITE_SERVICE_SIMULATE_API_ERROR`（见 `.env.example`）
+- 自检：`npm run verify:service`
+
 **业务目标**
 
 | 能力 | 用户场景 | 关联模块 |
@@ -1408,7 +1415,7 @@ VITE_MAP_SIMULATE_API_ERROR=true
 
 - URL：`POST /api/reviews`
 - 认证：需要
-- 当前状态：契约已冻结，前端待实现 `src/api/service.ts`。
+- 当前状态：契约已冻结；前端 API 层已实现 [`src/api/service.ts`](src/api/service.ts) + [`src/api/serviceData.ts`](src/api/serviceData.ts)（mock fallback，页面待第 2 步）。
 - 说明：同一用户对同一 `targetType + targetId` 默认仅允许一条有效点评；重复提交返回业务错误码 `40901`（可由后端配置为覆盖更新，须在实现说明中写明）。
 
 **请求体**

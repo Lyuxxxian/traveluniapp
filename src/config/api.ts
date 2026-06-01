@@ -38,6 +38,15 @@ export const API_PATHS = {
     pointDetail: '/api/map/points',
     routes: '/api/map/routes',
   },
+  service: {
+    reviews: '/api/reviews',
+    userReviews: '/api/user/reviews',
+    feedback: '/api/feedback',
+    questionnaires: '/api/questionnaires',
+    supportTickets: '/api/support/tickets',
+    userSupportTickets: '/api/user/support/tickets',
+    config: '/api/service/config',
+  },
 } as const
 
 // Never expose third-party API keys in frontend code.
