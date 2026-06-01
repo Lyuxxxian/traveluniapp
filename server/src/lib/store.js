@@ -15,6 +15,25 @@ function ensureDir() {
   }
 }
 
+function mergeDefaults(store) {
+  let changed = false
+  for (const key of Object.keys(seedData)) {
+    if (store[key] === undefined) {
+      store[key] = structuredClone(seedData[key])
+      changed = true
+    }
+  }
+  if (!store.counters) store.counters = structuredClone(seedData.counters)
+  for (const [k, v] of Object.entries(seedData.counters)) {
+    if (store.counters[k] === undefined) {
+      store.counters[k] = v
+      changed = true
+    }
+  }
+  if (changed) saveStore()
+  return store
+}
+
 export function loadStore() {
   if (cache) return cache
   ensureDir()
@@ -24,6 +43,7 @@ export function loadStore() {
     return cache
   }
   cache = JSON.parse(fs.readFileSync(STORE_FILE, 'utf8'))
+  mergeDefaults(cache)
   return cache
 }
 

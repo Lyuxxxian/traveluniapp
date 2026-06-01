@@ -126,10 +126,9 @@
    - 与用户资料、上传、订单、地图点位关联。
    - 本期不做数字人 AI 对话；帮助中心仅调用 `GET /api/ai-service/faqs`，不调用 `chat`。
 
-5. 管理员端
-   - 首页运营位管理。
-   - 发现内容管理。
-   - 地图点位管理。
+5. 管理员端（**首期 MVP + 内容已实现**，见 [15.0](#150-管理端首期冻结范围mvp--内容2026-05-30)、`admin-web/`、`server` 管理路由）
+   - 已实现：登录鉴权、服务运营、首页配置、发现内容、公开 `home`/`discover` API。
+   - 二期：地图点位管理。
    - 商品/酒店/优惠券/订单管理。
    - AI 知识库和 FAQ 管理。
    - 反馈与数据统计。
@@ -1911,6 +1910,60 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 
 管理员端建议在用户端数据结构稳定后开发。
 
+### 15.0 管理端首期冻结范围（MVP + 内容，2026-05-30）
+
+**本期纳入**：管理员登录、服务层运营（反馈/工单/点评/FAQ/问卷/客服配置/统计概览）、首页配置、发现内容管理、C 端公开只读 `home` / `discover`。
+
+**本期不做（二期）**：15.4–15.5 地图、15.6–15.7 AI 知识库与会话、15.8 商城订单。
+
+**鉴权**：除 `POST /api/admin/auth/login` 外，所有 `/api/admin/*` 需 Header `Authorization: Bearer <adminToken>`。本地调试可设环境变量 `ADMIN_AUTH_DISABLED=true`。
+
+**公开 API（无鉴权，与 store 同源）**：
+
+| 接口 | 方法 | 说明 |
+| --- | --- | --- |
+| `/api/home/config` | GET | 返回 `HomeConfig`：`heroSlides`、`matrixItems`、`actionCards`、`collectionSections`、`feedItems` |
+| `/api/discover/posts` | GET | 仅 `status=published`；query：`category`、`page`、`pageSize` |
+| `/api/discover/posts/:id` | GET | 详情，字段对齐 `DiscoverPostDetail` |
+
+**15.1 管理员登录（冻结）**
+
+- `POST /api/admin/auth/login`
+- 请求：`{ username, password }`
+- 成功 `data`：`{ token, admin: { id, name, role } }`
+- 种子账号：`admin` / `admin123`（仅开发）
+
+**15.2 首页配置管理（冻结）**
+
+- `GET /api/admin/home/config`、`PUT /api/admin/home/config`
+- body/响应结构与 C 端 [`HomeConfig`](src/api/home.ts) 一致
+
+**15.3 发现内容管理（冻结）**
+
+- `GET /api/admin/discover/posts`（query：`category`、`status`）
+- `POST /api/admin/discover/posts`
+- `PUT /api/admin/discover/posts/:id`
+- `DELETE /api/admin/discover/posts/:id`
+- `PUT /api/admin/discover/posts/:id/status`（`published` / `draft`）
+- 列表字段对齐 `DiscoverPost`；详情扩展字段对齐 `DiscoverPostDetail`；`target` 遵循 `ContentTarget`
+
+**15.9 服务层运营（冻结，补齐）**
+
+| 接口 | 方法 | 说明 |
+| --- | --- | --- |
+| `/api/admin/feedback` | GET | 意见反馈列表 |
+| `/api/admin/feedback/:id/status` | PUT | 改 `status` |
+| `/api/admin/support/tickets` | GET | 工单列表 |
+| `/api/admin/support/tickets/:id` | PUT | `status`、`adminReply` |
+| `/api/admin/reviews` | GET | 点评列表 |
+| `/api/admin/reviews/:id/status` | PUT | `pending` / `published` / `rejected` |
+| `/api/admin/ai-service/faqs` | GET/POST/PUT/DELETE | 与 `store.faqs`、用户端 `GET /api/ai-service/faqs` 同源 |
+| `/api/admin/questionnaires` | GET/POST/PUT | 问卷 CRUD，题目内嵌 |
+| `/api/admin/service/config` | GET/PUT | `servicePhone`、`serviceHours` 等 |
+| `/api/admin/statistics/overview` | GET | 各表 count 概览 |
+
+变更规则：与 2.1.0 一致，仅允许新增可选字段。
+
 ### 15.1 管理员登录
 
 - URL：`POST /api/admin/auth/login`
@@ -2196,7 +2249,8 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 8. 优惠券接口。
 9. AI 代理接口。
 10. 上传接口。
-11. 服务层（**已实现**，见 `server/`）：点评、反馈、问卷、工单、`GET /api/service/config`；FAQ 只读 `ai-service/faqs`；`POST /api/upload/image`；管理端 `GET/PUT /api/admin/feedback`、`/api/admin/support/tickets`。
+11. 服务层（**已实现**，见 `server/`）：点评、反馈、问卷、工单、`GET /api/service/config`；FAQ 只读 `ai-service/faqs`；`POST /api/upload/image`。
+12. 管理端首期（**已实现**）：`POST /api/admin/auth/login`；`/api/admin/*` 服务运营 + 首页/发现；公开 `GET /api/home/config`、`GET /api/discover/posts`；H5 后台 `admin-web/`（`npm run dev` 端口 5174）。验收：`cd server && npm run verify:admin`。
 
 ### 17.3 必须优先修复的问题
 
@@ -2287,4 +2341,16 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 | 统一跳转 | `src/utils/navigation.ts` |
 | 接口配置 | `src/config/api.ts` |
 | 服务层后端 | `server/src/index.js` |
+| 管理后台 H5 | `admin-web/`（Vue3 + Element Plus，端口 5174） |
+| 管理端 API 封装 | `admin-web/src/api/admin.ts` |
+
+### 18.6 管理端联调清单（首期）
+
+- [ ] `admin` / `admin123` 登录成功
+- [ ] 修改 FAQ 后小程序帮助中心可见（`VITE_SERVICE_USE_REMOTE_API=true`）
+- [ ] 工单 `adminReply` 后用户工单列表可见
+- [ ] 点评 `rejected` 后发现详情不展示
+- [ ] 首页配置保存后小程序首页更新（`VITE_HOME_USE_REMOTE_API=true`）
+- [ ] 发现帖下架后 C 端列表不展示（`VITE_DISCOVER_USE_REMOTE_API=true`）
+- [ ] `cd server && npm run verify:admin` 通过
 

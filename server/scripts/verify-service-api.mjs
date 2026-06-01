@@ -65,7 +65,14 @@ async function main() {
     const myTickets = await request('/api/user/support/tickets', { headers })
     assert('user tickets', myTickets.json.code === 200 && myTickets.json.data?.list?.length)
 
-    const adminFb = await request('/api/admin/feedback')
+    const adminLogin = await request('/api/admin/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'admin', password: 'admin123' }),
+    })
+    const adminToken = adminLogin.json.data?.token || ''
+    const adminHeaders = { Authorization: `Bearer ${adminToken}` }
+    const adminFb = await request('/api/admin/feedback', { headers: adminHeaders })
     assert('admin feedback', adminFb.json.code === 200)
   } catch (e) {
     errors.push(`服务未启动或不可达: ${e.message}（请先 cd server && npm run dev）`)

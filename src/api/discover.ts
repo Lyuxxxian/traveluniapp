@@ -1,4 +1,5 @@
 import { API_PATHS } from '../config/api'
+import { http } from '../utils/request'
 import type { ContentTarget } from './home'
 
 export type DiscoverCategory = 'recommend' | 'activity' | 'guide' | 'show' | 'food' | 'creative'
@@ -221,9 +222,25 @@ const detailMap: Record<number, Omit<DiscoverPostDetail, keyof DiscoverPost>> = 
   },
 }
 
+const USE_REMOTE_DISCOVER_API = import.meta.env.VITE_DISCOVER_USE_REMOTE_API === 'true'
+const DISCOVER_READ_OPTS = { auth: false, showErrorToast: false } as const
+
 export async function fetchDiscoverPosts(params: DiscoverPostListParams = {}): Promise<DiscoverPost[] | DiscoverPostPage> {
-  // TODO: 对接后端 GET ${API_PATHS.discover.posts}
-  // return http.get<DiscoverPostPage>(API_PATHS.discover.posts, params, { auth: false })
+  if (USE_REMOTE_DISCOVER_API) {
+    try {
+      const data = await http.get<DiscoverPost[] | DiscoverPostPage>(
+        API_PATHS.discover.posts,
+        params,
+        DISCOVER_READ_OPTS,
+      )
+      if (Array.isArray(data) && data.length) return data
+      if (data && typeof data === 'object' && 'list' in data && (data as DiscoverPostPage).list?.length) {
+        return data as DiscoverPostPage
+      }
+    } catch {
+      /* fallback mock */
+    }
+  }
   const page = params.page || 1
   const pageSize = params.pageSize || 20
   const filtered = params.category && params.category !== 'recommend'
@@ -244,8 +261,18 @@ export async function fetchDiscoverPosts(params: DiscoverPostListParams = {}): P
 }
 
 export async function fetchDiscoverPostDetail(id: number): Promise<DiscoverPostDetail> {
-  // TODO: 对接后端 GET ${API_PATHS.discover.detail}/:id
-  // return http.get<DiscoverPostDetail>(`${API_PATHS.discover.detail}/${id}`, undefined, { auth: false })
+  if (USE_REMOTE_DISCOVER_API) {
+    try {
+      const data = await http.get<DiscoverPostDetail>(
+        `${API_PATHS.discover.detail}/${id}`,
+        undefined,
+        DISCOVER_READ_OPTS,
+      )
+      if (data?.id) return data
+    } catch {
+      /* fallback mock */
+    }
+  }
   const post = staticPosts.find((item) => item.id === id) || staticPosts[0]
   const detail = detailMap[post.id] || {
     place: post.location,

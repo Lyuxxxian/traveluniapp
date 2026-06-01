@@ -3,7 +3,7 @@ import { loadStore, saveStore } from '../lib/store.js'
 import { ok, fail } from '../lib/response.js'
 import { nowText } from '../lib/time.js'
 
-/** 管理端第二批最小实现（开发环境无鉴权，生产须加 admin 中间件） */
+/** 管理端：反馈 / 工单 / 点评（由 adminMain 挂载 requireAdminAuth） */
 const router = Router()
 
 router.get('/feedback', (_req, res) => {

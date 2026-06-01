@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "verify": "node scripts/verify-service-api.mjs"
+    "verify": "node scripts/verify-service-api.mjs && node scripts/verify-admin-api.mjs",
+    "verify:admin": "node scripts/verify-admin-api.mjs"
   },
   "dependencies": {
     "cors": "^2.8.5",

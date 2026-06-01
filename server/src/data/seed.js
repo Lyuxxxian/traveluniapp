@@ -1,3 +1,5 @@
+import { homeConfigSeed, discoverPostsSeed } from './contentSeed.js'
+
 /** 与前端 serviceData.ts 对齐的初始种子 */
 export const seedData = {
   counters: {
@@ -6,7 +8,22 @@ export const seedData = {
     ticket: 80010,
     submission: 50010,
     user: 1,
+    admin: 1,
+    faq: 100,
+    questionnaire: 10,
+    discoverPost: 10,
   },
+  admins: [
+    {
+      id: 1,
+      username: 'admin',
+      password: 'admin123',
+      name: '系统管理员',
+      role: 'admin',
+    },
+  ],
+  homeConfig: homeConfigSeed,
+  discoverPosts: discoverPostsSeed,
   users: [
     {
       id: 1,

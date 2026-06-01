@@ -1,4 +1,5 @@
 import { API_PATHS } from '../config/api'
+import { http } from '../utils/request'
 
 export type ContentTarget =
   | { type: 'ticket' }
@@ -200,9 +201,17 @@ const mockShows: ShowItem[] = [
   },
 ]
 
+const USE_REMOTE_HOME_API = import.meta.env.VITE_HOME_USE_REMOTE_API === 'true'
+const HOME_READ_OPTS = { auth: false, showErrorToast: false } as const
+
 export async function fetchHomeConfig(): Promise<HomeConfig> {
-  // TODO: 对接后端 GET ${API_PATHS.home.config}
-  // return http.get<HomeConfig>(API_PATHS.home.config, undefined, { auth: false })
+  if (!USE_REMOTE_HOME_API) return Promise.resolve(mockHomeConfig)
+  try {
+    const data = await http.get<HomeConfig>(API_PATHS.home.config, undefined, HOME_READ_OPTS)
+    if (data?.heroSlides?.length) return data
+  } catch {
+    /* fallback mock */
+  }
   return Promise.resolve(mockHomeConfig)
 }
 
