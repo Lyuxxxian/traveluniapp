@@ -1,4 +1,3 @@
-import { askAI } from '@/api/ai'
 <template>
   <view class="ai-page">
     <view class="top-card">
@@ -81,6 +80,8 @@ import { askAI } from '@/api/ai'
         发送
       </view>
     </view>
+
+    <Live2DCanvas />
   </view>
 </template>
 
@@ -88,6 +89,7 @@ import { askAI } from '@/api/ai'
 import { ref, nextTick } from 'vue'
 import { matchKnowledge } from '@/utils/knowledge.js'
 import { askAI } from '@/api/ai'
+import Live2DCanvas from './Live2DCanvas.vue'
 
 const inputText = ref('')
 const humanStatus = ref('在线待命')
@@ -151,7 +153,6 @@ function sendMessage() {
 humanStatus.value = '正在讲解'
 scrollToBottom()
 speakText(answer)
-  speakText(answer)
 }, 500)
 }
 
