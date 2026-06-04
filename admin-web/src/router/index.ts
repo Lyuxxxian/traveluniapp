@@ -20,6 +20,7 @@ const router = createRouter({
         { path: 'content/home', component: () => import('@/views/home/HomeConfig.vue') },
         { path: 'content/discover', component: () => import('@/views/discover/PostList.vue') },
         { path: 'content/discover/edit/:id?', component: () => import('@/views/discover/PostEdit.vue') },
+        { path: 'dev/content-target', component: () => import('@/views/dev/ContentTargetDemo.vue') },
       ],
     },
   ],

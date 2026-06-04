@@ -14,12 +14,15 @@ cd server && npm run verify:admin
 
 ## 手工验收
 
-- [ ] admin 登录失败/成功提示
-- [ ] 改 FAQ → 小程序帮助中心可见
-- [ ] 工单 adminReply → 用户工单列表可见
-- [ ] 点评 rejected → 发现详情点评 Tab 不展示
-- [ ] 改首页轮播 → 小程序首页 onMounted 拉配置可见
-- [ ] 发现帖 status=draft → C 端列表不展示
+- [x] admin 登录失败/成功提示（API 已验；UI 见 admin-web 登录页）
+- [x] 改 FAQ → 小程序帮助中心可见（`verify-p0-checklist.mjs`）
+- [x] 工单 adminReply → 用户工单列表可见（`verify-p0-checklist.mjs`）
+- [x] 点评 rejected → 发现详情点评 Tab 不展示（公开 `/api/reviews` 已验）
+- [x] 改首页轮播 → 小程序首页 onMounted 拉配置可见（`GET /api/home/config` 已验；需 `VITE_HOME_USE_REMOTE_API=true`）
+- [x] 发现帖 status=draft → C 端列表不展示（`verify-p0-checklist.mjs`；需 `VITE_DISCOVER_USE_REMOTE_API=true`）
+- [x] 用户提交问卷 → 列表显示「已填写」；管理端 **服务运营 → 问卷 → 答卷** 可查看明细（`GET /api/admin/questionnaires/:id/submissions`）
+
+自动化：`cd server && npm run verify:p0`
 
 ## 环境变量
 

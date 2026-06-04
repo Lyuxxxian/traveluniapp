@@ -1958,7 +1958,8 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 | `/api/admin/reviews` | GET | 点评列表 |
 | `/api/admin/reviews/:id/status` | PUT | `pending` / `published` / `rejected` |
 | `/api/admin/ai-service/faqs` | GET/POST/PUT/DELETE | 与 `store.faqs`、用户端 `GET /api/ai-service/faqs` 同源 |
-| `/api/admin/questionnaires` | GET/POST/PUT | 问卷 CRUD，题目内嵌 |
+| `/api/admin/questionnaires` | GET/POST/PUT | 问卷 CRUD，题目内嵌；GET 列表含 `submissionCount` |
+| `/api/admin/questionnaires/:id/submissions` | GET | 某问卷的用户答卷列表（含题目文案与 `displayValue`） |
 | `/api/admin/service/config` | GET/PUT | `servicePhone`、`serviceHours` 等 |
 | `/api/admin/statistics/overview` | GET | 各表 count 概览 |
 

@@ -54,6 +54,14 @@ async function main() {
 
     const fb = await request('/api/admin/feedback', { headers })
     assert('admin feedback', fb.json.code === 200)
+
+    const qList = await request('/api/admin/questionnaires', { headers })
+    assert('admin questionnaires', qList.json.code === 200 && qList.json.data?.length)
+    const qid = qList.json.data[0]?.id
+    if (qid) {
+      const subs = await request(`/api/admin/questionnaires/${qid}/submissions`, { headers })
+      assert('questionnaire submissions', subs.json.code === 200 && Array.isArray(subs.json.data?.list))
+    }
   } catch (e) {
     errors.push(`服务未启动或不可达: ${e.message}（请先 cd server && npm run dev）`)
   }

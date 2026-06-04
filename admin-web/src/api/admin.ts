@@ -1,3 +1,5 @@
+import type { HomeConfig } from '@/types/homeConfig'
+import type { AdminListQuery, AdminPageResult } from '@/types/adminList'
 import { apiDelete, apiGet, apiPost, apiPut } from '@/utils/request'
 
 const P = '/api/admin'
@@ -12,8 +14,8 @@ export function fetchOverview() {
   return apiGet<Record<string, number>>(`${P}/statistics/overview`)
 }
 
-export function fetchFeedback() {
-  return apiGet<unknown[]>(`${P}/feedback`)
+export function fetchFeedback(params?: AdminListQuery) {
+  return apiGet<AdminPageResult<unknown> | unknown[]>(`${P}/feedback`, params as Record<string, unknown>)
 }
 
 export function updateFeedbackStatus(id: number, status: string) {
@@ -28,8 +30,8 @@ export function updateTicket(id: number, body: { status?: string; adminReply?: s
   return apiPut(`${P}/support/tickets/${id}`, body)
 }
 
-export function fetchReviews() {
-  return apiGet<unknown[]>(`${P}/reviews`)
+export function fetchReviews(params?: AdminListQuery) {
+  return apiGet<AdminPageResult<unknown> | unknown[]>(`${P}/reviews`, params as Record<string, unknown>)
 }
 
 export function updateReviewStatus(id: number, status: string) {
@@ -64,6 +66,15 @@ export function updateQuestionnaire(id: number, body: Record<string, unknown>) {
   return apiPut(`${P}/questionnaires/${id}`, body)
 }
 
+export function fetchQuestionnaireSubmissions(id: number) {
+  return apiGet<{
+    questionnaireId: number
+    title: string
+    list: Record<string, unknown>[]
+    total: number
+  }>(`${P}/questionnaires/${id}/submissions`)
+}
+
 export function fetchServiceConfig() {
   return apiGet<Record<string, string>>(`${P}/service/config`)
 }
@@ -73,15 +84,15 @@ export function updateServiceConfig(body: Record<string, string>) {
 }
 
 export function fetchHomeConfig() {
-  return apiGet<Record<string, unknown>>(`${P}/home/config`)
+  return apiGet<HomeConfig>(`${P}/home/config`)
 }
 
-export function updateHomeConfig(body: Record<string, unknown>) {
-  return apiPut(`${P}/home/config`, body)
+export function updateHomeConfig(body: HomeConfig) {
+  return apiPut<HomeConfig>(`${P}/home/config`, body)
 }
 
-export function fetchDiscoverPosts(params?: { category?: string; status?: string }) {
-  return apiGet<unknown[]>(`${P}/discover/posts`, params)
+export function fetchDiscoverPosts(params?: AdminListQuery) {
+  return apiGet<AdminPageResult<unknown> | unknown[]>(`${P}/discover/posts`, params as Record<string, unknown>)
 }
 
 export function createDiscoverPost(body: Record<string, unknown>) {

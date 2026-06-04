@@ -531,6 +531,7 @@ onMounted(async () => {
 .hero-overlay {
   position: absolute;
   inset: 0;
+  pointer-events: none;
   background:
     linear-gradient(to bottom, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.12) 46%, rgba(0, 0, 0, 0.38) 100%),
     radial-gradient(circle at 72% 24%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 36%);

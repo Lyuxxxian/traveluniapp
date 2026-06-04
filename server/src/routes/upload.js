@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import multer from 'multer'
-import { requireAuth } from '../lib/auth.js'
+import { requireUserOrAdminAuth } from '../lib/uploadAuth.js'
 import { ok, fail } from '../lib/response.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -28,7 +28,7 @@ const upload = multer({
 
 const router = Router()
 
-router.post('/image', requireAuth, upload.single('file'), (req, res) => {
+router.post('/image', requireUserOrAdminAuth, upload.single('file'), (req, res) => {
   if (!req.file) {
     return fail(res, 40001, '请上传图片文件')
   }

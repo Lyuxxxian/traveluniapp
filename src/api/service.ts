@@ -1,5 +1,6 @@
 import { AI_PROXY_PATHS, API_PATHS } from '../config/api'
 import { http } from '../utils/request'
+import { getToken } from '../utils/auth'
 import {
   MOCK_FAQS,
   MOCK_QUESTIONNAIRE_DETAILS,
@@ -417,8 +418,12 @@ export async function submitFeedback(payload: SubmitFeedbackPayload): Promise<Su
 }
 
 export async function fetchQuestionnaires(): Promise<QuestionnaireSummary[]> {
+  const listOpts = {
+    auth: !!getToken(),
+    showErrorToast: false,
+  } as const
   return fetchRemoteOrFallback(
-    () => http.get<QuestionnaireSummary[]>(API_PATHS.service.questionnaires, undefined, SERVICE_READ_OPTS),
+    () => http.get<QuestionnaireSummary[]>(API_PATHS.service.questionnaires, undefined, listOpts),
     () =>
       MOCK_QUESTIONNAIRES.map((item) => ({
         ...item,

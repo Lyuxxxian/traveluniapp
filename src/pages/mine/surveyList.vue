@@ -27,7 +27,7 @@
           <text v-if="item.desc" class="survey-desc">{{ item.desc }}</text>
           <text v-if="item.rewardHint" class="survey-reward">{{ item.rewardHint }}</text>
           <text v-if="item.deadline" class="survey-deadline">截止：{{ item.deadline }}</text>
-          <text class="survey-action">{{ item.submitted ? '已完成' : '去填写 ›' }}</text>
+          <text class="survey-action">{{ item.submitted ? '已填写' : '去填写 ›' }}</text>
         </view>
       </view>
     </scroll-view>
@@ -35,7 +35,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { fetchQuestionnaires } from '../../api/service'
 import { isLoggedIn } from '../../utils/auth'
 
@@ -58,7 +59,8 @@ function openSurvey(item) {
   uni.navigateTo({ url: `/pages/mine/surveyFill?id=${item.id}` })
 }
 
-onMounted(async () => {
+async function loadList() {
+  loading.value = true
   try {
     list.value = await fetchQuestionnaires()
   } catch {
@@ -66,6 +68,10 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+}
+
+onShow(() => {
+  loadList()
 })
 </script>
 

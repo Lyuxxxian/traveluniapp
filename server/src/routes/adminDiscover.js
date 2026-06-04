@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { loadStore, saveStore, nextId } from '../lib/store.js'
-import { ok, fail } from '../lib/response.js'
+import { ok, fail, paginate } from '../lib/response.js'
 
 const router = Router()
 
@@ -11,6 +11,9 @@ router.get('/posts', (req, res) => {
   const status = req.query.status
   if (category) list = list.filter((p) => p.category === category)
   if (status) list = list.filter((p) => p.status === status)
+  if (req.query.page || req.query.pageSize) {
+    return ok(res, paginate(list, req.query.page, req.query.pageSize))
+  }
   return ok(res, list)
 })
 

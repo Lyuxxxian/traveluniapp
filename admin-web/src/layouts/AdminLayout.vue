@@ -32,6 +32,7 @@ function logout() {
           <el-menu-item index="/content/home">首页配置</el-menu-item>
           <el-menu-item index="/content/discover">发现内容</el-menu-item>
         </el-sub-menu>
+        <el-menu-item index="/dev/content-target">组件验收 Target</el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
