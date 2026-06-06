@@ -15,11 +15,12 @@ export const seedData = {
     order: 9007,
     userCoupon: 8003,
   },
+  /** 仅开发种子；生产部署后务必运行 npm run admin:set-password 修改，勿使用默认口令 */
   admins: [
     {
       id: 1,
       username: 'admin',
-      password: 'admin123',
+      password: 'DevOnly!2026',
       name: '系统管理员',
       role: 'admin',
     },

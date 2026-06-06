@@ -29,5 +29,17 @@ cd server && npm run verify:admin
 
 | 变量 | 说明 |
 | --- | --- |
-| `ADMIN_AUTH_DISABLED=true` | 仅本地跳过管理端鉴权 |
-| `JWT_SECRET` | 与 C 端用户 JWT 共用密钥（开发默认即可） |
+| `ADMIN_AUTH_DISABLED=true` | 仅本地跳过管理端鉴权（**生产禁止**，见 [ADMIN_PRODUCTION.md](./ADMIN_PRODUCTION.md)） |
+| `JWT_SECRET` | 与 C 端用户 JWT 共用密钥（生产必改） |
+
+## 生产部署（M15-07）
+
+详见 [ADMIN_PRODUCTION.md](./ADMIN_PRODUCTION.md)。开发默认管理员：`admin` / `DevOnly!2026`。
+
+## 管理端 README 与部署（M15-08）
+
+详见 [admin-web/README.md](../../admin-web/README.md)。
+
+- [ ] `cd admin-web && npm run build` 成功
+- [ ] `npm run preview` 或 Nginx 托管 `dist/` 可打开登录页
+- [ ] 使用管理员账号可登录并进入概览

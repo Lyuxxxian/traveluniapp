@@ -4,7 +4,8 @@ import { loadStore } from './store.js'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'traveluniapp-dev-secret'
 const JWT_EXPIRES = '7d'
-const AUTH_DISABLED = process.env.ADMIN_AUTH_DISABLED === 'true'
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+const AUTH_DISABLED = !IS_PRODUCTION && process.env.ADMIN_AUTH_DISABLED === 'true'
 
 export function signAdminToken(admin) {
   return jwt.sign(

@@ -1925,7 +1925,7 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 
 **本期不做（二期）**：15.4–15.5 地图、15.6–15.7 AI 知识库与会话、15.8 商城订单。
 
-**鉴权**：除 `POST /api/admin/auth/login` 外，所有 `/api/admin/*` 需 Header `Authorization: Bearer <adminToken>`。本地调试可设环境变量 `ADMIN_AUTH_DISABLED=true`。
+**鉴权**：除 `POST /api/admin/auth/login` 外，所有 `/api/admin/*` 需 Header `Authorization: Bearer <adminToken>`。本地调试可设 `ADMIN_AUTH_DISABLED=true`（**生产环境禁止**，`NODE_ENV=production` 时无效且禁止启动）。生产改密见 `server/docs/ADMIN_PRODUCTION.md`。
 
 **公开 API（无鉴权，与 store 同源）**：
 
@@ -1940,7 +1940,7 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 - `POST /api/admin/auth/login`
 - 请求：`{ username, password }`
 - 成功 `data`：`{ token, admin: { id, name, role } }`
-- 种子账号：`admin` / `admin123`（仅开发）
+- 种子账号：`admin` / `DevOnly!2026`（仅开发；生产用 `npm run admin:set-password` 改密）
 
 **15.2 首页配置管理（冻结）**
 
@@ -2351,12 +2351,12 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 | 统一跳转 | `src/utils/navigation.ts` |
 | 接口配置 | `src/config/api.ts` |
 | 服务层后端 | `server/src/index.js` |
-| 管理后台 H5 | `admin-web/`（Vue3 + Element Plus，端口 5174） |
+| 管理后台 H5 | `admin-web/`（Vue3 + Element Plus，端口 5174；部署见 `admin-web/README.md`） |
 | 管理端 API 封装 | `admin-web/src/api/admin.ts` |
 
 ### 18.6 管理端联调清单（首期）
 
-- [ ] `admin` / `admin123` 登录成功
+- [ ] `admin` / `DevOnly!2026` 登录成功（错误密码 401）
 - [ ] 修改 FAQ 后小程序帮助中心可见（`VITE_SERVICE_USE_REMOTE_API=true`）
 - [ ] 工单 `adminReply` 后用户工单列表可见
 - [ ] 点评 `rejected` 后发现详情不展示

@@ -15,6 +15,16 @@ import discoverRouter from './routes/discover.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = Number(process.env.PORT) || 3000
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+
+if (IS_PRODUCTION && process.env.ADMIN_AUTH_DISABLED === 'true') {
+  console.error('[traveluniapp-server] 生产环境禁止 ADMIN_AUTH_DISABLED=true')
+  process.exit(1)
+}
+
+if (IS_PRODUCTION && (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'traveluniapp-dev-secret')) {
+  console.warn('[traveluniapp-server] 警告：生产环境请设置强随机 JWT_SECRET')
+}
 
 const app = express()
 

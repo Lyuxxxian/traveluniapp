@@ -1,7 +1,10 @@
 /**
- * 管理端 API 冒烟（需 server 运行；默认 admin/admin123）
+ * 管理端 API 冒烟（需 server 运行）
+ * 默认开发账号 admin / DevOnly!2026（见 seed.js；若已改密请设 ADMIN_DEV_PASSWORD）
  */
 const BASE = process.env.API_BASE || 'http://localhost:3000'
+const ADMIN_USER = process.env.ADMIN_DEV_USERNAME || 'admin'
+const ADMIN_PASS = process.env.ADMIN_DEV_PASSWORD || 'DevOnly!2026'
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, options)
@@ -19,12 +22,25 @@ async function main() {
   let adminToken = ''
 
   try {
+    const badLogin = await request('/api/admin/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: ADMIN_USER, password: 'wrong-password' }),
+    })
+    assert('admin login wrong password 401', badLogin.status === 401 && badLogin.json.code === 40102)
+
     const login = await request('/api/admin/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: 'admin', password: 'admin123' }),
+      body: JSON.stringify({ username: ADMIN_USER, password: ADMIN_PASS }),
     })
-    assert('admin login', login.json.code === 200 && login.json.data?.token)
+    assert(
+      'admin login',
+      login.json.code === 200 && login.json.data?.token,
+      login.json.code !== 200
+        ? `若已改密请设 ADMIN_DEV_PASSWORD；当前 message=${login.json.message}`
+        : '',
+    )
     adminToken = login.json.data?.token || ''
     const headers = {
       'Content-Type': 'application/json',

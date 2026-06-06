@@ -29,7 +29,7 @@ async function main() {
   const login = await request('/api/admin/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: 'admin', password: 'admin123' }),
+    body: JSON.stringify({ username: 'admin', password: process.env.ADMIN_DEV_PASSWORD || 'DevOnly!2026' }),
   })
   assert('admin 登录成功', login.json.code === 200 && login.json.data?.token)
   const token = login.json.data?.token || ''
