@@ -4,6 +4,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import authRouter from './routes/auth.js'
 import userRouter from './routes/user.js'
+import ordersRouter from './routes/orders.js'
 import uploadRouter from './routes/upload.js'
 import serviceRouter from './routes/service.js'
 import aiServiceRouter from './routes/aiService.js'
@@ -27,6 +28,7 @@ app.get('/health', (_req, res) => {
 
 app.use('/api/auth', authRouter)
 app.use('/api/user', userRouter)
+app.use('/api', ordersRouter)
 app.use('/api/upload', uploadRouter)
 app.use('/api', serviceRouter)
 app.use('/api/ai-service', aiServiceRouter)

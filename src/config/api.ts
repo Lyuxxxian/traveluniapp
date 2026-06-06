@@ -15,6 +15,15 @@ export const API_PATHS = {
   },
   user: {
     profile: '/api/user/profile',
+    coupons: '/api/user/coupons',
+    couponsAvailable: '/api/user/coupons/available',
+  },
+  orders: {
+    list: '/api/orders',
+    detail: '/api/orders',
+    create: '/api/orders',
+    cancel: '/api/orders',
+    mockPay: '/api/orders',
   },
   upload: {
     image: '/api/upload/image',

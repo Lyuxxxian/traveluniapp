@@ -58,7 +58,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { fetchOrdersByStatus, tabStatuses } from '../../api/mine'
 
 const tabs = tabStatuses
@@ -105,6 +105,9 @@ function goOrderDetail(id) {
 onLoad((options) => {
   const status = options?.status || 'all'
   activeTab.value = status
+})
+
+onShow(() => {
   loadOrders()
 })
 </script>

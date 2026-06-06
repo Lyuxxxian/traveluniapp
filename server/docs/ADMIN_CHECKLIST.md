@@ -21,6 +21,7 @@ cd server && npm run verify:admin
 - [x] 改首页轮播 → 小程序首页 onMounted 拉配置可见（`GET /api/home/config` 已验；需 `VITE_HOME_USE_REMOTE_API=true`）
 - [x] 发现帖 status=draft → C 端列表不展示（`verify-p0-checklist.mjs`；需 `VITE_DISCOVER_USE_REMOTE_API=true`）
 - [x] 用户提交问卷 → 列表显示「已填写」；管理端 **服务运营 → 问卷 → 答卷** 可查看明细（`GET /api/admin/questionnaires/:id/submissions`）
+- [x] 用户账号隔离：手机号/注册/微信（设备 id）分用户；订单与优惠券按 `userId`（需 **重启 server** 加载 `/api/orders`）
 
 自动化：`cd server && npm run verify:p0`
 

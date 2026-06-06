@@ -1,4 +1,10 @@
+import { API_PATHS } from '../config/api'
+import { getToken } from '../utils/auth'
+import { http } from '../utils/request'
+
 export type OrderStatus = 'all' | 'pendingPay' | 'pendingUse' | 'completed' | 'cancelled' | 'refunded'
+
+const AUTH_OPTS = { showErrorToast: true } as const
 
 export type OrderItem = {
   id: number
@@ -279,36 +285,14 @@ export type PaginatedOrders = {
 }
 
 export async function fetchOrdersByStatus(status: OrderStatus): Promise<OrderItem[]> {
-  // TODO: 对接后端 GET /api/orders?status=xxx
-  // return http.get<OrderItem[]>(`/api/orders`, { status }, { auth: true })
-
-  if (status === 'all') return Promise.resolve([...staticOrders])
-  return Promise.resolve(staticOrders.filter((o) => o.status === status))
+  if (!getToken()) return []
+  const params = status === 'all' ? {} : { status }
+  return http.get<OrderItem[]>(API_PATHS.orders.list, params, AUTH_OPTS)
 }
 
 export async function fetchOrderDetail(id: number): Promise<OrderDetail> {
-  // TODO: 对接后端 GET /api/orders/:id
-  // return http.get<OrderDetail>(`/api/orders/${id}`, undefined, { auth: true })
-
-  const order = staticOrders.find((o) => o.id === id)
-  if (!order) return Promise.reject(new Error('订单不存在'))
-
-  return Promise.resolve({
-    ...order,
-    items: [
-      {
-        title: order.title,
-        skuName: '默认规格',
-        quantity: order.quantity,
-        price: (order.payAmount + order.couponDiscount) / order.quantity,
-      },
-    ],
-    qrCodeUrl: '',
-    payAt: order.status !== 'pendingPay' ? order.createdAt.replace(' ', ' 10:03:00') : '',
-    remark: '',
-    couponDiscount: order.couponDiscount,
-    couponTitle: order.couponTitle,
-  })
+  if (!getToken()) return Promise.reject(new Error('请先登录'))
+  return http.get<OrderDetail>(`${API_PATHS.orders.detail}/${id}`, undefined, AUTH_OPTS)
 }
 
 export type CreateOrderItem = {
@@ -325,8 +309,6 @@ export type CreateOrderResult = {
   status: OrderStatus
 }
 
-let nextOrderId = 9008
-
 export async function createOrder(params: {
   title: string
   coverUrl: string
@@ -334,118 +316,35 @@ export async function createOrder(params: {
   couponId?: number
   productType?: string
 }): Promise<CreateOrderResult> {
-  // TODO: 对接后端 POST /api/orders
-  // return http.post<CreateOrderResult>('/api/orders', params, { auth: true })
-
-  const id = nextOrderId++
-  const totalAmount = params.items.reduce((sum, it) => sum + it.skuPrice * it.quantity, 0)
-
-  let couponDiscount = 0
-  let couponTitle = ''
-  if (params.couponId) {
-    const coupon = staticUserCoupons.find((c) => c.id === params.couponId && c.status === 'available')
-    if (coupon && totalAmount >= coupon.minAmount) {
-      couponDiscount = coupon.discountAmount
-      couponTitle = coupon.title
-      coupon.status = 'used'
-    }
-  }
-
-  const payAmount = totalAmount - couponDiscount
-  const orderNo = `LS${new Date().toISOString().slice(0, 10).replace(/-/g, '')}${String(id).padStart(3, '0')}`
-
-  const newOrder: OrderItem = {
-    id,
-    orderNo,
-    status: 'pendingPay',
-    statusText: '待付款',
-    title: params.title,
-    coverUrl: params.coverUrl,
-    payAmount,
-    quantity: params.items.reduce((sum, it) => sum + it.quantity, 0),
-    createdAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
-    couponDiscount,
-    couponTitle,
-    productType: params.productType || 'ticket',
-  }
-
-  staticOrders.unshift(newOrder)
-
-  return { id, orderNo, payAmount, status: 'pendingPay' }
+  if (!getToken()) return Promise.reject(new Error('请先登录'))
+  return http.post<CreateOrderResult>(API_PATHS.orders.create, params, AUTH_OPTS)
 }
 
 export async function cancelOrder(id: number): Promise<void> {
-  // TODO: 对接后端 POST /api/orders/:id/cancel
-  // return http.post(`/api/orders/${id}/cancel`, undefined, { auth: true })
-
-  const order = staticOrders.find((o) => o.id === id)
-  if (order) {
-    order.status = 'cancelled'
-    order.statusText = '已取消'
-  }
+  if (!getToken()) return Promise.reject(new Error('请先登录'))
+  await http.post(`${API_PATHS.orders.cancel}/${id}/cancel`, undefined, AUTH_OPTS)
 }
 
 export async function mockPayOrder(id: number): Promise<void> {
-  // TODO: 对接后端 POST /api/orders/:id/mock-pay
-  // return http.post(`/api/orders/${id}/mock-pay`, undefined, { auth: true })
-
-  const order = staticOrders.find((o) => o.id === id)
-  if (order) {
-    order.status = 'pendingUse'
-    order.statusText = '待使用'
-  }
+  if (!getToken()) return Promise.reject(new Error('请先登录'))
+  await http.post(`${API_PATHS.orders.mockPay}/${id}/mock-pay`, undefined, AUTH_OPTS)
 }
 
 export async function fetchMyCoupons(): Promise<UserCoupon[]> {
-  // TODO: 对接后端 GET /api/user/coupons
-  // return http.get<UserCoupon[]>('/api/user/coupons', undefined, { auth: true })
-
-  return Promise.resolve([...staticUserCoupons])
+  if (!getToken()) return []
+  return http.get<UserCoupon[]>(API_PATHS.user.coupons, undefined, AUTH_OPTS)
 }
 
 export async function addUserCoupon(couponPackageId: number): Promise<UserCoupon> {
-  // TODO: 对接后端 POST /api/user/coupons
-  // return http.post<UserCoupon>('/api/user/coupons', { couponPackageId }, { auth: true })
-
-  const meta = couponMetaMap[couponPackageId]
-  if (!meta) return Promise.reject(new Error('优惠券不存在'))
-
-  const existing = staticUserCoupons.find((c) => c.couponPackageId === couponPackageId && c.status === 'available')
-  if (existing) return Promise.reject(new Error('已领取过该优惠券'))
-
-  nextCouponId++
-  const now = new Date()
-  const yyyy = now.getFullYear()
-  const mm = String(now.getMonth() + 1).padStart(2, '0')
-  const dd = String(now.getDate()).padStart(2, '0')
-  const validTo = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000)
-  const vyyyy = validTo.getFullYear()
-  const vmm = String(validTo.getMonth() + 1).padStart(2, '0')
-  const vdd = String(validTo.getDate()).padStart(2, '0')
-
-  const coupon: UserCoupon = {
-    ...meta,
-    id: nextCouponId,
-    validFrom: `${yyyy}-${mm}-${dd}`,
-    validTo: `${vyyyy}-${vmm}-${vdd}`,
-    status: 'available',
-  }
-
-  staticUserCoupons.push(coupon)
-  return Promise.resolve(coupon)
+  if (!getToken()) return Promise.reject(new Error('请先登录'))
+  return http.post<UserCoupon>(API_PATHS.user.coupons, { couponPackageId }, AUTH_OPTS)
 }
 
-export async function getAvailableCouponsForOrder(orderAmount: number, productType: string): Promise<UserCoupon[]> {
-  // TODO: 对接后端 GET /api/user/coupons/available?amount=xxx&type=xxx
-  // return http.get<UserCoupon[]>(`/api/user/coupons/available`, { amount: orderAmount, type: productType }, { auth: true })
-
-  return Promise.resolve(
-    staticUserCoupons.filter(
-      (c) =>
-        c.status === 'available' &&
-        orderAmount >= c.minAmount &&
-        (c.scopeTypes.includes(productType) || c.scopeTypes.length >= 3),
-    ),
-  )
+export async function getAvailableCouponsForOrder(
+  orderAmount: number,
+  productType: string,
+): Promise<UserCoupon[]> {
+  if (!getToken()) return []
+  return http.get<UserCoupon[]>(API_PATHS.user.couponsAvailable, { amount: orderAmount, type: productType }, AUTH_OPTS)
 }
 

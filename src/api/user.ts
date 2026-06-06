@@ -1,11 +1,14 @@
 import { API_PATHS } from '../config/api'
-import { getUserProfile, saveLoginSession, setUserProfile } from '../utils/auth'
+import { getToken, getUserProfile, saveLoginSession, setUserProfile } from '../utils/auth'
 import type { UserProfile } from '../utils/auth'
 import { http } from '../utils/request'
+
+const WECHAT_UID_KEY = 'traveluniapp_wechat_uid'
 
 export type LoginPayload = {
   username: string
   password: string
+  wechatId?: string
 }
 
 export type LoginResponse = {
@@ -27,88 +30,67 @@ export type FetchUserProfileOptions = {
   silent?: boolean
 }
 
-function createMockLoginSession(username: string): LoginResponse {
-  const visitorId = `灵山居士_${username || '12345'}`
-
-  return {
-    token: `mock_token_${Date.now()}`,
-    user: {
-      id: Date.now(),
-      visitorId,
-      nickname: '',
-      avatarUrl: '/static/logo.png',
-    },
+function getOrCreateWechatUid(): string {
+  let id = uni.getStorageSync(WECHAT_UID_KEY) as string
+  if (!id) {
+    id = `wx_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
+    uni.setStorageSync(WECHAT_UID_KEY, id)
   }
+  return id
 }
 
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
-  try {
-    const session = await http.post<LoginResponse>(API_PATHS.auth.login, payload, {
-      auth: false,
-      showErrorToast: false,
-    })
-    saveLoginSession(session.token, session.user)
-    return session
-  } catch (error) {
-    if (import.meta.env.DEV) {
-      const session = createMockLoginSession(payload.username.trim())
-      saveLoginSession(session.token, session.user)
-      return session
-    }
-
-    throw error
-  }
+  const session = await http.post<LoginResponse>(API_PATHS.auth.login, payload, {
+    auth: false,
+    showErrorToast: false,
+  })
+  saveLoginSession(session.token, session.user)
+  return session
 }
 
 export function loginByWechat(): Promise<LoginResponse> {
+  const wechatId = getOrCreateWechatUid()
   return login({
-    username: 'wechat_member',
+    username: wechatId,
     password: 'wechat_auth',
+    wechatId,
   })
 }
 
 export function loginByPhone(phone: string): Promise<LoginResponse> {
   return login({
-    username: phone,
+    username: phone.trim(),
     password: 'phone_auth',
   })
 }
 
+export async function register(username: string, password: string): Promise<LoginResponse> {
+  const session = await http.post<LoginResponse>(
+    API_PATHS.auth.register,
+    { username: username.trim(), password },
+    { auth: false, showErrorToast: false },
+  )
+  saveLoginSession(session.token, session.user)
+  return session
+}
+
 export async function fetchUserProfile(options: FetchUserProfileOptions = {}): Promise<UserProfileResponse> {
-  try {
-    const profile = await http.get<UserProfileResponse>(API_PATHS.user.profile, undefined, {
-      showErrorToast: !options.silent,
-    })
-    setUserProfile(profile)
-    return profile
-  } catch (error) {
-    const cachedProfile = getUserProfile()
-
-    if (import.meta.env.DEV && cachedProfile) {
-      return cachedProfile
-    }
-
-    throw error
+  if (!getToken()) {
+    throw new Error('未登录')
   }
+  const profile = await http.get<UserProfileResponse>(API_PATHS.user.profile, undefined, {
+    showErrorToast: !options.silent,
+  })
+  setUserProfile(profile)
+  return profile
 }
 
 export async function updateUserProfile(payload: UpdateUserProfilePayload): Promise<UserProfileResponse> {
-  try {
-    const profile = await http.put<UserProfileResponse>(API_PATHS.user.profile, payload)
-    setUserProfile(profile)
-    return profile
-  } catch (error) {
-    const cachedProfile = getUserProfile()
+  const profile = await http.put<UserProfileResponse>(API_PATHS.user.profile, payload)
+  setUserProfile(profile)
+  return profile
+}
 
-    if (import.meta.env.DEV && cachedProfile) {
-      const profile = {
-        ...cachedProfile,
-        ...payload,
-      }
-      setUserProfile(profile)
-      return profile
-    }
-
-    throw error
-  }
+export function getCachedUserProfile(): UserProfile | null {
+  return getUserProfile()
 }

@@ -46,6 +46,33 @@
             {{ isSubmitting ? '登录中…' : '确认登录' }}
           </button>
         </view>
+
+        <button class="phone-switch" hover-class="phone-switch-hover" @tap="showAccountLogin = !showAccountLogin">
+          账号密码登录
+        </button>
+
+        <view v-if="showAccountLogin" class="phone-form">
+          <view class="input-wrap">
+            <input v-model="account" class="input" type="text" placeholder="账号" placeholder-class="placeholder" />
+          </view>
+          <view class="input-wrap" style="margin-top: 16rpx">
+            <input
+              v-model="password"
+              class="input"
+              password
+              placeholder="密码"
+              placeholder-class="placeholder"
+            />
+          </view>
+          <button class="btn phone-btn" hover-class="btn-hover" :disabled="isSubmitting" @tap="onAccountLogin">
+            {{ isSubmitting ? '登录中…' : '账号登录' }}
+          </button>
+        </view>
+      </view>
+
+      <view class="register-row">
+        <text class="register-text">还没有账号？</text>
+        <text class="register-link" @tap="goRegister">立即注册</text>
       </view>
     </view>
   </view>
@@ -53,12 +80,15 @@
 
 <script setup>
 import { ref } from 'vue'
-import { loginByPhone, loginByWechat } from '../../api/user'
+import { login, loginByPhone, loginByWechat } from '../../api/user'
 
 const agreed = ref(false)
 const showLoginMethods = ref(false)
 const showPhoneLogin = ref(false)
+const showAccountLogin = ref(false)
 const phone = ref('')
+const account = ref('')
+const password = ref('')
 const isSubmitting = ref(false)
 
 function showPolicy(type) {
@@ -106,6 +136,27 @@ function onPhoneLogin() {
   }
 
   finishLogin(() => loginByPhone(normalizedPhone))
+}
+
+function onAccountLogin() {
+  if (!account.value.trim() || !password.value) {
+    uni.showToast({ title: '请输入账号和密码', icon: 'none' })
+    return
+  }
+  finishLogin(() =>
+    login({
+      username: account.value.trim(),
+      password: password.value,
+    }),
+  )
+}
+
+function goRegister() {
+  if (!agreed.value) {
+    uni.showToast({ title: '请先阅读并同意协议', icon: 'none' })
+    return
+  }
+  uni.navigateTo({ url: '/pages/register/register' })
 }
 </script>
 
@@ -300,5 +351,22 @@ function onPhoneLogin() {
 
 .phone-btn {
   margin-top: 22rpx;
+}
+
+.register-row {
+  margin-top: 28rpx;
+  text-align: center;
+}
+
+.register-text {
+  font-size: 24rpx;
+  color: #7d6a55;
+}
+
+.register-link {
+  margin-left: 8rpx;
+  font-size: 24rpx;
+  color: #8b5a24;
+  font-weight: 800;
 }
 </style>

@@ -1355,6 +1355,15 @@ VITE_MAP_SIMULATE_API_ERROR=true
 - `PUT /api/user/travelers/:id`
 - `DELETE /api/user/travelers/:id`
 
+### 12.0 登录与账号隔离（2026-06）
+
+- `POST /api/auth/login`
+  - 普通账号：`username` + `password`
+  - 手机号：`username`=11 位手机号，`password`=`phone_auth`（自动注册/绑定 `phone`）
+  - 微信（H5 模拟）：`username`/`wechatId` 为设备唯一 `wx_*`，`password`=`wechat_auth`（每设备一用户，不再共用 `wechat_member`）
+- `POST /api/auth/register`：独立账号注册，返回 JWT
+- 订单 `GET/POST /api/orders*`、优惠券 `GET/POST /api/user/coupons*`、问卷提交等均按 **JWT 内 userId** 隔离
+
 ### 12.4 收货地址
 
 - `GET /api/user/addresses`

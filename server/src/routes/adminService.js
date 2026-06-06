@@ -95,12 +95,15 @@ router.get('/questionnaires/:id/submissions', (req, res) => {
     .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
   const list = subs.map((s) => {
     const user = store.users?.find((u) => u.id === s.userId)
+    const phone =
+      user?.phone
+      || (/^1\d{10}$/.test(String(user?.username || '')) ? user.username : '')
     return {
       submissionId: s.submissionId,
       userId: s.userId,
       username: user?.username,
       nickname: user?.nickname,
-      phone: user?.phone,
+      phone,
       createdAt: s.createdAt,
       answers: enrichSubmissionAnswers(questionnaire, s),
     }
