@@ -1,0 +1,101 @@
+{
+  "comment": "复制本文件为 my-points.json，填写 points 数组后导入。省略 id 时自动分配且不撞已有 id。",
+  "points": [
+    {
+      "category": "spot",
+      "title": "示例景点 A",
+      "latitude": 31.4212,
+      "longitude": 120.1085,
+      "address": "灵山文旅景区 · 示例区 A",
+      "desc": "由运营导入的示例点位，可删除或改名。",
+      "openTime": "08:00-17:00",
+      "status": "open",
+      "tags": ["示例", "景点"],
+      "suggestedDuration": "30分钟"
+    },
+    {
+      "category": "food",
+      "title": "示例餐饮 B",
+      "latitude": 31.4208,
+      "longitude": 120.1092,
+      "address": "灵山文旅景区 · 餐饮区",
+      "desc": "第二批导入模板示例。",
+      "status": "open",
+      "tags": "餐饮;示例"
+    },
+    {
+      "category": "toilet",
+      "title": "导入模板点位 03",
+      "latitude": 31.4205,
+      "longitude": 120.1078,
+      "address": "灵山文旅景区 · 卫生间 03",
+      "desc": "请按此格式继续填写至 10 条或更多。",
+      "status": "open"
+    },
+    {
+      "category": "service",
+      "title": "导入模板点位 04",
+      "latitude": 31.4215,
+      "longitude": 120.1068,
+      "address": "灵山文旅景区 · 服务点 04",
+      "desc": "模板行 04",
+      "status": "open"
+    },
+    {
+      "category": "parking",
+      "title": "导入模板点位 05",
+      "latitude": 31.4198,
+      "longitude": 120.1101,
+      "address": "灵山文旅景区 · 停车场 05",
+      "desc": "模板行 05",
+      "status": "open"
+    },
+    {
+      "category": "spot",
+      "title": "导入模板点位 06",
+      "latitude": 31.422,
+      "longitude": 120.108,
+      "address": "灵山文旅景区 · 景点 06",
+      "desc": "模板行 06",
+      "status": "open"
+    },
+    {
+      "category": "drinking",
+      "title": "导入模板点位 07",
+      "latitude": 31.4202,
+      "longitude": 120.1095,
+      "address": "灵山文旅景区 · 饮用水 07",
+      "desc": "模板行 07",
+      "status": "open"
+    },
+    {
+      "category": "medical",
+      "title": "导入模板点位 08",
+      "latitude": 31.4218,
+      "longitude": 120.1072,
+      "address": "灵山文旅景区 · 医疗点 08",
+      "desc": "模板行 08",
+      "status": "open"
+    },
+    {
+      "category": "rest",
+      "title": "导入模板点位 09",
+      "latitude": 31.4195,
+      "longitude": 120.1088,
+      "address": "灵山文旅景区 · 休息区 09",
+      "desc": "模板行 09",
+      "status": "open"
+    },
+    {
+      "category": "shop",
+      "title": "导入模板点位 10",
+      "latitude": 31.4206,
+      "longitude": 120.1105,
+      "address": "灵山文旅景区 · 商店 10",
+      "desc": "模板行 10；导入前建议 npm run map:import:dry 预检",
+      "status": "open",
+      "serviceTags": ["购物"],
+      "relatedProductIds": []
+    }
+  ]
+}

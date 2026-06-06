@@ -1,7 +1,9 @@
 /**
- * 管理端 API 冒烟（需 server 运行）
+ * 管理端 API 冒烟（需 server 运行，不含地图专项见 verify-map-admin.mjs）
  * 默认开发账号 admin / DevOnly!2026（见 seed.js；若已改密请设 ADMIN_DEV_PASSWORD）
  */
+import { runMapAdminVerify } from './verify-map-admin.mjs'
+
 const BASE = process.env.API_BASE || 'http://localhost:3000'
 const ADMIN_USER = process.env.ADMIN_DEV_USERNAME || 'admin'
 const ADMIN_PASS = process.env.ADMIN_DEV_PASSWORD || 'DevOnly!2026'
@@ -78,6 +80,8 @@ async function main() {
       const subs = await request(`/api/admin/questionnaires/${qid}/submissions`, { headers })
       assert('questionnaire submissions', subs.json.code === 200 && Array.isArray(subs.json.data?.list))
     }
+
+    await runMapAdminVerify(errors, { adminToken })
   } catch (e) {
     errors.push(`服务未启动或不可达: ${e.message}（请先 cd server && npm run dev）`)
   }
@@ -88,7 +92,7 @@ async function main() {
     process.exit(1)
   }
 
-  console.log('[admin-verify] PASSED')
+  console.log('[admin-verify] PASSED（含地图 M2：verify-map-admin）')
 }
 
 main()

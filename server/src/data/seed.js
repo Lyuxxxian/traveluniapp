@@ -1,4 +1,10 @@
 import { homeConfigSeed, discoverPostsSeed } from './contentSeed.js'
+import {
+  mapCategoriesSeed,
+  mapPointsSeed,
+  mapRoutesSeed,
+  mapPointDetailsSeed,
+} from './mapSeed.js'
 
 /** 与前端 serviceData.ts 对齐的初始种子 */
 export const seedData = {
@@ -14,6 +20,7 @@ export const seedData = {
     discoverPost: 10,
     order: 9007,
     userCoupon: 8003,
+    mapPoint: 10000,
   },
   /** 仅开发种子；生产部署后务必运行 npm run admin:set-password 修改，勿使用默认口令 */
   admins: [
@@ -279,4 +286,8 @@ export const seedData = {
       remark: '',
     },
   ],
+  mapCategories: mapCategoriesSeed,
+  mapPoints: mapPointsSeed,
+  mapRoutes: mapRoutesSeed,
+  mapPointDetails: mapPointDetailsSeed,
 }

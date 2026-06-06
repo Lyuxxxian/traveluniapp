@@ -12,6 +12,7 @@ import adminAuthRouter from './routes/adminAuth.js'
 import adminMainRouter from './routes/adminMain.js'
 import homeRouter from './routes/home.js'
 import discoverRouter from './routes/discover.js'
+import mapRouter from './routes/map.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = Number(process.env.PORT) || 3000
@@ -44,6 +45,7 @@ app.use('/api', serviceRouter)
 app.use('/api/ai-service', aiServiceRouter)
 app.use('/api/home', homeRouter)
 app.use('/api/discover', discoverRouter)
+app.use('/api/map', mapRouter)
 app.use('/api/admin/auth', adminAuthRouter)
 app.use('/api/admin', adminMainRouter)
 
@@ -55,6 +57,6 @@ app.listen(PORT, () => {
   console.log(`[traveluniapp-server] http://localhost:${PORT}`)
   console.log('  服务层: reviews, feedback, questionnaires, support/tickets, faqs, service/config')
   console.log('  上传: POST /api/upload/image')
-  console.log('  公开: GET /api/home/config, GET /api/discover/posts')
+  console.log('  公开: GET /api/home/config, GET /api/discover/posts, GET /api/map/*')
   console.log('  管理端: POST /api/admin/auth/login + /api/admin/*（需 Bearer admin token）')
 })

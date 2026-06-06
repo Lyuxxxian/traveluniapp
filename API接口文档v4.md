@@ -128,7 +128,7 @@
 
 5. 管理员端（**首期 MVP + 内容已实现**，见 [15.0](#150-管理端首期冻结范围mvp--内容2026-05-30)、`admin-web/`、`server` 管理路由）
    - 已实现：登录鉴权、服务运营、首页配置、发现内容、公开 `home`/`discover` API。
-   - 二期：地图点位管理。
+   - **M2 已纳入**：公开 `GET /api/map/*`（Gate 已完成）；[15.4–15.5](#154-地图点位管理) 管理端字段表已冻结，CRUD 见 M2-MAP-02/03。
    - 商品/酒店/优惠券/订单管理。
    - AI 知识库和 FAQ 管理。
    - 反馈与数据统计。
@@ -1921,9 +1921,11 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 
 ### 15.0 管理端首期冻结范围（MVP + 内容，2026-05-30）
 
-**本期纳入**：管理员登录、服务层运营（反馈/工单/点评/FAQ/问卷/客服配置/统计概览）、首页配置、发现内容管理、C 端公开只读 `home` / `discover`。
+**首期纳入（2026-05-30）**：管理员登录、服务层运营（反馈/工单/点评/FAQ/问卷/客服配置/统计概览）、首页配置、发现内容管理、C 端公开只读 `home` / `discover`。
 
-**本期不做（二期）**：15.4–15.5 地图、15.6–15.7 AI 知识库与会话、15.8 商城订单。
+**M2 已纳入（2026-06）**：[15.4 地图点位管理](#154-地图点位管理)、[15.5 地图分类管理](#155-地图分类管理) 字段表与 store 结构；公开 `GET /api/map/*` 已读 `store.mapCategories` / `store.mapPoints` / `store.mapRoutes`（Gate，M2-MAP-00）。管理端 CRUD 路由契约见下文，实现见 M2-MAP-02/03。
+
+**待二期**：15.6–15.7 AI 知识库与会话、15.8 商城订单。
 
 **鉴权**：除 `POST /api/admin/auth/login` 外，所有 `/api/admin/*` 需 Header `Authorization: Bearer <adminToken>`。本地调试可设 `ADMIN_AUTH_DISABLED=true`（**生产环境禁止**，`NODE_ENV=production` 时无效且禁止启动）。生产改密见 `server/docs/ADMIN_PRODUCTION.md`。
 
@@ -1934,6 +1936,16 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 | `/api/home/config` | GET | 返回 `HomeConfig`：`heroSlides`、`matrixItems`、`actionCards`、`collectionSections`、`feedItems` |
 | `/api/discover/posts` | GET | 仅 `status=published`；query：`category`、`page`、`pageSize` |
 | `/api/discover/posts/:id` | GET | 详情，字段对齐 `DiscoverPostDetail` |
+| `/api/map/categories` | GET | 分类列表，字段对齐 [`MapCategory`](src/api/map.ts) |
+| `/api/map/points` | GET | 点位列表，query 见 [8.2](#82-获取地图点位)；字段对齐 [`MapPoint`](src/api/map.ts) |
+| `/api/map/points/:id` | GET | 点位详情，基础 + 增强字段对齐 [`MapPointDetail`](src/api/map.ts) |
+| `/api/map/routes` | GET | 路线列表，字段对齐 [`MapRoute`](src/api/map.ts) |
+
+**15.4–15.5 地图管理（M2 字段表已冻结）**
+
+- store：`mapCategories`、`mapPoints`、`mapPointDetails`（key 为点位 `id`）、`mapRoutes`；种子与 C 端 `mapData.ts` / `map.ts` fallback 同源。
+- C 端类型权威定义：[`src/api/map.ts`](src/api/map.ts) 中 `MapCategory`、`MapPoint`、`MapPointDetail`、`MapPointStatus`。
+- 变更规则：与 [2.1.0](#210-地图接口契约冻结) 一致，不得删除冻结分类（尤其 `spot`、`food`、`toilet`、`parking`、`service`）及现有点位 `id` 语义；仅允许新增可选字段。
 
 **15.1 管理员登录（冻结）**
 
@@ -2011,28 +2023,277 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 
 ### 15.4 地图点位管理
 
-- `GET /api/admin/map/points`
-- `POST /api/admin/map/points`
-- `PUT /api/admin/map/points/:id`
-- `DELETE /api/admin/map/points/:id`
-- `PUT /api/admin/map/points/:id/status`
+- **契约状态**：M2 已纳入（字段表冻结）；**实现状态**：管理 CRUD 待 M2-MAP-02；公开只读 `GET /api/map/*` 已实现（M2-MAP-00）。
+- **鉴权**：需 `Authorization: Bearer <adminToken>`。
+- **数据对齐**：列表/写入字段与 C 端 [`MapPoint`](src/api/map.ts)、[`MapPointDetail`](src/api/map.ts) 一一对应；`distanceText` 为公开 API 按用户坐标动态计算，**不入 store**。
 
-管理内容：
+**store 结构**
 
-- 点位基础信息。
-- 经纬度。
-- 分类。
-- 图标。
-- 开放时间。
-- 是否显示。
-- 关联商品、演出、文章。
+| store 键 | 类型 | 说明 |
+| --- | --- | --- |
+| mapPoints | `MapPoint[]` | 点位基础字段（不含 `distanceText`） |
+| mapPointDetails | `Record<number, MapPointDetailExtras>` | 以点位 `id` 为 key 的详情增强字段 |
+| mapRoutes | `MapRoute[]` | 路线（`pointIds` 引用 `mapPoints[].id`） |
+
+**MapPoint 字段（与 TypeScript 一致）**
+
+| 字段 | 类型 | 必填 | 读写 | 说明 |
+| --- | --- | --- | --- | --- |
+| id | number | 是 | 只读 | 点位唯一 ID；与 C 端 marker `id`、路线 `pointIds` 一致；新建时由 `counters.mapPoint` 递增 |
+| category | string | 是 | 读写 | 分类 key，须存在于 `mapCategories[].key` |
+| title | string | 是 | 读写 | 点位名称 |
+| latitude | number | 是 | 读写 | 纬度（WGS84） |
+| longitude | number | 是 | 读写 | 经度（WGS84） |
+| address | string | 是 | 读写 | 地址或景区内位置文案 |
+| desc | string | 是 | 读写 | 简介 |
+| openTime | string | 否 | 读写 | 开放或营业时间，如 `08:00-17:00` |
+| status | string | 否 | 读写 | 点位状态，见下表 `MapPointStatus`；默认 `open` |
+| tags | string[] | 否 | 读写 | 展示标签 |
+| iconKey | string | 否 | 读写 | marker 图标标识；默认与 `category` 相同 |
+| distanceText | string | 否 | 只读 | 仅公开 `GET /api/map/points` 在传入 `latitude`/`longitude` 时计算返回；管理端不存储 |
+
+**MapPointStatus（与 `MapPointStatus` 类型一致）**
+
+| 值 | 说明 | C 端行为 |
+| --- | --- | --- |
+| open | 正常开放 | 默认展示；`includeClosed=false` 时包含 |
+| closed | 关闭/隐藏 | `includeClosed=false` 时公开 API 过滤 |
+| busy | 拥挤/限流 | 展示但可提示繁忙（前端可选样式） |
+
+**MapPointDetail 增强字段（写入 `mapPointDetails[id]`，公开详情 API 合并返回）**
+
+| 字段 | 类型 | 必填 | 读写 | 说明 |
+| --- | --- | --- | --- | --- |
+| images | string[] | 否 | 读写 | 点位图片 URL 列表 |
+| suggestedDuration | string | 否 | 读写 | 推荐停留时长，如 `45分钟` |
+| serviceTags | string[] | 否 | 读写 | 服务标签，如 `讲解`、`无障碍` |
+| relatedShowIds | number[] | 否 | 读写 | 关联演出 ID（发现/演出内容） |
+| relatedProductIds | number[] | 否 | 读写 | 关联商品 ID（商城 SKU，二期对接） |
+
+**接口列表**
+
+| 接口 | 方法 | 说明 |
+| --- | --- | --- |
+| `/api/admin/map/points` | GET | 管理端点位列表（含 `status=closed`） |
+| `/api/admin/map/points` | POST | 新建点位 |
+| `/api/admin/map/points/:id` | GET | 单条详情（基础 + `mapPointDetails` 合并） |
+| `/api/admin/map/points/:id` | PUT | 全量更新基础字段及详情增强字段 |
+| `/api/admin/map/points/:id` | DELETE | 删除点位（同时移除 `mapPointDetails[id]`；路线中 `pointIds` 引用需在实现时校验） |
+| `/api/admin/map/points/:id/status` | PUT | 仅更新 `status` |
+
+#### 15.4.1 获取点位列表
+
+- URL：`GET /api/admin/map/points`
+- 认证：需要
+
+**查询参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| category | string | 否 | 按分类 key 筛选 |
+| keyword | string | 否 | 在 `title`、`desc`、`address`、`tags` 中子串匹配 |
+| status | string | 否 | `open` / `closed` / `busy` |
+| page | number | 否 | 页码，默认 1 |
+| pageSize | number | 否 | 每页条数，默认 20，最大 50 |
+
+**响应 data**（分页，与项目通用分页结构一致）
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| list | MapPoint[] | 不含 `distanceText` |
+| page | number | 当前页 |
+| pageSize | number | 每页条数 |
+| total | number | 总条数 |
+| hasMore | boolean | 是否有下一页 |
+
+#### 15.4.2 新建点位
+
+- URL：`POST /api/admin/map/points`
+- 认证：需要
+
+**请求体**（`MapPoint` 可写字段 + 可选 `MapPointDetail` 增强字段；不可传 `id`、`distanceText`）
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| category | string | 是 | 分类 key |
+| title | string | 是 | 点位名称 |
+| latitude | number | 是 | 纬度 |
+| longitude | number | 是 | 经度 |
+| address | string | 是 | 地址 |
+| desc | string | 是 | 简介 |
+| openTime | string | 否 | 营业时间 |
+| status | string | 否 | 默认 `open` |
+| tags | string[] | 否 | 标签 |
+| iconKey | string | 否 | 默认 `category` |
+| images | string[] | 否 | 存入 `mapPointDetails` |
+| suggestedDuration | string | 否 | 存入 `mapPointDetails` |
+| serviceTags | string[] | 否 | 存入 `mapPointDetails` |
+| relatedShowIds | number[] | 否 | 存入 `mapPointDetails` |
+| relatedProductIds | number[] | 否 | 存入 `mapPointDetails` |
+
+**响应 data**：完整 `MapPointDetail`（新建后的 `id` + 基础字段 + 增强字段）。
+
+请求示例：
+
+```json
+{
+  "category": "spot",
+  "title": "灵山大佛",
+  "latitude": 31.421,
+  "longitude": 120.108,
+  "address": "无锡市滨湖区马山灵山路1号",
+  "desc": "世界露天青铜释迦牟尼立像。",
+  "openTime": "08:00-17:00",
+  "status": "open",
+  "tags": ["地标", "祈福"],
+  "iconKey": "spot",
+  "images": ["https://cdn.example.com/map/101.jpg"],
+  "suggestedDuration": "45分钟",
+  "serviceTags": ["讲解", "拍照", "无障碍"],
+  "relatedShowIds": [],
+  "relatedProductIds": [1001, 1002]
+}
+```
+
+#### 15.4.3 获取 / 更新点位
+
+- URL：`GET /api/admin/map/points/:id`、`PUT /api/admin/map/points/:id`
+- 认证：需要
+- `GET` 响应 data：`MapPointDetail`（`mapPoints` 与 `mapPointDetails[id]` 合并）
+- `PUT` 请求体：同 [15.4.2](#1542-新建点位) 可写字段；`id` 不可改
+
+#### 15.4.4 更新点位状态
+
+- URL：`PUT /api/admin/map/points/:id/status`
+- 认证：需要
+
+**请求体**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| status | string | 是 | `open` \| `closed` \| `busy` |
+
+**响应 data**：更新后的 `MapPoint`（仅基础字段）。
+
+#### 15.4.5 删除点位
+
+- URL：`DELETE /api/admin/map/points/:id`
+- 认证：需要
+- 成功：`code: 200`；同时删除 `mapPointDetails` 中对应项。
+
+**建议错误码**
+
+| code | 说明 |
+| --- | --- |
+| 40001 | 参数校验失败（缺 title、经纬度非法、status 枚举错误） |
+| 40401 | 点位或分类不存在 |
+| 40901 | 删除失败：仍被 `mapRoutes.pointIds` 引用 |
+
+---
 
 ### 15.5 地图分类管理
 
-- `GET /api/admin/map/categories`
-- `POST /api/admin/map/categories`
-- `PUT /api/admin/map/categories/:key`
-- `DELETE /api/admin/map/categories/:key`
+- **契约状态**：M2 已纳入（字段表冻结）；**实现状态**：管理 CRUD 已实现（M2-MAP-03）。
+- **鉴权**：需 `Authorization: Bearer <adminToken>`。
+- **数据对齐**：与 C 端 [`MapCategory`](src/api/map.ts) 一一对应；公开 `GET /api/map/categories` 与管理端读同一 `store.mapCategories`。
+
+**MapCategory 字段（与 TypeScript 一致）**
+
+| 字段 | 类型 | 必填 | 读写 | 说明 |
+| --- | --- | --- | --- | --- |
+| key | string | 是 | 创建后不可改 | 分类唯一标识，如 `spot`、`toilet`；路由 `:key` 参数 |
+| label | string | 是 | 读写 | 展示名称，如 `景点` |
+| icon | string | 是 | 读写 | 图标标识（与 C 端分类栏、`iconKey` 映射） |
+| color | string | 是 | 读写 | 主题色，十六进制如 `#8b6138` |
+| sort | number | 是 | 读写 | 排序权重，越小越靠前 |
+
+**冻结分类（不得 DELETE，不得改 `key`）**
+
+| key | label | 说明 |
+| --- | --- | --- |
+| spot | 景点 | 核心景点 marker |
+| food | 餐饮 | 含素斋/餐饮点位 |
+| toilet | 卫生间 | 生活圈必备 |
+| parking | 停车场 | 生活圈必备 |
+| service | 游客服务 | 咨询/服务中心 |
+
+当前种子另含 `entrance`、`drinking`、`nursery`、`ticket`、`facility`、`guide`、`shop`、`hotel`、`shuttle`、`medical`、`rest`、`smoking`、`plant` 等扩展分类，与 [`mapData.ts`](src/api/mapData.ts) `MAP_CATEGORIES` 一致。
+
+**接口列表**
+
+| 接口 | 方法 | 说明 |
+| --- | --- | --- |
+| `/api/admin/map/categories` | GET | 全部分类，按 `sort` 升序 |
+| `/api/admin/map/categories` | POST | 新增分类 |
+| `/api/admin/map/categories/:key` | PUT | 更新 `label`、`icon`、`color`、`sort` |
+| `/api/admin/map/categories/:key` | DELETE | 删除分类（冻结 key 禁止；存在关联点位时拒绝） |
+
+#### 15.5.1 获取分类列表
+
+- URL：`GET /api/admin/map/categories`
+- 认证：需要
+
+**响应 data**：`MapCategory[]`（按 `sort` 升序）。
+
+响应示例：
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    {
+      "key": "spot",
+      "label": "景点",
+      "icon": "spot",
+      "color": "#8b6138",
+      "sort": 1
+    },
+    {
+      "key": "toilet",
+      "label": "卫生间",
+      "icon": "toilet",
+      "color": "#7b9eb3",
+      "sort": 2
+    }
+  ]
+}
+```
+
+#### 15.5.2 新建分类
+
+- URL：`POST /api/admin/map/categories`
+- 认证：需要
+
+**请求体**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| key | string | 是 | 唯一 key，小写英文，创建后不可修改 |
+| label | string | 是 | 展示名 |
+| icon | string | 是 | 图标标识 |
+| color | string | 是 | 色值 |
+| sort | number | 是 | 排序 |
+
+**响应 data**：`MapCategory`。
+
+#### 15.5.3 更新 / 删除分类
+
+- URL：`PUT /api/admin/map/categories/:key`、`DELETE /api/admin/map/categories/:key`
+- 认证：需要
+- `PUT` 请求体：`label`、`icon`、`color`、`sort`（不可改 `key`）
+- `DELETE`：冻结 key 返回 `40301`；若 `mapPoints` 中仍有 `category=:key` 的点位，返回 `40901`
+
+**建议错误码**
+
+| code | 说明 |
+| --- | --- |
+| 40001 | 参数校验失败 |
+| 40301 | 禁止删除冻结分类 |
+| 40401 | 分类不存在 |
+| 40901 | 分类仍有关联点位 |
+
+---
 
 ### 15.6 AI 知识库管理
 
