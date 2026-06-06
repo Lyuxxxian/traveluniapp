@@ -189,7 +189,14 @@
 			"style": {
 				"navigationBarTitleText": "数字人AI导游"
 			}
-		}
+		},
+		{
+  "path": "pages/admin/index",
+  "style": {
+    "navigationBarTitleText": "管理后台",
+    "navigationStyle": "custom"
+  }
+}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

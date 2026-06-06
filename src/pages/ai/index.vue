@@ -1,3 +1,4 @@
+import { askAI } from '@/api/ai'
 <template>
   <view class="ai-page">
     <view class="top-card">
@@ -80,25 +81,16 @@
         发送
       </view>
     </view>
-
-    <!-- #ifdef H5 -->
-    <Live2DCanvas v-if="live2dReady" />
-    <!-- #endif -->
   </view>
 </template>
 
 <script setup>
-import { ref, nextTick, defineAsyncComponent, onMounted } from 'vue'
-import { matchKnowledge } from '@/utils/knowledge.js'
+import {
+  matchLocalKnowledge,
+  matchDocumentKnowledge
+} from '@/data/knowledge'
+import { ref, nextTick } from 'vue'
 import { askAI } from '@/api/ai'
-
-// #ifdef H5
-const Live2DCanvas = defineAsyncComponent(() => import('./Live2DCanvas.vue'))
-const live2dReady = ref(false)
-onMounted(() => {
-  live2dReady.value = true
-})
-// #endif
 
 const inputText = ref('')
 const humanStatus = ref('在线待命')
@@ -151,10 +143,20 @@ function sendMessage() {
   scrollToBottom()
 
   setTimeout(async () => {
-  const localAnswer = matchKnowledge(question)
-  const answer = localAnswer.includes('暂时还没有') ? await askAI(question) : localAnswer
 
-  messages.value.push({
+let answer = matchLocalKnowledge(question)
+
+if (!answer) {
+  answer = matchDocumentKnowledge(question)
+}
+
+console.log('本地知识库结果:', answer)
+
+if (!answer) {
+  answer = await askAI(question)
+}
+
+messages.value.push({
   role: 'ai',
   content: answer
 })
