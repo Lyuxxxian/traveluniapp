@@ -222,8 +222,18 @@ export async function fetchHomeConfig(): Promise<HomeConfig> {
 }
 
 export async function fetchHomeWeather(): Promise<HomeWeather> {
-  // TODO: 对接后端 GET ${API_PATHS.home.weather}
-  // return http.get<HomeWeather>(API_PATHS.home.weather, undefined, { auth: false })
+  try {
+    const data = await http.get<HomeWeather>(API_PATHS.home.weather, undefined, HOME_READ_OPTS)
+    if (data && data.temperature) return data
+  } catch {
+    if (import.meta.env.DEV) {
+      uni.showToast({
+        title: '天气接口失败，已用本地 mock',
+        icon: 'none',
+        duration: 2500,
+      })
+    }
+  }
   return Promise.resolve(mockWeather)
 }
 

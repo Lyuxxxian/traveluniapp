@@ -1,5 +1,8 @@
 import cors from 'cors'
 import express from 'express'
+import { loadEnvFile } from './lib/loadEnv.js'
+
+loadEnvFile()
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import authRouter from './routes/auth.js'
@@ -57,6 +60,6 @@ app.listen(PORT, () => {
   console.log(`[traveluniapp-server] http://localhost:${PORT}`)
   console.log('  服务层: reviews, feedback, questionnaires, support/tickets, faqs, service/config')
   console.log('  上传: POST /api/upload/image')
-  console.log('  公开: GET /api/home/config, GET /api/discover/posts, GET /api/map/*')
+  console.log('  公开: GET /api/home/config, GET /api/home/weather, GET /api/discover/posts, GET /api/map/*')
   console.log('  管理端: POST /api/admin/auth/login + /api/admin/*（需 Bearer admin token）')
 })
