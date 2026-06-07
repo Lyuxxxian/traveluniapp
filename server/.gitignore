@@ -1,3 +1,4 @@
 node_modules/
 uploads/
 data/store.json
+.env

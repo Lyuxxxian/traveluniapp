@@ -1,14 +1,15 @@
 import { Router } from 'express'
 import { loadStore, saveStore } from '../lib/store.js'
 import { ok, fail } from '../lib/response.js'
+import { respondList } from '../lib/listQuery.js'
 import { nowText } from '../lib/time.js'
 
 /** 管理端：反馈 / 工单 / 点评（由 adminMain 挂载 requireAdminAuth） */
 const router = Router()
 
-router.get('/feedback', (_req, res) => {
+router.get('/feedback', (req, res) => {
   const store = loadStore()
-  return ok(res, store.feedback)
+  return respondList(res, ok, store.feedback || [], req)
 })
 
 router.put('/feedback/:id/status', (req, res) => {
@@ -36,9 +37,9 @@ router.put('/support/tickets/:id', (req, res) => {
   return ok(res, row)
 })
 
-router.get('/reviews', (_req, res) => {
+router.get('/reviews', (req, res) => {
   const store = loadStore()
-  return ok(res, store.reviews)
+  return respondList(res, ok, store.reviews || [], req)
 })
 
 router.put('/reviews/:id/status', (req, res) => {

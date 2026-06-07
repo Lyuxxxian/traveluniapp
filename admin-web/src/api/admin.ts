@@ -1,3 +1,12 @@
+import type { HomeConfig } from '@/types/homeConfig'
+import type { AdminListQuery, AdminPageResult } from '@/types/adminList'
+import type {
+  MapCategory,
+  MapPointDetail,
+  MapPointInput,
+  MapPointListQuery,
+  MapPointStatus,
+} from '@/types/map'
 import { apiDelete, apiGet, apiPost, apiPut } from '@/utils/request'
 
 const P = '/api/admin'
@@ -12,8 +21,8 @@ export function fetchOverview() {
   return apiGet<Record<string, number>>(`${P}/statistics/overview`)
 }
 
-export function fetchFeedback() {
-  return apiGet<unknown[]>(`${P}/feedback`)
+export function fetchFeedback(params?: AdminListQuery) {
+  return apiGet<AdminPageResult<unknown> | unknown[]>(`${P}/feedback`, params as Record<string, unknown>)
 }
 
 export function updateFeedbackStatus(id: number, status: string) {
@@ -28,8 +37,8 @@ export function updateTicket(id: number, body: { status?: string; adminReply?: s
   return apiPut(`${P}/support/tickets/${id}`, body)
 }
 
-export function fetchReviews() {
-  return apiGet<unknown[]>(`${P}/reviews`)
+export function fetchReviews(params?: AdminListQuery) {
+  return apiGet<AdminPageResult<unknown> | unknown[]>(`${P}/reviews`, params as Record<string, unknown>)
 }
 
 export function updateReviewStatus(id: number, status: string) {
@@ -64,6 +73,15 @@ export function updateQuestionnaire(id: number, body: Record<string, unknown>) {
   return apiPut(`${P}/questionnaires/${id}`, body)
 }
 
+export function fetchQuestionnaireSubmissions(id: number) {
+  return apiGet<{
+    questionnaireId: number
+    title: string
+    list: Record<string, unknown>[]
+    total: number
+  }>(`${P}/questionnaires/${id}/submissions`)
+}
+
 export function fetchServiceConfig() {
   return apiGet<Record<string, string>>(`${P}/service/config`)
 }
@@ -73,15 +91,15 @@ export function updateServiceConfig(body: Record<string, string>) {
 }
 
 export function fetchHomeConfig() {
-  return apiGet<Record<string, unknown>>(`${P}/home/config`)
+  return apiGet<HomeConfig>(`${P}/home/config`)
 }
 
-export function updateHomeConfig(body: Record<string, unknown>) {
-  return apiPut(`${P}/home/config`, body)
+export function updateHomeConfig(body: HomeConfig) {
+  return apiPut<HomeConfig>(`${P}/home/config`, body)
 }
 
-export function fetchDiscoverPosts(params?: { category?: string; status?: string }) {
-  return apiGet<unknown[]>(`${P}/discover/posts`, params)
+export function fetchDiscoverPosts(params?: AdminListQuery) {
+  return apiGet<AdminPageResult<unknown> | unknown[]>(`${P}/discover/posts`, params as Record<string, unknown>)
 }
 
 export function createDiscoverPost(body: Record<string, unknown>) {
@@ -98,4 +116,47 @@ export function updateDiscoverStatus(id: number, status: string) {
 
 export function deleteDiscoverPost(id: number) {
   return apiDelete(`${P}/discover/posts/${id}`)
+}
+
+export function fetchMapCategories() {
+  return apiGet<MapCategory[]>(`${P}/map/categories`)
+}
+
+export function createMapCategory(body: Omit<MapCategory, 'key'> & { key: string }) {
+  return apiPost<MapCategory>(`${P}/map/categories`, body)
+}
+
+export function updateMapCategory(key: string, body: Partial<Omit<MapCategory, 'key'>>) {
+  return apiPut<MapCategory>(`${P}/map/categories/${key}`, body)
+}
+
+export function deleteMapCategory(key: string) {
+  return apiDelete<{ deleted: boolean; key: string }>(`${P}/map/categories/${key}`)
+}
+
+export function fetchMapPoints(params?: MapPointListQuery) {
+  return apiGet<AdminPageResult<MapPointDetail> | MapPointDetail[]>(
+    `${P}/map/points`,
+    params as Record<string, unknown>,
+  )
+}
+
+export function fetchMapPoint(id: number) {
+  return apiGet<MapPointDetail>(`${P}/map/points/${id}`)
+}
+
+export function createMapPoint(body: MapPointInput) {
+  return apiPost<MapPointDetail>(`${P}/map/points`, body)
+}
+
+export function updateMapPoint(id: number, body: MapPointInput) {
+  return apiPut<MapPointDetail>(`${P}/map/points/${id}`, body)
+}
+
+export function updateMapPointStatus(id: number, status: MapPointStatus) {
+  return apiPut<MapPointDetail>(`${P}/map/points/${id}/status`, { status })
+}
+
+export function deleteMapPoint(id: number) {
+  return apiDelete<{ deleted: boolean; id: number }>(`${P}/map/points/${id}`)
 }

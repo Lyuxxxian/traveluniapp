@@ -5,10 +5,10 @@
         <view class="back-icon" />
       </view>
       <text class="nav-title">{{ detail?.title || '填写问卷' }}</text>
-      <text class="nav-action" @tap="submit">提交</text>
+      <view class="nav-placeholder" />
     </view>
 
-    <scroll-view scroll-y class="body">
+    <scroll-view scroll-y class="body" :class="{ 'body-with-footer': !!detail }">
       <view v-if="loading" class="center-state">
         <text>加载中...</text>
       </view>
@@ -65,9 +65,26 @@
             placeholder="请输入"
             @input="(e) => setText(q.id, e.detail.value)"
           />
+
+          <view v-else class="type-hint">
+            <text>暂不支持的题型：{{ q.type }}</text>
+          </view>
         </view>
+
+        <view v-if="detail" class="scroll-spacer" />
       </view>
     </scroll-view>
+
+    <view v-if="detail" class="submit-footer">
+      <button
+        class="submit-btn"
+        :disabled="submitting"
+        hover-class="submit-btn-hover"
+        @tap="submit"
+      >
+        {{ submitting ? '提交中...' : '提交问卷' }}
+      </button>
+    </view>
   </view>
 </template>
 
@@ -211,6 +228,7 @@ async function submit() {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
   height: 88rpx;
   padding: 0 24rpx;
   padding-top: var(--status-bar-height);
@@ -236,7 +254,9 @@ async function submit() {
 }
 
 .nav-title {
-  max-width: 420rpx;
+  flex: 1;
+  text-align: center;
+  max-width: 480rpx;
   font-size: 30rpx;
   font-weight: 800;
   color: #312416;
@@ -245,16 +265,62 @@ async function submit() {
   white-space: nowrap;
 }
 
-.nav-action {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #8b6138;
+.nav-placeholder {
+  width: 64rpx;
+  flex-shrink: 0;
 }
 
 .body {
   flex: 1;
   min-height: 0;
   padding: 20rpx 24rpx 40rpx;
+}
+
+.body-with-footer {
+  padding-bottom: 0;
+}
+
+.scroll-spacer {
+  height: 180rpx;
+}
+
+.submit-footer {
+  flex-shrink: 0;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: rgba(255, 252, 244, 0.98);
+  border-top: 1rpx solid rgba(182, 138, 75, 0.2);
+  box-shadow: 0 -8rpx 24rpx rgba(72, 50, 24, 0.08);
+}
+
+.submit-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  border-radius: 999rpx;
+  border: none;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #c9954d, #8a5a2b);
+}
+
+.submit-btn::after {
+  border: none;
+}
+
+.submit-btn[disabled] {
+  opacity: 0.65;
+}
+
+.submit-btn-hover {
+  opacity: 0.9;
+}
+
+.type-hint {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #9a8265;
 }
 
 .center-state {

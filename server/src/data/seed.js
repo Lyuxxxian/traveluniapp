@@ -1,4 +1,10 @@
 import { homeConfigSeed, discoverPostsSeed } from './contentSeed.js'
+import {
+  mapCategoriesSeed,
+  mapPointsSeed,
+  mapRoutesSeed,
+  mapPointDetailsSeed,
+} from './mapSeed.js'
 
 /** 与前端 serviceData.ts 对齐的初始种子 */
 export const seedData = {
@@ -12,12 +18,16 @@ export const seedData = {
     faq: 100,
     questionnaire: 10,
     discoverPost: 10,
+    order: 9007,
+    userCoupon: 8003,
+    mapPoint: 10000,
   },
+  /** 仅开发种子；生产部署后务必运行 npm run admin:set-password 修改，勿使用默认口令 */
   admins: [
     {
       id: 1,
       username: 'admin',
-      password: 'admin123',
+      password: 'DevOnly!2026',
       name: '系统管理员',
       role: 'admin',
     },
@@ -176,4 +186,108 @@ export const seedData = {
     },
   ],
   questionnaireSubmissions: [],
+  couponPackages: [
+    {
+      id: 6001,
+      couponPackageId: 6001,
+      title: '满200减20',
+      subtitle: '门票、酒店、年卡通用',
+      minAmount: 20000,
+      discountAmount: 2000,
+      scopeLabel: '通用',
+      scopeTypes: ['ticket', 'hotel', 'annualCard'],
+      coverUrl:
+        'https://images.unsplash.com/photo-1553729459-afe8f2e2db29?auto=format&fit=crop&w=400&q=80',
+    },
+    {
+      id: 6002,
+      couponPackageId: 6002,
+      title: '满100减10',
+      subtitle: '仅限门票使用',
+      minAmount: 10000,
+      discountAmount: 1000,
+      scopeLabel: '门票',
+      scopeTypes: ['ticket'],
+      coverUrl:
+        'https://images.unsplash.com/photo-1600262300671-295cb21f6d06?auto=format&fit=crop&w=400&q=80',
+    },
+  ],
+  userCoupons: [
+    {
+      id: 8001,
+      userId: 1,
+      couponPackageId: 6001,
+      title: '满200减20',
+      subtitle: '门票、酒店、年卡通用',
+      minAmount: 20000,
+      discountAmount: 2000,
+      scopeLabel: '通用',
+      scopeTypes: ['ticket', 'hotel', 'annualCard'],
+      coverUrl:
+        'https://images.unsplash.com/photo-1553729459-afe8f2e2db29?auto=format&fit=crop&w=400&q=80',
+      validFrom: '2026-05-01',
+      validTo: '2026-12-31',
+      status: 'available',
+    },
+    {
+      id: 8002,
+      userId: 1,
+      couponPackageId: 6002,
+      title: '满100减10',
+      subtitle: '仅限门票使用',
+      minAmount: 10000,
+      discountAmount: 1000,
+      scopeLabel: '门票',
+      scopeTypes: ['ticket'],
+      coverUrl:
+        'https://images.unsplash.com/photo-1600262300671-295cb21f6d06?auto=format&fit=crop&w=400&q=80',
+      validFrom: '2026-05-01',
+      validTo: '2026-12-31',
+      status: 'available',
+    },
+  ],
+  orders: [
+    {
+      id: 9001,
+      userId: 1,
+      orderNo: 'LS202605140001',
+      status: 'pendingUse',
+      title: '灵山大佛成人票',
+      coverUrl:
+        'https://images.unsplash.com/photo-1600262300671-295cb21f6d06?auto=format&fit=crop&w=400&q=80',
+      payAmount: 19000,
+      quantity: 2,
+      createdAt: '2026-05-14 10:00:00',
+      couponDiscount: 2000,
+      couponTitle: '满200减20',
+      productType: 'ticket',
+      items: [{ title: '灵山大佛成人票', skuName: '默认规格', quantity: 2, price: 10500 }],
+      qrCodeUrl: '',
+      payAt: '2026-05-14 10:03:00',
+      remark: '',
+    },
+    {
+      id: 9002,
+      userId: 1,
+      orderNo: 'LS202605140002',
+      status: 'pendingPay',
+      title: '灵山梵宫联票',
+      coverUrl:
+        'https://images.unsplash.com/photo-1583037189850-1921ae7c6c2a?auto=format&fit=crop&w=400&q=80',
+      payAmount: 56000,
+      quantity: 2,
+      createdAt: '2026-05-14 11:00:00',
+      couponDiscount: 0,
+      couponTitle: '',
+      productType: 'ticket',
+      items: [{ title: '灵山梵宫联票', skuName: '默认规格', quantity: 2, price: 28000 }],
+      qrCodeUrl: '',
+      payAt: '',
+      remark: '',
+    },
+  ],
+  mapCategories: mapCategoriesSeed,
+  mapPoints: mapPointsSeed,
+  mapRoutes: mapRoutesSeed,
+  mapPointDetails: mapPointDetailsSeed,
 }

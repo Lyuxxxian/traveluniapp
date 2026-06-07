@@ -1,6 +1,14 @@
 import axios from 'axios'
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+/** 生产同域反代时可留空；开发默认 localhost:3000 */
+function resolveApiBaseUrl() {
+  const fromEnv = import.meta.env.VITE_API_BASE_URL
+  if (fromEnv) return fromEnv
+  if (import.meta.env.PROD) return ''
+  return 'http://localhost:3000'
+}
+
+const baseURL = resolveApiBaseUrl()
 
 export type ApiResponse<T> = {
   code: number
@@ -29,7 +37,15 @@ client.interceptors.response.use(
     }
     return res
   },
-  (err) => Promise.reject(err),
+  (err) => {
+    if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+      const hint = baseURL
+        ? `无法连接 API（${baseURL}），请确认后端已启动且 VITE_API_BASE_URL 正确`
+        : '无法连接 API，请确认 Nginx 已反代 /api/ 或设置 VITE_API_BASE_URL'
+      return Promise.reject(new Error(hint))
+    }
+    return Promise.reject(err)
+  },
 )
 
 export async function apiGet<T>(url: string, params?: Record<string, unknown>): Promise<T> {

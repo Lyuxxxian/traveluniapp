@@ -32,7 +32,7 @@ function goAI() {
   bottom: 180rpx;
   width: 360rpx;
   height: 430rpx;
-  z-index: 999;
+  z-index: 100;
   animation: floatBody 2.6s ease-in-out infinite;
 }
 

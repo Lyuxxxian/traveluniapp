@@ -68,7 +68,7 @@ async function main() {
     const adminLogin = await request('/api/admin/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: 'admin', password: 'admin123' }),
+      body: JSON.stringify({ username: 'admin', password: process.env.ADMIN_DEV_PASSWORD || 'DevOnly!2026' }),
     })
     const adminToken = adminLogin.json.data?.token || ''
     const adminHeaders = { Authorization: `Bearer ${adminToken}` }

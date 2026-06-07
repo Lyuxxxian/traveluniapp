@@ -145,7 +145,7 @@ function onTabTap(item) {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 20;
+  z-index: 1000;
   box-sizing: border-box;
   box-shadow: 0 -12rpx 36rpx rgba(72, 50, 24, 0.12);
 }

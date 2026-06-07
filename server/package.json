@@ -6,8 +6,16 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "verify": "node scripts/verify-service-api.mjs && node scripts/verify-admin-api.mjs",
-    "verify:admin": "node scripts/verify-admin-api.mjs"
+    "verify": "node scripts/verify-service-api.mjs && node scripts/verify-admin-api.mjs && node scripts/verify-map-import.mjs",
+    "verify:admin": "node scripts/verify-admin-api.mjs",
+    "verify:map": "node scripts/verify-map-api.mjs",
+    "verify:map-admin": "node scripts/verify-map-admin.mjs",
+    "verify:map-all": "node scripts/verify-map-api.mjs && node scripts/verify-map-admin.mjs && node scripts/verify-map-import.mjs",
+    "verify:map-import": "node scripts/verify-map-import.mjs",
+    "map:import": "node scripts/import-map-points.mjs",
+    "map:import:dry": "node scripts/import-map-points.mjs --dry-run",
+    "verify:p0": "node scripts/verify-p0-checklist.mjs",
+    "admin:set-password": "node scripts/set-admin-password.mjs"
   },
   "dependencies": {
     "cors": "^2.8.5",

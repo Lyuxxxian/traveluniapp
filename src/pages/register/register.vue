@@ -4,7 +4,7 @@
 
     <view class="card">
       <view class="card-title">创建账号</view>
-      <view class="card-subtitle">使用账号密码完成注册</view>
+      <view class="card-subtitle">注册后订单、问卷、优惠券将只属于本账号</view>
 
       <view class="field">
         <view class="label">账号</view>
@@ -13,11 +13,10 @@
             v-model="form.username"
             class="input"
             type="text"
-            placeholder="请输入账号"
+            placeholder="2–20 位字母/数字"
             placeholder-class="placeholder"
-            :maxlength="50"
+            :maxlength="20"
           />
-          <text class="suffix-icon" aria-hidden="true">👤</text>
         </view>
       </view>
 
@@ -28,7 +27,7 @@
             v-model="form.password"
             class="input"
             :password="!showPassword"
-            placeholder="请输入密码"
+            placeholder="至少 6 位"
             placeholder-class="placeholder"
             :maxlength="50"
           />
@@ -40,7 +39,15 @@
         </view>
       </view>
 
-      <button class="btn" type="default" hover-class="btn-hover" @tap="onSubmit">注 册</button>
+      <button
+        class="btn"
+        type="default"
+        hover-class="btn-hover"
+        :disabled="isSubmitting"
+        @tap="onSubmit"
+      >
+        {{ isSubmitting ? '注册中…' : '注 册' }}
+      </button>
 
       <view class="bottom">
         <text class="bottom-text">已有账号？</text>
@@ -52,6 +59,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
+import { register } from '../../api/user'
 
 const form = reactive({
   username: '',
@@ -59,6 +67,7 @@ const form = reactive({
 })
 
 const showPassword = ref(false)
+const isSubmitting = ref(false)
 
 function togglePassword() {
   showPassword.value = !showPassword.value
@@ -68,23 +77,36 @@ function goLogin() {
   uni.navigateBack({ delta: 1 })
 }
 
-function onSubmit() {
-  if (!form.username.trim()) {
-    uni.showToast({ title: '请输入账号', icon: 'none' })
+async function onSubmit() {
+  const username = form.username.trim()
+  if (username.length < 2) {
+    uni.showToast({ title: '账号至少 2 个字符', icon: 'none' })
     return
   }
-  if (!form.password) {
-    uni.showToast({ title: '请输入密码', icon: 'none' })
+  if (form.password.length < 6) {
+    uni.showToast({ title: '密码至少 6 位', icon: 'none' })
     return
   }
+  if (isSubmitting.value) return
 
-  uni.showToast({ title: '注册中…', icon: 'loading', duration: 800 })
-  setTimeout(() => {
+  isSubmitting.value = true
+  uni.showLoading({ title: '注册中…', mask: true })
+  try {
+    await register(username, form.password)
+    uni.hideLoading()
     uni.showToast({ title: '注册成功', icon: 'success' })
     setTimeout(() => {
-      uni.navigateBack({ delta: 1 })
-    }, 600)
-  }, 800)
+      uni.reLaunch({ url: '/pages/mine/mine' })
+    }, 500)
+  } catch (error) {
+    uni.hideLoading()
+    uni.showToast({
+      title: error instanceof Error ? error.message : '注册失败',
+      icon: 'none',
+    })
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>
 
@@ -119,104 +141,93 @@ function onSubmit() {
 }
 
 .card-title {
-  font-size: 44rpx;
-  font-weight: 700;
-  color: #222;
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #2f2a4a;
   text-align: center;
-  letter-spacing: 2rpx;
 }
 
 .card-subtitle {
   margin-top: 10rpx;
-  font-size: 26rpx;
-  color: rgba(34, 34, 34, 0.7);
+  font-size: 24rpx;
+  color: #5c5678;
   text-align: center;
+  line-height: 1.45;
 }
 
 .field {
-  margin-top: 30rpx;
+  margin-top: 28rpx;
 }
 
 .label {
-  font-size: 24rpx;
-  color: rgba(34, 34, 34, 0.78);
-  margin-bottom: 14rpx;
+  margin-bottom: 10rpx;
+  font-size: 26rpx;
+  color: #4a4568;
 }
 
 .input-wrap {
-  height: 90rpx;
-  border-radius: 18rpx;
-  background: rgba(255, 255, 255, 0.62);
-  border: 1rpx solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 12rpx 24rpx rgba(0, 0, 0, 0.06);
+  height: 88rpx;
+  padding: 0 24rpx;
+  border-radius: 22rpx;
+  background: rgba(255, 255, 255, 0.72);
   display: flex;
   align-items: center;
-  padding: 0 18rpx 0 22rpx;
   box-sizing: border-box;
 }
 
 .input {
   flex: 1;
-  height: 90rpx;
-  line-height: 90rpx;
+  height: 88rpx;
+  line-height: 88rpx;
   font-size: 28rpx;
-  color: #222;
+  color: #2f2a4a;
 }
 
 .placeholder {
-  color: rgba(34, 34, 34, 0.35);
-  font-size: 28rpx;
+  color: #9a94b8;
 }
 
 .suffix-actions {
-  display: flex;
-  align-items: center;
+  margin-left: 12rpx;
 }
 
 .suffix-icon {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 16rpx;
-  background: rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 30rpx;
-  color: rgba(0, 0, 0, 0.6);
+  font-size: 32rpx;
 }
 
 .btn {
-  margin-top: 34rpx;
-  height: 92rpx;
-  line-height: 92rpx;
-  border-radius: 22rpx;
-  background: linear-gradient(135deg, rgba(166, 192, 254, 0.9) 0%, rgba(194, 168, 253, 0.9) 100%);
+  height: 88rpx;
+  line-height: 88rpx;
+  margin-top: 36rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #6b7fd7 0%, #9b8ce8 100%);
   color: #fff;
   font-size: 30rpx;
-  font-weight: 700;
-  border: none;
+  font-weight: 800;
+}
+
+.btn::after {
+  border: 0;
 }
 
 .btn-hover {
-  opacity: 0.92;
+  opacity: 0.9;
 }
 
 .bottom {
-  margin-top: 26rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10rpx;
+  margin-top: 28rpx;
+  text-align: center;
 }
 
 .bottom-text {
-  font-size: 24rpx;
-  color: rgba(34, 34, 34, 0.65);
+  font-size: 26rpx;
+  color: #5c5678;
 }
 
 .bottom-link {
-  font-size: 24rpx;
-  color: rgba(34, 34, 34, 0.85);
+  margin-left: 8rpx;
+  font-size: 26rpx;
+  color: #4f63c9;
   font-weight: 700;
 }
 </style>

@@ -208,16 +208,32 @@ export async function fetchHomeConfig(): Promise<HomeConfig> {
   if (!USE_REMOTE_HOME_API) return Promise.resolve(mockHomeConfig)
   try {
     const data = await http.get<HomeConfig>(API_PATHS.home.config, undefined, HOME_READ_OPTS)
-    if (data?.heroSlides?.length) return data
+    if (data && Array.isArray(data.heroSlides)) return data
   } catch {
-    /* fallback mock */
+    if (import.meta.env.DEV) {
+      uni.showToast({
+        title: '首页配置接口失败，已用本地 mock',
+        icon: 'none',
+        duration: 3000,
+      })
+    }
   }
   return Promise.resolve(mockHomeConfig)
 }
 
 export async function fetchHomeWeather(): Promise<HomeWeather> {
-  // TODO: 对接后端 GET ${API_PATHS.home.weather}
-  // return http.get<HomeWeather>(API_PATHS.home.weather, undefined, { auth: false })
+  try {
+    const data = await http.get<HomeWeather>(API_PATHS.home.weather, undefined, HOME_READ_OPTS)
+    if (data && data.temperature) return data
+  } catch {
+    if (import.meta.env.DEV) {
+      uni.showToast({
+        title: '天气接口失败，已用本地 mock',
+        icon: 'none',
+        duration: 2500,
+      })
+    }
+  }
   return Promise.resolve(mockWeather)
 }
 

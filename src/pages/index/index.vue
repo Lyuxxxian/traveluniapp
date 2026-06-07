@@ -61,7 +61,7 @@
             <scroll-view scroll-x class="matrix-scroll" :show-scrollbar="false">
               <view class="matrix-row">
                 <view class="matrix-item" v-for="item in matrixItems" :key="item.title" @tap="handleMatrixTap(item)">
-                  <view class="matrix-icon">{{ item.icon }}</view>
+                  <text class="matrix-icon">{{ item.icon }}</text>
                   <text class="matrix-title">{{ item.title }}</text>
                   <text class="matrix-desc">{{ item.desc }}</text>
                 </view>
@@ -434,6 +434,8 @@ const feedItems = [
   },
 ]
 
+const USE_REMOTE_HOME = import.meta.env.VITE_HOME_USE_REMOTE_API === 'true'
+
 const iconMap = {
   ticket: '🎟️',
   ticketToday: '🎫',
@@ -482,13 +484,15 @@ function normalizeFeedItem(item) {
 
 onMounted(async () => {
   try {
-    const [homeConfig, homeWeather] = await Promise.all([fetchHomeConfig(), fetchHomeWeather()])
+    weather.value = await fetchHomeWeather()
+    if (!USE_REMOTE_HOME) return
+
+    const homeConfig = await fetchHomeConfig()
     heroSlides.splice(0, heroSlides.length, ...homeConfig.heroSlides.map(normalizeHeroSlide))
     matrixItems.splice(0, matrixItems.length, ...homeConfig.matrixItems.map(normalizeEntryItem))
     actionCards.splice(0, actionCards.length, ...homeConfig.actionCards.map(normalizeEntryItem))
     collectionSections.splice(0, collectionSections.length, ...homeConfig.collectionSections.map(normalizeCollectionSection))
     feedItems.splice(0, feedItems.length, ...homeConfig.feedItems.map(normalizeFeedItem))
-    weather.value = homeWeather
   } catch {
     uni.showToast({ title: '首页内容已使用本地数据', icon: 'none' })
   }
@@ -531,6 +535,7 @@ onMounted(async () => {
 .hero-overlay {
   position: absolute;
   inset: 0;
+  pointer-events: none;
   background:
     linear-gradient(to bottom, rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.12) 46%, rgba(0, 0, 0, 0.38) 100%),
     radial-gradient(circle at 72% 24%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 36%);
@@ -732,6 +737,7 @@ onMounted(async () => {
 
 .matrix-scroll {
   width: 100%;
+  height: 188rpx;
   white-space: nowrap;
 }
 
@@ -764,6 +770,8 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   font-size: 34rpx;
+  line-height: 1;
+  text-align: center;
   box-shadow: 0 8rpx 20rpx rgba(175, 121, 47, 0.2);
 }
 

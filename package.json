@@ -34,7 +34,8 @@
     "build:quickapp-webview": "uni build -p quickapp-webview",
     "build:quickapp-webview-huawei": "uni build -p quickapp-webview-huawei",
     "build:quickapp-webview-union": "uni build -p quickapp-webview-union",
-    "verify:map": "node scripts/verify-map-regression.mjs",
+    "verify:map": "node scripts/verify-map-regression.mjs && node scripts/verify-map-doc-fields.mjs && node server/scripts/verify-map-api.mjs && node server/scripts/verify-map-admin.mjs",
+    "verify:map-doc": "node scripts/verify-map-doc-fields.mjs",
     "verify:service": "node scripts/verify-service-api.mjs"
   },
   "dependencies": {

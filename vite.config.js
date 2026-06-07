@@ -5,4 +5,9 @@ export default defineConfig({
   plugins: [
     uni(),
   ],
+  server: {
+    watch: {
+      ignored: ['**/admin-web/**', '**/server/**'],
+    },
+  },
 })

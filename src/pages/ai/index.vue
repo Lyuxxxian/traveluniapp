@@ -81,15 +81,24 @@
       </view>
     </view>
 
-    <Live2DCanvas />
+    <!-- #ifdef H5 -->
+    <Live2DCanvas v-if="live2dReady" />
+    <!-- #endif -->
   </view>
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, defineAsyncComponent, onMounted } from 'vue'
 import { matchKnowledge } from '@/utils/knowledge.js'
 import { askAI } from '@/api/ai'
-import Live2DCanvas from './Live2DCanvas.vue'
+
+// #ifdef H5
+const Live2DCanvas = defineAsyncComponent(() => import('./Live2DCanvas.vue'))
+const live2dReady = ref(false)
+onMounted(() => {
+  live2dReady.value = true
+})
+// #endif
 
 const inputText = ref('')
 const humanStatus = ref('在线待命')
