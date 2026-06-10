@@ -36,7 +36,7 @@ export type MapCategoryKey =
 
 export type MapPointStatus = 'open' | 'closed' | 'busy'
 
-export type MapRouteScene = 'culture' | 'family' | 'relax' | 'food'
+export type MapRouteScene = 'culture' | 'family' | 'nature' | 'relax' | 'food'
 
 export type MapCategory = {
   key: string
