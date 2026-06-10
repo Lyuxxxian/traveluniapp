@@ -1,8 +1,11 @@
 /**
- * 管理端 API 冒烟（需 server 运行，不含地图专项见 verify-map-admin.mjs）
+ * 管理端 API 冒烟（需 server 运行）
+ * 含 M2 地图（verify-map-admin）、M2 商城商品/订单（verify-mall-admin、verify-mall-orders-admin）
  * 默认开发账号 admin / DevOnly!2026（见 seed.js；若已改密请设 ADMIN_DEV_PASSWORD）
  */
 import { runMapAdminVerify } from './verify-map-admin.mjs'
+import { runMallAdminVerify } from './verify-mall-admin.mjs'
+import { runMallOrdersAdminVerify } from './verify-mall-orders-admin.mjs'
 
 const BASE = process.env.API_BASE || 'http://localhost:3000'
 const ADMIN_USER = process.env.ADMIN_DEV_USERNAME || 'admin'
@@ -81,7 +84,15 @@ async function main() {
       assert('questionnaire submissions', subs.json.code === 200 && Array.isArray(subs.json.data?.list))
     }
 
+    const mallPublic = await request('/api/mall/products?type=ticket&page=1&pageSize=5')
+    assert(
+      'public mall products',
+      mallPublic.json.code === 200 && mallPublic.json.data?.list?.length > 0,
+    )
+
     await runMapAdminVerify(errors, { adminToken })
+    await runMallAdminVerify(errors, { adminToken })
+    await runMallOrdersAdminVerify(errors, { adminToken })
   } catch (e) {
     errors.push(`服务未启动或不可达: ${e.message}（请先 cd server && npm run dev）`)
   }
@@ -92,7 +103,7 @@ async function main() {
     process.exit(1)
   }
 
-  console.log('[admin-verify] PASSED（含地图 M2：verify-map-admin）')
+  console.log('[admin-verify] PASSED（含 M2 地图 + M2 商城商品/订单）')
 }
 
 main()

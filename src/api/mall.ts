@@ -1,4 +1,12 @@
+import { API_PATHS } from '../config/api'
 import { http } from '../utils/request'
+
+/**
+ * 后端联调：.env 设置 VITE_MALL_USE_REMOTE_API=true 走真实 /api/mall/*
+ * 失败时自动回退本地 mock；下架商品远程返回空/404 时不回退 mock
+ */
+const USE_REMOTE_MALL_API = import.meta.env.VITE_MALL_USE_REMOTE_API === 'true'
+const MALL_READ_OPTS = { auth: false, showErrorToast: false } as const
 
 export type ProductType = 'ticket' | 'hotel' | 'annualCard' | 'couponPackage' | 'food' | 'creative'
 
@@ -288,10 +296,7 @@ const allStaticProducts: Record<string, Product[]> = {
   couponPackage: staticCouponProducts,
 }
 
-export async function fetchProducts(params: ProductListParams = {}): Promise<PaginatedResult<Product>> {
-  // TODO: 对接后端 GET /api/mall/products
-  // return http.get<PaginatedResult<Product>>('/api/mall/products', params, { auth: false })
-
+function fetchProductsStatic(params: ProductListParams = {}): PaginatedResult<Product> {
   const type = params.type || 'ticket'
   const page = params.page || 1
   const pageSize = params.pageSize || 20
@@ -311,12 +316,30 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pag
   const start = (page - 1) * pageSize
   const pagedList = list.slice(start, start + pageSize)
 
-  return Promise.resolve({
+  return {
     page,
     pageSize,
     total,
     list: pagedList,
-  })
+  }
+}
+
+export async function fetchProducts(params: ProductListParams = {}): Promise<PaginatedResult<Product>> {
+  if (USE_REMOTE_MALL_API) {
+    try {
+      const data = await http.get<PaginatedResult<Product>>(
+        API_PATHS.mall.products,
+        params,
+        MALL_READ_OPTS,
+      )
+      if (data && Array.isArray(data.list)) {
+        return data
+      }
+    } catch {
+      /* fallback mock */
+    }
+  }
+  return Promise.resolve(fetchProductsStatic(params))
 }
 
 const staticProductDetails: Record<number, ProductDetail> = {
@@ -444,24 +467,50 @@ const staticProductDetails: Record<number, ProductDetail> = {
   },
 }
 
-export async function fetchProductDetail(id: number): Promise<ProductDetail> {
-  // TODO: 对接后端 GET /api/mall/products/:id
-  // return http.get<ProductDetail>(`/api/mall/products/${id}`, undefined, { auth: false })
-
+function fetchProductDetailStatic(id: number): ProductDetail {
   const detail = staticProductDetails[id]
-  if (detail) return Promise.resolve(detail)
+  if (detail) return detail
 
   const allProducts = Object.values(allStaticProducts).flat()
   const product = allProducts.find((p) => p.id === id)
-  if (!product) return Promise.reject(new Error('商品不存在'))
+  if (!product) throw new Error('商品不存在')
 
-  return Promise.resolve({
+  return {
     ...product,
     coverImages: [product.coverUrl],
     description: `${product.title}，${product.subtitle}。`,
     notice: '请以景区现场公告为准。',
     specs: [{ id: 0, name: '默认规格', price: product.price }],
-  })
+  }
+}
+
+export async function fetchProductDetail(id: number): Promise<ProductDetail> {
+  if (USE_REMOTE_MALL_API) {
+    try {
+      const data = await http.get<ProductDetail>(
+        `${API_PATHS.mall.productDetail}/${id}`,
+        undefined,
+        MALL_READ_OPTS,
+      )
+      if (data?.id) return data
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : ''
+      if (msg.includes('商品不存在')) {
+        return Promise.reject(err)
+      }
+      /* fallback mock */
+    }
+  }
+  try {
+    return Promise.resolve(fetchProductDetailStatic(id))
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
+
+/** 是否已开启远程商城 API（供调试展示） */
+export function isMallRemoteApiEnabled() {
+  return USE_REMOTE_MALL_API
 }
 
 export async function collectCoupon(couponId: number): Promise<void> {

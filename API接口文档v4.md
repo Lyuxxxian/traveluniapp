@@ -1274,13 +1274,55 @@ VITE_MAP_SIMULATE_API_ERROR=true
 | --- | --- | --- | --- |
 | type | string | 否 | `ticket`、`hotel`、`annualCard`、`couponPackage`、`food`、`creative` |
 | keyword | string | 否 | 搜索关键词 |
-| page | integer | 否 | 页码 |
-| pageSize | integer | 否 | 每页数量 |
+| page | integer | 否 | 页码，默认 1 |
+| pageSize | integer | 否 | 每页数量，默认 20 |
+
+**响应 data**（分页，与 [`PaginatedResult<Product>`](src/api/mall.ts) 一致）
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| list | Product[] | 当前页商品列表 |
+| page | number | 当前页 |
+| pageSize | number | 每页条数 |
+| total | number | 总条数 |
+| hasMore | boolean | 是否有下一页（服务端分页结构附带） |
+
+**Product 单条字段**（公开列表）
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| id | number | 商品 ID |
+| type | string | 商品类型，见 [16.2](#162-producttype) |
+| title | string | 标题 |
+| subtitle | string | 副标题 |
+| price | number | 售价（分） |
+| originPrice | number | 原价（分） |
+| coverUrl | string | 封面图 URL |
+| tags | string[] | 展示标签 |
+| stock | number | 库存 |
 
 ### 10.3 商品详情
 
 - URL：`GET /api/mall/products/:id`
 - 认证：可选
+- 说明：仅 `status=on_sale` 可访问；否则 `40401`
+
+**响应 data**：`ProductDetail` = `Product` + 下列字段
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| coverImages | string[] | 详情轮播图 |
+| description | string | 图文详情 |
+| notice | string | 购买须知 |
+| specs | ProductSpec[] | 规格 SKU 列表 |
+
+**ProductSpec**
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| id | number | 规格 ID |
+| name | string | 规格名称 |
+| price | number | 规格价格（分） |
 
 ### 10.4 领券中心
 
@@ -1925,7 +1967,9 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 
 **M2 已纳入（2026-06）**：[15.4 地图点位管理](#154-地图点位管理)、[15.5 地图分类管理](#155-地图分类管理) 字段表与 store 结构；公开 `GET /api/map/*` 已读 `store.mapCategories` / `store.mapPoints` / `store.mapRoutes`（Gate，M2-MAP-00）。管理端 CRUD 路由契约见下文，实现见 M2-MAP-02/03。
 
-**待二期**：15.6–15.7 AI 知识库与会话、15.8 商城订单。
+**M2 已纳入（2026-06）**：[15.8 商城商品与订单管理](#158-商城商品与订单管理) 字段表已冻结；公开 `GET /api/mall/products`、`GET /api/mall/products/:id` 已读 `store.products`（Gate，M2-MALL-00）。管理端商品/订单 CRUD 契约见 15.8，实现见 M2-MALL-02/03。
+
+**待二期**：15.6–15.7 AI 知识库与会话；15.8 核销扫码等运营细化见 M2-MALL-03 之后。
 
 **鉴权**：除 `POST /api/admin/auth/login` 外，所有 `/api/admin/*` 需 Header `Authorization: Bearer <adminToken>`。本地调试可设 `ADMIN_AUTH_DISABLED=true`（**生产环境禁止**，`NODE_ENV=production` 时无效且禁止启动）。生产改密见 `server/docs/ADMIN_PRODUCTION.md`。
 
@@ -1940,12 +1984,21 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 | `/api/map/points` | GET | 点位列表，query 见 [8.2](#82-获取地图点位)；字段对齐 [`MapPoint`](src/api/map.ts) |
 | `/api/map/points/:id` | GET | 点位详情，基础 + 增强字段对齐 [`MapPointDetail`](src/api/map.ts) |
 | `/api/map/routes` | GET | 路线列表，字段对齐 [`MapRoute`](src/api/map.ts) |
+| `/api/mall/products` | GET | 商品列表，仅 `status=on_sale`；query 见 [10.2](#102-商品列表)；字段对齐 [`Product`](src/api/mall.ts) |
+| `/api/mall/products/:id` | GET | 商品详情，字段对齐 [`ProductDetail`](src/api/mall.ts) |
 
 **15.4–15.5 地图管理（M2 字段表已冻结）**
 
 - store：`mapCategories`、`mapPoints`、`mapPointDetails`（key 为点位 `id`）、`mapRoutes`；种子与 C 端 `mapData.ts` / `map.ts` fallback 同源。
 - C 端类型权威定义：[`src/api/map.ts`](src/api/map.ts) 中 `MapCategory`、`MapPoint`、`MapPointDetail`、`MapPointStatus`。
 - 变更规则：与 [2.1.0](#210-地图接口契约冻结) 一致，不得删除冻结分类（尤其 `spot`、`food`、`toilet`、`parking`、`service`）及现有点位 `id` 语义；仅允许新增可选字段。
+
+**15.8 商城管理（M2 字段表已冻结）**
+
+- store：`products`（商品全量记录，含详情字段与 `status`）、`orders`（用户订单，与 C 端 [`OrderItem`](src/api/mine.ts) / [`OrderDetail`](src/api/mine.ts) 同源）。
+- C 端类型权威定义：[`src/api/mall.ts`](src/api/mall.ts) 中 `Product`、`ProductDetail`、`ProductSpec`、`ProductType`；[`src/api/mine.ts`](src/api/mine.ts) 中 `OrderItem`、`OrderDetail`。
+- 公开 API：仅返回 `status=on_sale` 商品；管理端可见全部状态。
+- 变更规则：不得删除已上架商品 `id` 语义（如 `1001` 成人票）；`type` 取值见 [16.2 ProductType](#162-producttype)。
 
 **15.1 管理员登录（冻结）**
 
@@ -2318,15 +2371,195 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 - `GET /api/admin/ai/sessions/:id/messages`
 - `GET /api/admin/ai/metrics`
 
-### 15.8 商品、酒店、优惠券、订单管理
+### 15.8 商城商品与订单管理
 
-沿用 v3 管理端规划：
+- **契约状态**：M2 已纳入（字段表冻结）；**实现状态**：公开 `GET /api/mall/products`、`GET /api/mall/products/:id` 已实现（M2-MALL-00）；管理端商品 CRUD 待 M2-MALL-02；管理端订单列表/改状态待 M2-MALL-03。
+- **鉴权**：`/api/admin/mall/*`、`/api/admin/orders/*` 需 `Authorization: Bearer <adminToken>`。
+- **数据对齐**：商品字段与 C 端 [`Product`](src/api/mall.ts)、[`ProductDetail`](src/api/mall.ts) 一致；订单与 [`OrderItem`](src/api/mine.ts)、[`OrderDetail`](src/api/mine.ts) 及现有 [`orders.js`](server/src/routes/orders.js) store 结构一致。
+- **待二期**：优惠券包管理、酒店房型拆分、核销扫码（M2-MALL-03 之后）。
 
-- 商品管理。
-- 酒店与房型管理。
-- 优惠券管理。
-- 订单管理。
-- 核销管理。
+**store 结构**
+
+| store 键 | 类型 | 说明 |
+| --- | --- | --- |
+| products | `StoreProduct[]` | 商品全量记录（列表字段 + 详情字段 + `status`） |
+| orders | `StoreOrder[]` | 用户订单；`userId` 关联 `users[].id` |
+
+**StoreProduct 字段（`store.products[]`，与 TypeScript 一致）**
+
+| 字段 | 类型 | 必填 | 读写 | 说明 |
+| --- | --- | --- | --- | --- |
+| id | number | 是 | 只读 | 商品唯一 ID；新建由 `counters.product` 递增（实现时） |
+| type | string | 是 | 读写 | 商品类型，见 [16.2 ProductType](#162-producttype) |
+| title | string | 是 | 读写 | 标题 |
+| subtitle | string | 是 | 读写 | 副标题 |
+| price | number | 是 | 读写 | 售价（分） |
+| originPrice | number | 是 | 读写 | 原价（分） |
+| coverUrl | string | 是 | 读写 | 列表封面图 URL |
+| tags | string[] | 否 | 读写 | 展示标签 |
+| stock | number | 是 | 读写 | 库存；`0` 表示售罄 |
+| status | string | 是 | 读写 | 上架状态，见下表 `ProductStatus`；默认 `on_sale` |
+| coverImages | string[] | 否 | 读写 | 详情轮播图；公开详情 API 返回 |
+| description | string | 否 | 读写 | 图文详情 |
+| notice | string | 否 | 读写 | 购买须知 |
+| specs | ProductSpec[] | 否 | 读写 | 规格列表，元素字段见下表 |
+
+**ProductSpec（`specs[]` 元素，与 [10.3](#103-商品详情) 一致）**
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| id | number | 规格 ID |
+| name | string | 规格名称 |
+| price | number | 规格价格（分） |
+
+**ProductStatus（管理端写入，公开 API 过滤）**
+
+| 值 | 说明 | C 端行为 |
+| --- | --- | --- |
+| on_sale | 上架 | `GET /api/mall/products` 可见 |
+| off_sale | 下架 | 公开 API 不返回；详情 `40401` |
+
+**商品管理接口列表（契约，M2-MALL-02 实现）**
+
+| 接口 | 方法 | 说明 |
+| --- | --- | --- |
+| `/api/admin/mall/products` | GET | 管理端商品列表（含下架） |
+| `/api/admin/mall/products` | POST | 新建商品 |
+| `/api/admin/mall/products/:id` | GET | 单条详情（`ProductDetail` + `status`） |
+| `/api/admin/mall/products/:id` | PUT | 全量更新 |
+| `/api/admin/mall/products/:id` | DELETE | 删除商品 |
+| `/api/admin/mall/products/:id/status` | PUT | 仅更新 `status`（`on_sale` / `off_sale`） |
+
+#### 15.8.1 管理端获取商品列表
+
+- URL：`GET /api/admin/mall/products`
+- 认证：需要
+
+**查询参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| type | string | 否 | 按 [16.2](#162-producttype) 筛选 |
+| keyword | string | 否 | 在 `title`、`subtitle`、`tags` 中子串匹配 |
+| status | string | 否 | `on_sale` / `off_sale` |
+| page | number | 否 | 页码，默认 1 |
+| pageSize | number | 否 | 每页条数，默认 20，最大 50 |
+
+**响应 data**：分页结构，`list` 为 `StoreProduct`（含 `status`）。
+
+#### 15.8.2 管理端新建商品
+
+- URL：`POST /api/admin/mall/products`
+- 认证：需要
+
+**请求体**（不可传 `id`）
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| type | string | 是 | 商品类型 |
+| title | string | 是 | 标题 |
+| subtitle | string | 是 | 副标题 |
+| price | number | 是 | 售价（分） |
+| originPrice | number | 是 | 原价（分） |
+| coverUrl | string | 是 | 封面图 |
+| stock | number | 是 | 库存 |
+| status | string | 否 | 默认 `on_sale` |
+| tags | string[] | 否 | 标签 |
+| coverImages | string[] | 否 | 详情图 |
+| description | string | 否 | 详情文案 |
+| notice | string | 否 | 须知 |
+| specs | ProductSpec[] | 否 | 规格 |
+
+**响应 data**：新建后的完整 `StoreProduct`（含分配的 `id`）。
+
+#### 15.8.3 管理端更新 / 删除商品
+
+- `GET /api/admin/mall/products/:id`：返回 `StoreProduct`
+- `PUT /api/admin/mall/products/:id`：请求体同 [15.8.2](#1582-管理端新建商品)；`id` 不可改
+- `DELETE /api/admin/mall/products/:id`：删除记录
+- `PUT /api/admin/mall/products/:id/status`：请求体 `{ "status": "on_sale" | "off_sale" }`
+
+---
+
+**StoreOrder 字段（`store.orders[]`，与 C 端订单一致）**
+
+| 字段 | 类型 | 必填 | 读写 | 说明 |
+| --- | --- | --- | --- | --- |
+| id | number | 是 | 只读 | 订单 ID |
+| userId | number | 是 | 只读 | 下单用户 ID |
+| orderNo | string | 是 | 只读 | 订单号，如 `LS202605140001` |
+| status | string | 是 | 读写 | 订单状态，见 [16.6 OrderStatus](#166-orderstatus) |
+| title | string | 是 | 只读 | 订单展示标题（首商品） |
+| coverUrl | string | 否 | 只读 | 封面图 |
+| payAmount | number | 是 | 只读 | 实付金额（分） |
+| quantity | number | 是 | 只读 | 商品总件数 |
+| createdAt | string | 是 | 只读 | 创建时间 `YYYY-MM-DD HH:mm:ss` |
+| couponDiscount | number | 否 | 只读 | 优惠券抵扣（分） |
+| couponTitle | string | 否 | 只读 | 所用优惠券标题 |
+| productType | string | 否 | 只读 | 主商品类型，见 [16.2](#162-producttype) |
+| items | OrderLineItem[] | 是 | 只读 | 订单行明细 |
+| qrCodeUrl | string | 否 | 读写 | 核销二维码 URL（二期） |
+| payAt | string | 否 | 只读 | 支付时间 |
+| remark | string | 否 | 读写 | 备注 |
+
+**OrderLineItem（`items[]` 元素）**
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| title | string | 商品标题 |
+| skuName | string | 规格名称 |
+| quantity | number | 数量 |
+| price | number | 单价（分） |
+
+**C 端列表项 `OrderItem`**：为上表除去 `userId`、`items`、`qrCodeUrl`、`payAt`、`remark`，并附加只读 `statusText`（中文状态文案）。
+
+**订单管理接口列表（契约，M2-MALL-03 实现）**
+
+| 接口 | 方法 | 说明 |
+| --- | --- | --- |
+| `/api/admin/orders` | GET | 管理端订单列表（跨用户） |
+| `/api/admin/orders/:id` | GET | 订单详情（含 `userId`、行明细） |
+| `/api/admin/orders/:id/status` | PUT | 更新订单状态（如取消） |
+
+#### 15.8.4 管理端获取订单列表
+
+- URL：`GET /api/admin/orders`
+- 认证：需要
+
+**查询参数**
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| status | string | 否 | 见 [16.6 OrderStatus](#166-orderstatus)；`all` 或不传表示全部 |
+| userId | number | 否 | 按用户 ID 筛选 |
+| keyword | string | 否 | 在 `orderNo`、`title` 中子串匹配 |
+| page | number | 否 | 页码，默认 1 |
+| pageSize | number | 否 | 每页条数，默认 20，最大 50 |
+
+**响应 data**：分页结构，`list` 元素为 `StoreOrder` 列表视图（含 `userId`、`statusText`；不含完整 `items` 时可仅摘要，详情走 `GET :id`）。
+
+#### 15.8.5 管理端更新订单状态
+
+- URL：`PUT /api/admin/orders/:id/status`
+- 认证：需要
+
+**请求体**
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| status | string | 是 | 目标状态：`pendingPay`、`pendingUse`、`completed`、`cancelled`、`refunded` |
+
+**响应 data**：更新后的 `StoreOrder`（或 `OrderDetail` 形状）。
+
+**状态流转建议（实现时校验）**
+
+| 当前 | 允许变更为 |
+| --- | --- |
+| pendingPay | cancelled、pendingUse（支付后） |
+| pendingUse | completed、cancelled、refunded |
+| completed | refunded（特例） |
+| cancelled | — |
+| refunded | — |
 
 ### 15.9 反馈处理与数据统计
 
@@ -2426,6 +2659,13 @@ HTTP 状态码与 `code` 可同时返回；前端以 `code` 为准展示 toast�
 | completed | 已完成 |
 | cancelled | 已取消 |
 | refunded | 已退款 |
+
+### 16.6.1 ProductStatus
+
+| 值 | 说明 |
+| --- | --- |
+| on_sale | 上架（公开商城可见） |
+| off_sale | 下架（仅管理端可见） |
 
 ### 16.7 CouponStatus
 

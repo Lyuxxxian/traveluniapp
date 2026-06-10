@@ -7,6 +7,14 @@ import type {
   MapPointListQuery,
   MapPointStatus,
 } from '@/types/map'
+import type {
+  AdminOrderDetail,
+  AdminOrderListItem,
+  AdminOrderListQuery,
+  MallProductListQuery,
+  ProductStatus,
+  StoreProduct,
+} from '@/types/mall'
 import { apiDelete, apiGet, apiPost, apiPut } from '@/utils/request'
 
 const P = '/api/admin'
@@ -159,4 +167,38 @@ export function updateMapPointStatus(id: number, status: MapPointStatus) {
 
 export function deleteMapPoint(id: number) {
   return apiDelete<{ deleted: boolean; id: number }>(`${P}/map/points/${id}`)
+}
+
+export function fetchMallProducts(params?: MallProductListQuery) {
+  return apiGet<AdminPageResult<StoreProduct> | StoreProduct[]>(
+    `${P}/mall/products`,
+    params as Record<string, unknown>,
+  )
+}
+
+export function fetchMallProduct(id: number) {
+  return apiGet<StoreProduct>(`${P}/mall/products/${id}`)
+}
+
+export function updateMallProductStatus(id: number, status: ProductStatus) {
+  return apiPut<StoreProduct>(`${P}/mall/products/${id}/status`, { status })
+}
+
+export function deleteMallProduct(id: number) {
+  return apiDelete<{ deleted: boolean; id: number }>(`${P}/mall/products/${id}`)
+}
+
+export function fetchAdminOrders(params?: AdminOrderListQuery) {
+  return apiGet<AdminPageResult<AdminOrderListItem> | AdminOrderListItem[]>(
+    `${P}/orders`,
+    params as Record<string, unknown>,
+  )
+}
+
+export function fetchAdminOrder(id: number) {
+  return apiGet<AdminOrderDetail>(`${P}/orders/${id}`)
+}
+
+export function updateAdminOrderStatus(id: number, status: string) {
+  return apiPut<AdminOrderDetail>(`${P}/orders/${id}/status`, { status })
 }
