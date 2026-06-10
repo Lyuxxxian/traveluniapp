@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { loadStore, saveStore, nextId } from '../lib/store.js'
 import { ok, fail, paginate } from '../lib/response.js'
-import { filterMapPoints, sortMapCategories } from '../lib/mapQuery.js'
+import { filterMapPoints, sortAdminMapPoints, sortMapCategories } from '../lib/mapQuery.js'
 import {
   FROZEN_MAP_CATEGORY_KEYS,
   MAP_POINT_STATUSES,
@@ -105,6 +105,8 @@ router.get('/points', (req, res) => {
   if (status) {
     list = list.filter((item) => item.status === status)
   }
+
+  list = sortAdminMapPoints(list, store.mapCategories || [])
 
   if (req.query.page || req.query.pageSize) {
     return ok(res, paginate(list, req.query.page, req.query.pageSize))
