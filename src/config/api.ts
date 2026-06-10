@@ -47,6 +47,10 @@ export const API_PATHS = {
     pointDetail: '/api/map/points',
     routes: '/api/map/routes',
   },
+  mall: {
+    products: '/api/mall/products',
+    productDetail: '/api/mall/products',
+  },
   service: {
     reviews: '/api/reviews',
     userReviews: '/api/user/reviews',

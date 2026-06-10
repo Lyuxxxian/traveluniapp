@@ -5,6 +5,7 @@ import {
   mapRoutesSeed,
   mapPointDetailsSeed,
 } from './mapSeed.js'
+import { productsSeed } from './mallSeed.js'
 
 /** 与前端 serviceData.ts 对齐的初始种子 */
 export const seedData = {
@@ -21,6 +22,7 @@ export const seedData = {
     order: 9007,
     userCoupon: 8003,
     mapPoint: 10000,
+    product: 5002,
   },
   /** 仅开发种子；生产部署后务必运行 npm run admin:set-password 修改，勿使用默认口令 */
   admins: [
@@ -290,4 +292,5 @@ export const seedData = {
   mapPoints: mapPointsSeed,
   mapRoutes: mapRoutesSeed,
   mapPointDetails: mapPointDetailsSeed,
+  products: productsSeed,
 }

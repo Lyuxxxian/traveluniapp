@@ -2,36 +2,14 @@ import { Router } from 'express'
 import { requireAuth } from '../lib/auth.js'
 import { loadStore, saveStore, nextId } from '../lib/store.js'
 import { ok, fail } from '../lib/response.js'
+import { toOrderDetail, toOrderListItem } from '../lib/orderQuery.js'
 
 const router = Router()
-
-const STATUS_TEXT = {
-  pendingPay: '待付款',
-  pendingUse: '待使用',
-  completed: '已完成',
-  cancelled: '已取消',
-  refunded: '已退款',
-}
 
 function nowText() {
   const d = new Date()
   const pad = (n) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
-}
-
-function toListItem(order) {
-  const {
-    userId: _uid,
-    items: _items,
-    qrCodeUrl: _qr,
-    payAt: _payAt,
-    remark: _remark,
-    ...rest
-  } = order
-  return {
-    ...rest,
-    statusText: STATUS_TEXT[order.status] || order.status,
-  }
 }
 
 function findUserOrder(store, userId, orderId) {
@@ -46,7 +24,7 @@ router.get('/orders', requireAuth, (req, res) => {
     list = list.filter((o) => o.status === status)
   }
   list = list.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
-  return ok(res, list.map(toListItem))
+  return ok(res, list.map(toOrderListItem))
 })
 
 router.get('/orders/:id', requireAuth, (req, res) => {
@@ -55,14 +33,7 @@ router.get('/orders/:id', requireAuth, (req, res) => {
   if (!order) {
     return fail(res, 40401, '订单不存在', 404)
   }
-  const detail = {
-    ...toListItem(order),
-    items: order.items || [],
-    qrCodeUrl: order.qrCodeUrl || '',
-    payAt: order.payAt || '',
-    remark: order.remark || '',
-  }
-  return ok(res, detail)
+  return ok(res, toOrderDetail(order))
 })
 
 router.post('/orders', requireAuth, (req, res) => {

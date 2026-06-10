@@ -36,6 +36,11 @@ function logout() {
           <template #title>地图运营</template>
           <el-menu-item index="/map/points">点位管理</el-menu-item>
         </el-sub-menu>
+        <el-sub-menu index="mall">
+          <template #title>商城运营</template>
+          <el-menu-item index="/mall/products">商品管理</el-menu-item>
+          <el-menu-item index="/mall/orders">订单管理</el-menu-item>
+        </el-sub-menu>
         <el-menu-item index="/dev/content-target">组件验收 Target</el-menu-item>
       </el-menu>
     </el-aside>

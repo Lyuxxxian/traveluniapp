@@ -1,6 +1,10 @@
 <template>
   <TabBar activeTab="map" :showTabbar="true">
   <view class="page">
+    <!-- #ifdef H5 -->
+    <div id="amap-h5-container" class="map h5-map-host"></div>
+    <!-- #endif -->
+    <!-- #ifndef H5 -->
     <map
       id="tourMap"
       class="map"
@@ -12,6 +16,7 @@
       :enable-3D="false"
       @markertap="onMarkerTap"
     />
+    <!-- #endif -->
 
     <view v-if="canGoBack" class="map-back" @tap="goBack">‹</view>
 
@@ -44,7 +49,7 @@
       </view>
     </view>
 
-    <view v-if="!pageReady" class="map-loading-mask">
+    <view v-if="showMapLoading" class="map-loading-mask">
       <text>地图加载中...</text>
     </view>
 
@@ -129,8 +134,18 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, nextTick } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { computed, onMounted, onUnmounted, ref, watch, nextTick } from 'vue'
+import { onLoad, onReady } from '@dcloudio/uni-app'
+// #ifdef H5
+import {
+  buildH5Markers,
+  createH5Map,
+  H5_MAP_CONTAINER_ID,
+  loadAmapH5,
+  toLngLat,
+  waitForH5MapContainer,
+} from '../../utils/amapH5'
+// #endif
 import TabBar from '../../components/TabBar.vue'
 import { goReviewEdit } from '../../utils/navigation'
 import {
@@ -198,6 +213,13 @@ const routePointIndex = ref(0)
 const userLocation = ref(null)
 const pageReady = ref(false)
 const categoryScrollIntoView = ref('')
+const h5MapReady = ref(true)
+
+// #ifdef H5
+h5MapReady.value = false
+// #endif
+
+const showMapLoading = computed(() => !pageReady.value || !h5MapReady.value)
 
 /** 8b：限制同屏 marker 数量，避免上百点位卡顿 */
 const MAX_MAP_MARKERS = 80
@@ -661,6 +683,118 @@ watch(activeCategory, async (key) => {
   categoryScrollIntoView.value = `cat-${key}`
 })
 
+// #ifdef H5
+let amapInstance = null
+let amapNamespace = null
+let h5MapInitStarted = false
+const amapMarkerLayers = []
+
+function resolveH5MarkerColor() {
+  const category = categories.value.find((item) => item.key === activeCategory.value)
+  if (mapMode.value === 'route') return '#5c7a9e'
+  if (mapMode.value === 'lifeCircle') return '#7b9eb3'
+  return category?.color || '#42c79c'
+}
+
+function syncH5MapCenter() {
+  if (!amapInstance) return
+  amapInstance.setCenter(toLngLat(mapCenter.value))
+}
+
+function syncH5MapMarkers() {
+  if (!amapInstance || !amapNamespace) return
+
+  if (amapMarkerLayers.length) {
+    amapInstance.remove(amapMarkerLayers)
+    amapMarkerLayers.length = 0
+  }
+
+  const markers = buildH5Markers(amapNamespace, {
+    points: markerDisplayPoints.value.map((point) => ({
+      id: Number(point.id),
+      latitude: point.latitude,
+      longitude: point.longitude,
+      title: point.title,
+    })),
+    markerColor: resolveH5MarkerColor(),
+    markerIconUrl: markerIcon,
+    routeMode: mapMode.value === 'route',
+    onMarkerClick: (pointId) => {
+      const target = currentPoints.value.find((item) => Number(item.id) === pointId)
+      if (target) selectPoint(target)
+    },
+  })
+
+  amapMarkerLayers.push(...markers)
+  amapInstance.add(markers)
+}
+
+async function initH5AmapMap() {
+  if (amapInstance || h5MapInitStarted) return
+  h5MapInitStarted = true
+
+  try {
+    await waitForH5MapContainer(H5_MAP_CONTAINER_ID)
+    amapNamespace = await loadAmapH5()
+    amapInstance = createH5Map(amapNamespace, H5_MAP_CONTAINER_ID, mapCenter.value)
+    syncH5MapMarkers()
+    if (typeof amapInstance.resize === 'function') {
+      amapInstance.resize()
+    }
+    h5MapReady.value = true
+  } catch (error) {
+    h5MapInitStarted = false
+    console.error('[map][h5]', error)
+    h5MapReady.value = true
+    uni.showToast({
+      title: '高德地图加载失败，请检查 Key 配置',
+      icon: 'none',
+      duration: 3000,
+    })
+  }
+}
+
+function scheduleH5AmapInit() {
+  void nextTick(() => initH5AmapMap())
+}
+
+onMounted(scheduleH5AmapInit)
+onReady(scheduleH5AmapInit)
+
+onUnmounted(() => {
+  if (amapInstance) {
+    amapInstance.destroy()
+    amapInstance = null
+  }
+  amapMarkerLayers.length = 0
+  amapNamespace = null
+})
+
+watch(
+  () => [
+    mapCenter.value.latitude,
+    mapCenter.value.longitude,
+    markerDisplayPoints.value.map((item) => item.id).join(','),
+    mapMode.value,
+    activeCategory.value,
+  ],
+  () => {
+    if (!amapInstance) return
+    syncH5MapCenter()
+    syncH5MapMarkers()
+  },
+)
+
+watch(pageReady, (ready) => {
+  if (!ready || !amapInstance) return
+  syncH5MapCenter()
+  syncH5MapMarkers()
+  if (typeof amapInstance.resize === 'function') {
+    amapInstance.resize()
+  }
+})
+// #endif
+
 const currentMarkers = computed(() => {
   const category = categories.value.find((item) => item.key === activeCategory.value)
   const routeColor = '#5c7a9e'
@@ -885,6 +1019,15 @@ function openNavigation(point) {
     uni.showToast({ title: '暂无法导航', icon: 'none' })
     return
   }
+  // #ifdef H5
+  const name = encodeURIComponent(point.title || '目的地')
+  const address = encodeURIComponent(point.address || point.title || '目的地')
+  window.open(
+    `https://uri.amap.com/marker?position=${point.longitude},${point.latitude}&name=${name}&content=${address}&coordinate=gaode&callnative=0`,
+    '_blank',
+  )
+  return
+  // #endif
   uni.openLocation({
     latitude: point.latitude,
     longitude: point.longitude,
@@ -961,6 +1104,16 @@ async function handleLeftAction(action) {
   width: 100%;
   height: 100%;
 }
+
+/* #ifdef H5 */
+.h5-map-host,
+#amap-h5-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+/* #endif */
 
 .map-loading-mask {
   position: absolute;

@@ -116,7 +116,7 @@ async function save() {
       await createMapPoint(body)
     }
     ElMessage.success('已保存；C 端远程地图将读取最新 title')
-    router.push('/map/points')
+    router.push({ path: '/map/points', query: { category: form.category } })
   } finally {
     saving.value = false
   }

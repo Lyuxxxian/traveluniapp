@@ -1,4 +1,4 @@
-# 管理端联调清单（MVP + 内容 + M2 地图）
+# 管理端联调清单（MVP + 内容 + M2 地图 + M2 商城）
 
 ## 启动
 
@@ -12,17 +12,37 @@
 | `VITE_HOME_USE_REMOTE_API=true` | 首页配置走 `/api/home/config` |
 | `VITE_DISCOVER_USE_REMOTE_API=true` | 发现走 `/api/discover/*` |
 | `VITE_MAP_USE_REMOTE_API=true` | 地图走 `/api/map/*`（失败仍 fallback 本地 mock） |
+| `VITE_MALL_USE_REMOTE_API=true` | 商城走 `/api/mall/products`（失败 fallback；下架不回退 mock） |
 | `VITE_SERVICE_USE_REMOTE_API=true` | 服务层点评/问卷/工单等 |
 
 ## 冒烟（自动化）
 
 ```bash
-# 管理端全量（含 M2 地图管理 API）
+# 管理端全量（含 M2 地图 + M2 商城）
 cd server && npm run verify:admin
 
 # M2 地图专项
 cd server && npm run verify:map-all
 # 等价于：verify:map-api + verify:map-admin + verify:map-import
+
+# M2 商城专项（server）
+cd server && npm run verify:mall-all
+# 等价于：verify:mall + verify:mall-admin + verify:mall-orders-admin
+
+# 仅公开商城 API
+cd server && npm run verify:mall
+
+# 仅管理端商品 CRUD + 上下架同步公开 API
+cd server && npm run verify:mall-admin
+
+# 仅管理端订单列表/改状态
+cd server && npm run verify:mall-orders-admin
+
+# C 端商城远程 + 下架验收（项目根目录，需 server）
+npm run verify:mall-remote
+
+# C 端商城文档字段与 mall.ts 对齐（项目根目录）
+npm run verify:mall-doc
 
 # 仅公开地图 API
 cd server && npm run verify:map
@@ -49,6 +69,21 @@ npm run verify:map
 - [ ] `npm run map:import:dry -- data/my-points.json` 通过后再正式 `map:import`
 
 相关文档：API v4 §8、§15.4–15.5；入库 [MAP_DATA_INGEST.md](./MAP_DATA_INGEST.md)。
+
+## M2 商城（手工验收）
+
+- [x] 公开 `GET /api/mall/products`、`GET /api/mall/products/:id` 仅 `on_sale`（`verify:mall`）
+- [x] 管理端商品 CRUD + `PUT .../status` 上下架 → 公开列表同步（`verify:mall-admin`）
+- [x] 管理端订单列表 `GET /api/admin/orders`（status/userId/keyword 筛选）+ 改状态（`verify:mall-orders-admin`）
+- [x] 订单列表含 `userId`、`userPhone`（关联 `store.users`）
+- [x] C 端远程下架验收：后台下架 → 公开列表不可见（`npm run verify:mall-remote`）
+- [x] API v4 §15.8 字段与 `src/api/mall.ts`、`mine.ts` 一致（`npm run verify:mall-doc`）
+- [ ] **admin-web**：商城运营 → **商品管理**：筛选、上架/下架、删除
+- [ ] **admin-web**：商城运营 → **订单管理**：列表含用户 ID/手机号、查看详情、改状态
+- [ ] **admin-web** 下架某门票后，C 端 `VITE_MALL_USE_REMOTE_API=true` 重启 dev，门票列表不可见
+- [ ] C 端停后端或关远程时，商城仍 fallback mock 不白屏（券包等 mock-only 品类仍可浏览）
+
+相关文档：API v4 §10、§15.8；C 端 `src/api/mall.ts`。
 
 ## 手工验收（首期）
 
@@ -83,3 +118,4 @@ npm run verify:map
 - [ ] `npm run preview` 或 Nginx 托管 `dist/` 可打开登录页
 - [ ] 使用管理员账号可登录并进入概览
 - [ ] 侧栏 **地图运营 → 点位管理** 可访问（M2-MAP-04）
+- [ ] 侧栏 **商城运营 → 商品管理 / 订单管理** 可访问（M2-MALL-04）

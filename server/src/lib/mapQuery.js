@@ -85,3 +85,21 @@ export function filterMapRoutes(list, params = {}) {
 export function sortMapCategories(list) {
   return [...list].sort((a, b) => (a.sort || 0) - (b.sort || 0))
 }
+
+/** 管理端列表：先按分类顺序，同分类内按标题、id 排序（新建点位归入对应分类区段） */
+export function sortAdminMapPoints(points, categories = []) {
+  const categoryOrder = new Map(
+    sortMapCategories(categories).map((cat, index) => [cat.key, index]),
+  )
+
+  return [...points].sort((a, b) => {
+    const catA = categoryOrder.get(a.category) ?? 9999
+    const catB = categoryOrder.get(b.category) ?? 9999
+    if (catA !== catB) return catA - catB
+
+    const titleCmp = String(a.title || '').localeCompare(String(b.title || ''), 'zh-CN')
+    if (titleCmp !== 0) return titleCmp
+
+    return (a.id || 0) - (b.id || 0)
+  })
+}

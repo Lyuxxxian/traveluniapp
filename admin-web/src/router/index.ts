@@ -22,6 +22,8 @@ const router = createRouter({
         { path: 'content/discover/edit/:id?', component: () => import('@/views/discover/PostEdit.vue') },
         { path: 'map/points', component: () => import('@/views/map/PointList.vue') },
         { path: 'map/points/edit/:id?', component: () => import('@/views/map/PointEdit.vue') },
+        { path: 'mall/products', component: () => import('@/views/mall/ProductList.vue') },
+        { path: 'mall/orders', component: () => import('@/views/mall/OrderList.vue') },
         { path: 'dev/content-target', component: () => import('@/views/dev/ContentTargetDemo.vue') },
       ],
     },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   deleteMapPoint,
@@ -11,6 +11,7 @@ import {
 import { useAdminListPage } from '@/composables/useAdminListPage'
 import type { MapCategory, MapPointDetail, MapPointStatus } from '@/types/map'
 
+const route = useRoute()
 const router = useRouter()
 const categories = ref<MapCategory[]>([])
 const category = ref('')
@@ -45,6 +46,10 @@ async function load() {
 
 function onFilterChange() {
   resetPage()
+  const query = { ...route.query }
+  if (category.value) query.category = category.value
+  else delete query.category
+  router.replace({ query })
   load()
 }
 
@@ -67,6 +72,10 @@ async function remove(row: MapPointDetail) {
 }
 
 onMounted(async () => {
+  const queryCategory = route.query.category
+  if (typeof queryCategory === 'string' && queryCategory) {
+    category.value = queryCategory
+  }
   await loadCategories()
   await load()
 })
