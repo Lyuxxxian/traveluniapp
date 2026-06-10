@@ -56,16 +56,31 @@ export const MAP_CATEGORIES = [
 ]
 
 const MAP_POINT_SEEDS = {
-  spot: seeds('景点', 101, [
-    '灵山大佛',
-    '照心林',
-    '九龙灌浴',
-    '灵山梵宫',
-    '十方林',
-    '五印坛城',
-  ], '景点'),
-  toilet: seeds('卫生间', 301, numberedTitles('卫生间', 12), '卫生间'),
-  entrance: seeds('出入口', 601, ['景区入口', '景区出口', '精舍东门入口'], '出入口'),
+  spot: [
+    { id: 101, title: '灵山大佛', latitude: 31.424230, longitude: 120.081889, address: '灵山文旅景区 · 景点', desc: '景区核心，大佛脚下的位置', tags: ['景点'] },
+    { id: 102, title: '九龙灌浴', latitude: 31.423112, longitude: 120.082568, address: '灵山文旅景区 · 景点', desc: '位于大佛正前方的广场喷泉处', tags: ['景点'] },
+    { id: 103, title: '阿育王柱', latitude: 31.421687, longitude: 120.083456, address: '灵山文旅景区 · 景点', desc: '位于景区中轴线入口不远处的石柱', tags: ['景点'] },
+    { id: 104, title: '曼飞龙塔', latitude: 31.421950, longitude: 120.084450, address: '灵山文旅景区 · 景点', desc: '位于景区东侧，阿育王柱附近', tags: ['景点'] },
+    { id: 105, title: '五印坛城', latitude: 31.422760, longitude: 120.081150, address: '灵山文旅景区 · 景点', desc: '位于景区中轴线西侧的藏式建筑', tags: ['景点'] },
+    { id: 106, title: '降魔浮雕', latitude: 31.423689, longitude: 120.082050, address: '灵山文旅景区 · 景点', desc: '位于通往大佛的台阶前', tags: ['景点'] },
+  ],
+  toilet: [
+    { id: 301, title: '卫生间', latitude: 31.419600, longitude: 120.085800, address: '灵山文旅景区 · 卫生间', desc: '入口大门处', tags: ['卫生间'] },
+    { id: 302, title: '卫生间', latitude: 31.421800, longitude: 120.083200, address: '灵山文旅景区 · 卫生间', desc: '阿育王柱广场旁', tags: ['卫生间'] },
+    { id: 303, title: '卫生间', latitude: 31.423200, longitude: 120.082700, address: '灵山文旅景区 · 卫生间', desc: '九龙灌浴广场东侧', tags: ['卫生间'] },
+    { id: 304, title: '卫生间', latitude: 31.424100, longitude: 120.082200, address: '灵山文旅景区 · 卫生间', desc: '大佛脚下/登云道旁', tags: ['卫生间'] },
+    { id: 305, title: '卫生间', latitude: 31.422500, longitude: 120.081300, address: '灵山文旅景区 · 卫生间', desc: '五印坛城附近', tags: ['卫生间'] },
+    { id: 306, title: '卫生间', latitude: 31.421500, longitude: 120.084200, address: '灵山文旅景区 · 卫生间', desc: '景区东侧道路', tags: ['卫生间'] },
+    { id: 307, title: '卫生间', latitude: 31.424500, longitude: 120.081500, address: '灵山文旅景区 · 卫生间', desc: '大佛景区后方', tags: ['卫生间'] },
+    { id: 308, title: '卫生间', latitude: 31.420500, longitude: 120.084500, address: '灵山文旅景区 · 卫生间', desc: '梵宫广场方向', tags: ['卫生间'] },
+    { id: 309, title: '卫生间', latitude: 31.422000, longitude: 120.080500, address: '灵山文旅景区 · 卫生间', desc: '梵宫内部或周边', tags: ['卫生间'] },
+    ...seeds('卫生间', 310, numberedTitles('卫生间', 3), '卫生间'),
+  ],
+  entrance: [
+    { id: 601, title: '景区入口', latitude: 31.419500, longitude: 120.106500, address: '灵山文旅景区 · 出入口', desc: '景区入口（坐标待精修）', tags: ['出入口'] },
+    { id: 602, title: '出入口', latitude: 31.419500, longitude: 120.085900, address: '灵山文旅景区 · 出入口', desc: '胜境门楼（老大门/团队入口）', tags: ['出入口'] },
+    { id: 603, title: '出入口', latitude: 31.418850, longitude: 120.086150, address: '灵山文旅景区 · 出入口', desc: '游客中心/散客入口方向', tags: ['出入口'] },
+  ],
   drinking: seeds('饮用水', 701, numberedTitles('饮用水', 9), '饮用水'),
   service: seeds('游客服务', 501, [
     '梵宫服务台',
@@ -152,15 +167,15 @@ export const MAP_ROUTES = [
     title: '历史文化深度游',
     scene: 'culture',
     durationText: '约3小时',
-    pointIds: [102, 106, 101, 104],
-    desc: '串联照心林、五印坛城、灵山大佛、灵山梵宫等文化节点。',
+    pointIds: [103, 106, 101, 105],
+    desc: '串联阿育王柱、降魔浮雕、灵山大佛、五印坛城等文化节点。',
   },
   {
     id: 2,
     title: '亲子家庭轻松游',
     scene: 'family',
     durationText: '约2.5小时',
-    pointIds: [103, 101, 201, 504],
+    pointIds: [102, 101, 201, 504],
     desc: '九龙灌浴、灵山大佛、餐饮补给与游客中心服务。',
   },
   {
@@ -169,7 +184,7 @@ export const MAP_ROUTES = [
     scene: 'relax',
     durationText: '约2小时',
     pointIds: [106, 104, 105],
-    desc: '五印坛城、梵宫、十方林，适合慢游打卡。',
+    desc: '降魔浮雕、曼飞龙塔、五印坛城，适合慢游打卡。',
   },
   {
     id: 4,
@@ -188,13 +203,17 @@ export const MAP_POINT_DETAILS = {
     suggestedDuration: '45分钟',
     serviceTags: ['讲解', '拍照', '无障碍'],
   },
-  103: {
+  102: {
     suggestedDuration: '20分钟',
     serviceTags: ['演出'],
   },
   104: {
-    suggestedDuration: '40分钟',
+    suggestedDuration: '30分钟',
     serviceTags: ['参观', '讲解'],
+  },
+  105: {
+    suggestedDuration: '35分钟',
+    serviceTags: ['参观', '讲解', '拍照'],
   },
 }
 
