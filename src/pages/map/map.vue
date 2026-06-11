@@ -10,11 +10,12 @@
       class="map"
       :latitude="mapCenter.latitude"
       :longitude="mapCenter.longitude"
-      :scale="16"
+      :scale="mapScale"
       :markers="currentMarkers"
       :show-location="true"
       :enable-3D="false"
       @markertap="onMarkerTap"
+      @regionchange="onMapRegionChange"
     />
     <!-- #endif -->
 
@@ -56,6 +57,7 @@
     <scroll-view
       v-show="pageReady && categories.length"
       class="category-scroll"
+      :class="{ 'has-filter': activeKeyword }"
       scroll-x
       scroll-with-animation
       :show-scrollbar="false"
@@ -75,10 +77,6 @@
         </view>
       </view>
     </scroll-view>
-    <view v-if="markersTruncated" class="markers-hint">
-      <text>当前显示 {{ markerDisplayPoints.length }}/{{ currentPoints.length }} 个点位，可缩小筛选范围</text>
-    </view>
-
     <view v-if="activeRoute" class="route-banner">
       <view class="route-banner-head">
         <text class="route-banner-title">{{ activeRoute.title }}</text>
@@ -158,11 +156,12 @@ import {
 } from '../../api/map'
 
 const DEFAULT_MAP_CENTER = {
-  latitude: 31.421,
-  longitude: 120.108,
+  latitude: 31.424845,
+  longitude: 120.100125,
 }
 
 const mapCenter = ref({ ...DEFAULT_MAP_CENTER })
+const mapScale = ref(16)
 
 const categoryIconEmoji = {
   spot: '⛩',
@@ -194,9 +193,6 @@ const leftMenuActions = [
   { key: 'locate', label: '定位', icon: '◎' },
 ]
 
-const markerIcon =
-  'https://cdn-icons-png.flaticon.com/512/684/684908.png'
-
 const categories = ref([])
 const currentPoints = ref([])
 const activeCategory = ref('spot')
@@ -223,6 +219,9 @@ const showMapLoading = computed(() => !pageReady.value || !h5MapReady.value)
 
 /** 8b：限制同屏 marker 数量，避免上百点位卡顿 */
 const MAX_MAP_MARKERS = 80
+const CATEGORY_SMALL_POINT_COUNT = 12
+const CATEGORY_OVERVIEW_MARKERS = 8
+const CATEGORY_MID_ZOOM_MARKERS = 18
 
 let detailRequestSeq = 0
 
@@ -231,6 +230,27 @@ function toDisplayCategories(list) {
     ...item,
     displayIcon: categoryIconEmoji[item.key] || '📍',
   }))
+}
+
+function getCategoryMeta(categoryKey) {
+  const category = categories.value.find((item) => item.key === categoryKey)
+  return {
+    color: category?.color || '#42c79c',
+    icon: category?.displayIcon || categoryIconEmoji[categoryKey] || '📍',
+  }
+}
+
+function buildMarkerIconDataUrl(iconText, color) {
+  const safeIcon = String(iconText || '📍')
+  const safeColor = String(color || '#42c79c')
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+      <path d="M32 4c-12.7 0-23 10.3-23 23 0 17.2 23 33 23 33s23-15.8 23-33C55 14.3 44.7 4 32 4z" fill="${safeColor}" stroke="#ffffff" stroke-width="4"/>
+      <circle cx="32" cy="27" r="14" fill="rgba(255,255,255,.92)"/>
+      <text x="32" y="33" font-size="22" text-anchor="middle" dominant-baseline="middle">${safeIcon}</text>
+    </svg>
+  `
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
 }
 
 function getFallbackPoints(category, keyword = '') {
@@ -308,6 +328,11 @@ function selectPoint(point, options = {}) {
   }
 }
 
+function resetMapCenterToDefault() {
+  mapCenter.value = { ...DEFAULT_MAP_CENTER }
+  mapScale.value = 16
+}
+
 async function findPointById(pointId) {
   try {
     const list = await fetchMapPoints({})
@@ -354,7 +379,15 @@ function applyPointSelection(list, options = {}) {
     return
   }
 
-  selectPoint(list[0] || null, { loadDetail: options.loadDetail !== false })
+  if (options.focusFirst) {
+    selectPoint(list[0] || null, { loadDetail: options.loadDetail !== false })
+    return
+  }
+
+  selectPoint(null)
+  if (options.resetCenter !== false) {
+    resetMapCenterToDefault()
+  }
 }
 
 /** 请求当前分类点位，失败时使用 fallback */
@@ -436,6 +469,7 @@ async function reloadCurrentCategoryPoints(options = {}) {
       keepSelection: options.keepSelection,
       selectPointId: options.selectPointId,
       focusFirst: options.focusFirst,
+      resetCenter: options.resetCenter,
       showEmptyToast: options.showEmptyToast,
     })
   } finally {
@@ -659,14 +693,27 @@ const showDetailMeta = computed(() => {
 
 const markerDisplayPoints = computed(() => {
   const points = currentPoints.value
-  if (points.length <= MAX_MAP_MARKERS) return points
+  if (points.length <= CATEGORY_SMALL_POINT_COUNT) return points
+
+  if (mapMode.value !== 'category' || activeKeyword.value) {
+    if (points.length <= MAX_MAP_MARKERS) return points
+  }
 
   const selectedId = selectedPoint.value?.id
-  let list = points.slice(0, MAX_MAP_MARKERS)
+  const zoom = Number(mapScale.value) || 16
+  const limit = mapMode.value === 'category' && !activeKeyword.value
+    ? zoom >= 18
+      ? MAX_MAP_MARKERS
+      : zoom >= 17
+        ? CATEGORY_MID_ZOOM_MARKERS
+        : CATEGORY_OVERVIEW_MARKERS
+    : MAX_MAP_MARKERS
+
+  let list = points.slice(0, limit)
   if (selectedId !== undefined && !list.some((item) => Number(item.id) === Number(selectedId))) {
     const selected = points.find((item) => Number(item.id) === Number(selectedId))
     if (selected) {
-      list = [selected, ...list.slice(0, MAX_MAP_MARKERS - 1)]
+      list = [selected, ...list.slice(0, limit - 1)]
     }
   }
   return list
@@ -699,6 +746,9 @@ function resolveH5MarkerColor() {
 function syncH5MapCenter() {
   if (!amapInstance) return
   amapInstance.setCenter(toLngLat(mapCenter.value))
+  if (typeof amapInstance.setZoom === 'function') {
+    amapInstance.setZoom(mapScale.value)
+  }
 }
 
 function syncH5MapMarkers() {
@@ -715,9 +765,10 @@ function syncH5MapMarkers() {
       latitude: point.latitude,
       longitude: point.longitude,
       title: point.title,
+      iconText: getCategoryMeta(point.iconKey || point.category).icon,
+      iconColor: getCategoryMeta(point.iconKey || point.category).color,
     })),
     markerColor: resolveH5MarkerColor(),
-    markerIconUrl: markerIcon,
     routeMode: mapMode.value === 'route',
     onMarkerClick: (pointId) => {
       const target = currentPoints.value.find((item) => Number(item.id) === pointId)
@@ -737,6 +788,12 @@ async function initH5AmapMap() {
     await waitForH5MapContainer(H5_MAP_CONTAINER_ID)
     amapNamespace = await loadAmapH5()
     amapInstance = createH5Map(amapNamespace, H5_MAP_CONTAINER_ID, mapCenter.value)
+    amapInstance.on('zoomend', () => {
+      const zoom = typeof amapInstance?.getZoom === 'function' ? Number(amapInstance.getZoom()) : mapScale.value
+      if (Number.isFinite(zoom)) {
+        mapScale.value = zoom
+      }
+    })
     syncH5MapMarkers()
     if (typeof amapInstance.resize === 'function') {
       amapInstance.resize()
@@ -774,13 +831,22 @@ watch(
   () => [
     mapCenter.value.latitude,
     mapCenter.value.longitude,
-    markerDisplayPoints.value.map((item) => item.id).join(','),
-    mapMode.value,
-    activeCategory.value,
   ],
   () => {
     if (!amapInstance) return
     syncH5MapCenter()
+  },
+)
+
+watch(
+  () => [
+    markerDisplayPoints.value.map((item) => item.id).join(','),
+    mapMode.value,
+    activeCategory.value,
+    mapScale.value,
+  ],
+  () => {
+    if (!amapInstance) return
     syncH5MapMarkers()
   },
 )
@@ -806,12 +872,17 @@ const currentMarkers = computed(() => {
       : (category ? category.color : '#42c79c')
 
   return markerDisplayPoints.value.map((point, index) => ({
+    ...(() => {
+      const meta = getCategoryMeta(point.iconKey || point.category)
+      return {
+        iconPath: buildMarkerIconDataUrl(meta.icon, meta.color),
+      }
+    })(),
     id: Number(point.id),
     latitude: point.latitude,
     longitude: point.longitude,
-    iconPath: markerIcon,
-    width: 28,
-    height: 28,
+    width: 32,
+    height: 32,
     callout: {
       content: mapMode.value === 'route' ? `${index + 1}. ${point.title}` : point.title,
       color: '#ffffff',
@@ -1001,9 +1072,16 @@ async function switchCategory(key) {
   mapSearchKeyword.value = ''
   await reloadCurrentCategoryPoints({
     clearKeyword: true,
-    focusFirst: true,
+    resetCenter: true,
     showEmptyToast: true,
   })
+}
+
+function onMapRegionChange(event) {
+  const scale = Number(event?.detail?.scale)
+  if (Number.isFinite(scale)) {
+    mapScale.value = scale
+  }
 }
 
 function onMarkerTap(event) {
@@ -1234,7 +1312,7 @@ async function handleLeftAction(action) {
 .left-menu {
   position: absolute;
   left: 16rpx;
-  top: calc(var(--status-bar-height) + 130rpx);
+  top: calc(var(--status-bar-height) + 250rpx);
   width: 104rpx;
   background: rgba(255, 255, 255, 0.82);
   border: 1rpx solid rgba(255, 255, 255, 0.72);
@@ -1259,7 +1337,7 @@ async function handleLeftAction(action) {
 }
 
 .left-menu.has-filter {
-  top: calc(var(--status-bar-height) + 168rpx);
+  top: calc(var(--status-bar-height) + 300rpx);
 }
 
 .left-icon {
@@ -1278,9 +1356,13 @@ async function handleLeftAction(action) {
   position: absolute;
   left: 16rpx;
   right: 16rpx;
-  bottom: 350rpx;
-  z-index: 10;
+  top: calc(var(--status-bar-height) + 106rpx);
+  z-index: 12;
   white-space: nowrap;
+}
+
+.category-scroll.has-filter {
+  top: calc(var(--status-bar-height) + 160rpx);
 }
 
 .category-bar-inner {
@@ -1288,20 +1370,6 @@ async function handleLeftAction(action) {
   align-items: center;
   gap: 12rpx;
   padding: 0 4rpx 8rpx;
-}
-
-.markers-hint {
-  position: absolute;
-  left: 16rpx;
-  right: 16rpx;
-  bottom: 300rpx;
-  z-index: 9;
-  padding: 8rpx 16rpx;
-  border-radius: 12rpx;
-  background: rgba(255, 247, 236, 0.92);
-  font-size: 20rpx;
-  color: #9a8265;
-  text-align: center;
 }
 
 .category-item {

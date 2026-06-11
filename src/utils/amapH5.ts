@@ -4,6 +4,8 @@ type AmapLngLat = { getLng: () => number; getLat: () => number }
 type AmapMap = {
   setCenter: (center: [number, number]) => void
   setZoom: (zoom: number) => void
+  getZoom: () => number
+  on: (event: string, handler: () => void) => void
   add: (overlays: unknown | unknown[]) => void
   remove: (overlays: unknown | unknown[]) => void
   resize: () => void
@@ -78,12 +80,14 @@ export type H5MapPoint = {
   latitude: number
   longitude: number
   title: string
+  iconText?: string
+  iconColor?: string
 }
 
 export type H5MarkerOptions = {
   points: H5MapPoint[]
   markerColor: string
-  markerIconUrl: string
+  markerIconUrl?: string
   routeMode: boolean
   onMarkerClick: (pointId: number) => void
 }
@@ -106,6 +110,15 @@ export function createH5Map(
     center: [center.longitude, center.latitude],
     viewMode: '2D',
   })
+}
+
+function escapeHtml(input: string) {
+  return String(input)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 }
 
 /** 等待 H5 地图容器挂载并具有尺寸（uni-app 页面切换时可能延迟） */
@@ -132,21 +145,41 @@ export function buildH5Markers(AMap: AmapNamespace, options: H5MarkerOptions) {
 
   return points.map((point, index) => {
     const labelContent = routeMode ? `${index + 1}. ${point.title}` : point.title
-    const marker = new AMap.Marker({
+    const color = point.iconColor || markerColor
+    const safeIcon = escapeHtml(point.iconText || '📍')
+    const markerOptions: Record<string, unknown> = {
       position: [point.longitude, point.latitude],
       title: point.title,
-      icon: new AMap.Icon({
-        image: markerIconUrl,
-        size: new AMap.Size(28, 28),
-        imageSize: new AMap.Size(28, 28),
-      }),
-      offset: new AMap.Pixel(-14, -28),
+      offset: new AMap.Pixel(-16, -34),
       label: {
-        content: `<div style="padding:4px 8px;border-radius:12px;background:${markerColor};color:#fff;font-size:12px;border:1px solid ${markerColor};white-space:nowrap;">${labelContent}</div>`,
+        content: `<div style="padding:4px 8px;border-radius:12px;background:${color};color:#fff;font-size:12px;border:1px solid ${color};white-space:nowrap;">${escapeHtml(labelContent)}</div>`,
         direction: 'top',
       },
       zIndex: 100 + index,
-    })
+    }
+
+    if (markerIconUrl) {
+      markerOptions.icon = new AMap.Icon({
+        image: markerIconUrl,
+        size: new AMap.Size(28, 28),
+        imageSize: new AMap.Size(28, 28),
+      })
+    } else {
+      markerOptions.content = `
+        <div style="
+          width:32px;height:32px;border-radius:18px 18px 18px 4px;
+          transform:rotate(-45deg);
+          background:${color};
+          border:2px solid #fff;
+          box-shadow:0 4px 12px rgba(72,50,24,.22);
+          display:flex;align-items:center;justify-content:center;
+        ">
+          <span style="transform:rotate(45deg);font-size:17px;line-height:1;">${safeIcon}</span>
+        </div>
+      `
+    }
+
+    const marker = new AMap.Marker(markerOptions)
 
     marker.on('click', () => onMarkerClick(Number(point.id)))
     return marker
