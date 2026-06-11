@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-11T05:39:01.104Z",
+  "keys": [
+    "mapPoints",
+    "mapCategories",
+    "mapPointDetails",
+    "mapRoutes",
+    "products",
+    "homeConfig",
+    "discoverPosts",
+    "faqs",
+    "questionnaires",
+    "serviceConfig",
+    "couponPackages"
+  ]
+}

@@ -1,0 +1,3644 @@
+{
+  "mapPoints": [
+    {
+      "id": 101,
+      "category": "spot",
+      "title": "灵山大佛",
+      "latitude": 31.430194,
+      "longitude": 120.096476,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "灵山大佛（坐标待精修，可在后续替换为真实经纬度）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "景点"
+      ],
+      "iconKey": "spot"
+    },
+    {
+      "id": 102,
+      "category": "spot",
+      "title": "照心林",
+      "latitude": 31.426675,
+      "longitude": 120.098538,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "照心林（坐标待精修，可在后续替换为真实经纬度）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "景点"
+      ],
+      "iconKey": "spot"
+    },
+    {
+      "id": 103,
+      "category": "spot",
+      "title": "九龙灌浴",
+      "latitude": 31.424862,
+      "longitude": 120.100126,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "九龙灌浴（坐标待精修，可在后续替换为真实经纬度）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "景点"
+      ],
+      "iconKey": "spot"
+    },
+    {
+      "id": 104,
+      "category": "spot",
+      "title": "灵山梵宫",
+      "latitude": 31.428222,
+      "longitude": 120.102419,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "灵山梵宫（坐标待精修，可在后续替换为真实经纬度）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "景点"
+      ],
+      "iconKey": "spot"
+    },
+    {
+      "id": 105,
+      "category": "spot",
+      "title": "十方林",
+      "latitude": 31.425711,
+      "longitude": 120.10169,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "十方林（坐标待精修，可在后续替换为真实经纬度）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "景点"
+      ],
+      "iconKey": "spot"
+    },
+    {
+      "id": 106,
+      "category": "spot",
+      "title": "五印坛城",
+      "latitude": 31.424676,
+      "longitude": 120.103054,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "五印坛城（坐标待精修，可在后续替换为真实经纬度）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "景点"
+      ],
+      "iconKey": "spot"
+    },
+    {
+      "id": 301,
+      "category": "toilet",
+      "title": "卫生间1",
+      "latitude": 31.426812,
+      "longitude": 120.101756,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 1（胜境门楼西侧）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 303,
+      "category": "toilet",
+      "title": "卫生间3",
+      "latitude": 31.427149,
+      "longitude": 120.099275,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 3（九龙灌浴广场东侧）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 304,
+      "category": "toilet",
+      "title": "卫生间4",
+      "latitude": 31.425863,
+      "longitude": 120.103518,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 4（梵宫入口南侧）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 305,
+      "category": "toilet",
+      "title": "卫生间5",
+      "latitude": 31.425271,
+      "longitude": 120.104126,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 5（梵宫出口西侧）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 306,
+      "category": "toilet",
+      "title": "卫生间6",
+      "latitude": 31.424415,
+      "longitude": 120.102873,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 6（五印坛城北门）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 307,
+      "category": "toilet",
+      "title": "卫生间7",
+      "latitude": 31.426148,
+      "longitude": 120.104832,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 7（曼飞龙塔旁）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 308,
+      "category": "toilet",
+      "title": "卫生间8",
+      "latitude": 31.428925,
+      "longitude": 120.097361,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 8（祥符禅寺山门）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 309,
+      "category": "toilet",
+      "title": "卫生间9",
+      "latitude": 31.429876,
+      "longitude": 120.096217,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 9（大佛登云道下平台）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 310,
+      "category": "toilet",
+      "title": "卫生间10",
+      "latitude": 31.428332,
+      "longitude": 120.098154,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 10（佛手广场南侧）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 311,
+      "category": "toilet",
+      "title": "卫生间11",
+      "latitude": 31.425167,
+      "longitude": 120.102419,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 11（照心林步道中段）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 312,
+      "category": "toilet",
+      "title": "卫生间12",
+      "latitude": 31.426024,
+      "longitude": 120.100863,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 12（出口接驳点旁）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "卫生间"
+      ],
+      "iconKey": "toilet"
+    },
+    {
+      "id": 601,
+      "category": "entrance",
+      "title": "景区入口",
+      "latitude": 31.420504,
+      "longitude": 120.103078,
+      "address": "灵山文旅景区 · 出入口",
+      "desc": "主入口（南门・胜境门楼）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "出入口"
+      ],
+      "iconKey": "entrance"
+    },
+    {
+      "id": 602,
+      "category": "entrance",
+      "title": "景区出口",
+      "latitude": 31.423097,
+      "longitude": 120.10285,
+      "address": "灵山文旅景区 · 出入口",
+      "desc": "景区出口（景区内后勤专用出口）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "出入口"
+      ],
+      "iconKey": "entrance"
+    },
+    {
+      "id": 603,
+      "category": "entrance",
+      "title": "精舍东门入口",
+      "latitude": 31.427892,
+      "longitude": 120.105737,
+      "address": "灵山文旅景区 · 出入口",
+      "desc": "东侧次出入口",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "出入口"
+      ],
+      "iconKey": "entrance"
+    },
+    {
+      "id": 701,
+      "title": "饮用水1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 702,
+      "title": "饮用水2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 703,
+      "title": "饮用水3",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水3（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 704,
+      "title": "饮用水4",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水4（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 705,
+      "title": "饮用水5",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水5（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 706,
+      "title": "饮用水6",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水6（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 707,
+      "title": "饮用水7",
+      "latitude": 31.4206,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水7（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 708,
+      "title": "饮用水8",
+      "latitude": 31.4206,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水8（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 709,
+      "title": "饮用水9",
+      "latitude": 31.4206,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 饮用水",
+      "desc": "饮用水9（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "饮用水"
+      ],
+      "category": "drinking",
+      "iconKey": "drinking",
+      "status": "open"
+    },
+    {
+      "id": 501,
+      "category": "service",
+      "title": "梵宫服务台",
+      "latitude": 31.428068,
+      "longitude": 120.102075,
+      "address": "灵山文旅景区 · 游客服务",
+      "desc": "梵宫游客服务台",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "服务"
+      ],
+      "iconKey": "service"
+    },
+    {
+      "id": 502,
+      "category": "service",
+      "title": "五印坛城服务台",
+      "latitude": 31.424815,
+      "longitude": 120.102942,
+      "address": "灵山文旅景区 · 游客服务",
+      "desc": "五印坛城服务台",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "服务"
+      ],
+      "iconKey": "service"
+    },
+    {
+      "id": 503,
+      "category": "service",
+      "title": "假日广场服务台",
+      "latitude": 31.421963,
+      "longitude": 120.10319,
+      "address": "灵山文旅景区 · 游客服务",
+      "desc": "大佛平台服务站",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "服务"
+      ],
+      "iconKey": "service"
+    },
+    {
+      "id": 504,
+      "category": "service",
+      "title": "游客中心",
+      "latitude": 31.420194,
+      "longitude": 120.103649,
+      "address": "灵山文旅景区 · 游客服务",
+      "desc": "主游客服务中心（入口广场）",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "服务"
+      ],
+      "iconKey": "service"
+    },
+    {
+      "id": 801,
+      "title": "母婴室1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 母婴室",
+      "desc": "母婴室1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "母婴室"
+      ],
+      "category": "nursery",
+      "iconKey": "nursery",
+      "status": "open"
+    },
+    {
+      "id": 802,
+      "title": "母婴室2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 母婴室",
+      "desc": "母婴室2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "母婴室"
+      ],
+      "category": "nursery",
+      "iconKey": "nursery",
+      "status": "open"
+    },
+    {
+      "id": 803,
+      "title": "母婴室3",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 母婴室",
+      "desc": "母婴室3（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "母婴室"
+      ],
+      "category": "nursery",
+      "iconKey": "nursery",
+      "status": "open"
+    },
+    {
+      "id": 804,
+      "title": "母婴室4",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 母婴室",
+      "desc": "母婴室4（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "母婴室"
+      ],
+      "category": "nursery",
+      "iconKey": "nursery",
+      "status": "open"
+    },
+    {
+      "id": 901,
+      "category": "ticket",
+      "title": "综合购票",
+      "latitude": 31.420115,
+      "longitude": 120.102937,
+      "address": "灵山文旅景区 · 售票处",
+      "desc": "入口线下售票处",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "售票"
+      ],
+      "iconKey": "ticket"
+    },
+    {
+      "id": 902,
+      "category": "ticket",
+      "title": "圣坛售票",
+      "latitude": 31.428552,
+      "longitude": 120.102339,
+      "address": "灵山文旅景区 · 售票处",
+      "desc": "圣坛售票点",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "售票"
+      ],
+      "iconKey": "ticket"
+    },
+    {
+      "id": 1001,
+      "title": "充电宝1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1002,
+      "title": "充电宝2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1003,
+      "title": "充电宝3",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝3（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1004,
+      "title": "充电宝4",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝4（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1005,
+      "title": "充电宝5",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝5（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1006,
+      "title": "充电宝6",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝6（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1007,
+      "title": "充电宝7",
+      "latitude": 31.4206,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝7（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1008,
+      "title": "充电宝8",
+      "latitude": 31.4206,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝8（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1009,
+      "title": "充电宝9",
+      "latitude": 31.4206,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝9（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1010,
+      "title": "充电宝10",
+      "latitude": 31.4206,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝10（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1011,
+      "title": "充电宝11",
+      "latitude": 31.4206,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝11（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1012,
+      "title": "充电宝12",
+      "latitude": 31.4206,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝12（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1013,
+      "title": "充电宝13",
+      "latitude": 31.4217,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝13（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1014,
+      "title": "充电宝14",
+      "latitude": 31.4217,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝14（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1015,
+      "title": "充电宝15",
+      "latitude": 31.4217,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝15（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1016,
+      "title": "充电宝16",
+      "latitude": 31.4217,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝16（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1017,
+      "title": "充电宝17",
+      "latitude": 31.4217,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝17（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1018,
+      "title": "充电宝18",
+      "latitude": 31.4217,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝18（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1019,
+      "title": "充电宝19",
+      "latitude": 31.4228,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝19（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1020,
+      "title": "充电宝20",
+      "latitude": 31.4228,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝20（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1021,
+      "title": "充电宝21",
+      "latitude": 31.4228,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝21（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1022,
+      "title": "充电宝22",
+      "latitude": 31.4228,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝22（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1023,
+      "title": "充电宝23",
+      "latitude": 31.4228,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝23（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1024,
+      "title": "充电宝24",
+      "latitude": 31.4228,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝24（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1025,
+      "title": "充电宝25",
+      "latitude": 31.4239,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝25（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1026,
+      "title": "充电宝26",
+      "latitude": 31.4239,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝26（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1027,
+      "title": "充电宝27",
+      "latitude": 31.4239,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝27（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1028,
+      "title": "充电宝28",
+      "latitude": 31.4239,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "充电宝28（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "充电宝"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1029,
+      "title": "饮料售卖机1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1030,
+      "title": "饮料售卖机2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1031,
+      "title": "饮料售卖机3",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机3（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1032,
+      "title": "饮料售卖机4",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机4（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1033,
+      "title": "饮料售卖机5",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机5（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1034,
+      "title": "饮料售卖机6",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机6（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1035,
+      "title": "饮料售卖机7",
+      "latitude": 31.4206,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机7（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1036,
+      "title": "饮料售卖机8",
+      "latitude": 31.4206,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机8（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1037,
+      "title": "饮料售卖机9",
+      "latitude": 31.4206,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 自助设施",
+      "desc": "饮料售卖机9（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "售卖机"
+      ],
+      "category": "facility",
+      "iconKey": "facility",
+      "status": "open"
+    },
+    {
+      "id": 1101,
+      "category": "guide",
+      "title": "游客中心租借点",
+      "latitude": 31.420315,
+      "longitude": 120.103563,
+      "address": "灵山文旅景区 · 讲解",
+      "desc": "游客中心租借点",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "讲解"
+      ],
+      "iconKey": "guide"
+    },
+    {
+      "id": 1102,
+      "category": "guide",
+      "title": "售票中心租借点",
+      "latitude": 31.420137,
+      "longitude": 120.102971,
+      "address": "灵山文旅景区 · 讲解",
+      "desc": "售票中心租借点",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "讲解"
+      ],
+      "iconKey": "guide"
+    },
+    {
+      "id": 1103,
+      "category": "guide",
+      "title": "导览亭租借点1",
+      "latitude": 31.420792,
+      "longitude": 120.102658,
+      "address": "灵山文旅景区 · 讲解",
+      "desc": "导览亭租借点1",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "讲解"
+      ],
+      "iconKey": "guide"
+    },
+    {
+      "id": 1104,
+      "category": "guide",
+      "title": "导览亭租借点2",
+      "latitude": 31.420918,
+      "longitude": 120.102972,
+      "address": "灵山文旅景区 · 讲解",
+      "desc": "导览亭租借点2",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "讲解"
+      ],
+      "iconKey": "guide"
+    },
+    {
+      "id": 1105,
+      "category": "guide",
+      "title": "假日广场出口归还处",
+      "latitude": 31.422928,
+      "longitude": 120.103362,
+      "address": "灵山文旅景区 · 讲解",
+      "desc": "假日广场出口归还处",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "讲解"
+      ],
+      "iconKey": "guide"
+    },
+    {
+      "id": 1106,
+      "category": "guide",
+      "title": "梵宫入口租借点",
+      "latitude": 31.427942,
+      "longitude": 120.101863,
+      "address": "灵山文旅景区 · 讲解",
+      "desc": "梵宫入口租借点",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "讲解"
+      ],
+      "iconKey": "guide"
+    },
+    {
+      "id": 1107,
+      "category": "guide",
+      "title": "梵宫出口归还处",
+      "latitude": 31.428118,
+      "longitude": 120.103032,
+      "address": "灵山文旅景区 · 讲解",
+      "desc": "梵宫出口归还处",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "讲解"
+      ],
+      "iconKey": "guide"
+    },
+    {
+      "id": 1108,
+      "category": "guide",
+      "title": "精舍前台租借点",
+      "latitude": 31.428771,
+      "longitude": 120.105079,
+      "address": "灵山文旅景区 · 讲解",
+      "desc": "无锡灵山精舍前台租借点",
+      "openTime": "",
+      "status": "open",
+      "tags": [
+        "讲解"
+      ],
+      "iconKey": "guide"
+    },
+    {
+      "id": 201,
+      "title": "半间小食令",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 餐饮",
+      "desc": "半间小食令（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "餐饮"
+      ],
+      "category": "food",
+      "iconKey": "food",
+      "status": "open"
+    },
+    {
+      "id": 202,
+      "title": "吉祥食集",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 餐饮",
+      "desc": "吉祥食集（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "餐饮"
+      ],
+      "category": "food",
+      "iconKey": "food",
+      "status": "open"
+    },
+    {
+      "id": 203,
+      "title": "彩虹小食令",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 餐饮",
+      "desc": "彩虹小食令（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "餐饮"
+      ],
+      "category": "food",
+      "iconKey": "food",
+      "status": "open"
+    },
+    {
+      "id": 204,
+      "title": "如一味咖啡",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 餐饮",
+      "desc": "如一味咖啡（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "餐饮"
+      ],
+      "category": "food",
+      "iconKey": "food",
+      "status": "open"
+    },
+    {
+      "id": 205,
+      "title": "蔬食馆",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 餐饮",
+      "desc": "蔬食馆（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "餐饮"
+      ],
+      "category": "food",
+      "iconKey": "food",
+      "status": "open"
+    },
+    {
+      "id": 206,
+      "title": "灵山五关堂",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 餐饮",
+      "desc": "灵山五关堂（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "餐饮"
+      ],
+      "category": "food",
+      "iconKey": "food",
+      "status": "open"
+    },
+    {
+      "id": 207,
+      "title": "如愿食令",
+      "latitude": 31.4206,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 餐饮",
+      "desc": "如愿食令（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "餐饮"
+      ],
+      "category": "food",
+      "iconKey": "food",
+      "status": "open"
+    },
+    {
+      "id": 208,
+      "title": "山边小食令",
+      "latitude": 31.4206,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 餐饮",
+      "desc": "山边小食令（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "餐饮"
+      ],
+      "category": "food",
+      "iconKey": "food",
+      "status": "open"
+    },
+    {
+      "id": 2101,
+      "title": "福运如愿1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "福运如愿1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2102,
+      "title": "福运如愿2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "福运如愿2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2103,
+      "title": "福应灵山",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "福应灵山（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2104,
+      "title": "喜福福礼",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "喜福福礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2105,
+      "title": "花开有礼",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "花开有礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2106,
+      "title": "五色福礼",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "五色福礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2107,
+      "title": "梵华有礼",
+      "latitude": 31.4206,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "梵华有礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2108,
+      "title": "梵心福礼",
+      "latitude": 31.4206,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "梵心福礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2109,
+      "title": "福田有礼",
+      "latitude": 31.4206,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "福田有礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2110,
+      "title": "印记灵山",
+      "latitude": 31.4206,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "印记灵山（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2111,
+      "title": "福慧如愿",
+      "latitude": 31.4206,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "福慧如愿（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2112,
+      "title": "福安如愿",
+      "latitude": 31.4206,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "福安如愿（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2113,
+      "title": "欢喜如愿",
+      "latitude": 31.4217,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "欢喜如愿（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2114,
+      "title": "杏运有礼",
+      "latitude": 31.4217,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "杏运有礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2115,
+      "title": "莲花有礼",
+      "latitude": 31.4217,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "莲花有礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2116,
+      "title": "随喜福礼",
+      "latitude": 31.4217,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "随喜福礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2117,
+      "title": "般若福礼",
+      "latitude": 31.4217,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 商店",
+      "desc": "般若福礼（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "商店"
+      ],
+      "category": "shop",
+      "iconKey": "shop",
+      "status": "open"
+    },
+    {
+      "id": 2201,
+      "title": "灵山精舍",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 住宿",
+      "desc": "灵山精舍（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "住宿"
+      ],
+      "category": "hotel",
+      "iconKey": "hotel",
+      "status": "open"
+    },
+    {
+      "id": 2301,
+      "title": "大照壁站",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 观光车站",
+      "desc": "大照壁站（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "观光车"
+      ],
+      "category": "shuttle",
+      "iconKey": "shuttle",
+      "status": "open"
+    },
+    {
+      "id": 2302,
+      "title": "福足坛站",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 观光车站",
+      "desc": "福足坛站（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "观光车"
+      ],
+      "category": "shuttle",
+      "iconKey": "shuttle",
+      "status": "open"
+    },
+    {
+      "id": 2303,
+      "title": "五印坛城站",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 观光车站",
+      "desc": "五印坛城站（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "观光车"
+      ],
+      "category": "shuttle",
+      "iconKey": "shuttle",
+      "status": "open"
+    },
+    {
+      "id": 2304,
+      "title": "九龙灌浴站（散客）",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 观光车站",
+      "desc": "九龙灌浴站（散客）（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "观光车"
+      ],
+      "category": "shuttle",
+      "iconKey": "shuttle",
+      "status": "open"
+    },
+    {
+      "id": 2305,
+      "title": "曼飞龙塔站",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 观光车站",
+      "desc": "曼飞龙塔站（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "观光车"
+      ],
+      "category": "shuttle",
+      "iconKey": "shuttle",
+      "status": "open"
+    },
+    {
+      "id": 2306,
+      "title": "梵宫广场站",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 观光车站",
+      "desc": "梵宫广场站（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "观光车"
+      ],
+      "category": "shuttle",
+      "iconKey": "shuttle",
+      "status": "open"
+    },
+    {
+      "id": 2307,
+      "title": "蔬食馆站",
+      "latitude": 31.4206,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 观光车站",
+      "desc": "蔬食馆站（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "观光车"
+      ],
+      "category": "shuttle",
+      "iconKey": "shuttle",
+      "status": "open"
+    },
+    {
+      "id": 2308,
+      "title": "杏坛广场站（上行）",
+      "latitude": 31.4206,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 观光车站",
+      "desc": "杏坛广场站（上行）（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "观光车"
+      ],
+      "category": "shuttle",
+      "iconKey": "shuttle",
+      "status": "open"
+    },
+    {
+      "id": 2401,
+      "title": "AED1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 医务室",
+      "desc": "AED1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "AED"
+      ],
+      "category": "medical",
+      "iconKey": "medical",
+      "status": "open"
+    },
+    {
+      "id": 2402,
+      "title": "AED2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 医务室",
+      "desc": "AED2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "AED"
+      ],
+      "category": "medical",
+      "iconKey": "medical",
+      "status": "open"
+    },
+    {
+      "id": 2403,
+      "title": "AED3",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 医务室",
+      "desc": "AED3（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "AED"
+      ],
+      "category": "medical",
+      "iconKey": "medical",
+      "status": "open"
+    },
+    {
+      "id": 2404,
+      "title": "AED4",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 医务室",
+      "desc": "AED4（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "AED"
+      ],
+      "category": "medical",
+      "iconKey": "medical",
+      "status": "open"
+    },
+    {
+      "id": 2405,
+      "title": "AED5",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 医务室",
+      "desc": "AED5（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "AED"
+      ],
+      "category": "medical",
+      "iconKey": "medical",
+      "status": "open"
+    },
+    {
+      "id": 2406,
+      "title": "医务室1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 医务室",
+      "desc": "医务室1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "医务室"
+      ],
+      "category": "medical",
+      "iconKey": "medical",
+      "status": "open"
+    },
+    {
+      "id": 2407,
+      "title": "医务室2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 医务室",
+      "desc": "医务室2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "医务室"
+      ],
+      "category": "medical",
+      "iconKey": "medical",
+      "status": "open"
+    },
+    {
+      "id": 2501,
+      "title": "休息区1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 休息区",
+      "desc": "休息区1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "休息"
+      ],
+      "category": "rest",
+      "iconKey": "rest",
+      "status": "open"
+    },
+    {
+      "id": 2502,
+      "title": "休息区2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 休息区",
+      "desc": "休息区2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "休息"
+      ],
+      "category": "rest",
+      "iconKey": "rest",
+      "status": "open"
+    },
+    {
+      "id": 2503,
+      "title": "休息区3",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 休息区",
+      "desc": "休息区3（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "休息"
+      ],
+      "category": "rest",
+      "iconKey": "rest",
+      "status": "open"
+    },
+    {
+      "id": 2504,
+      "title": "休息区4",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 休息区",
+      "desc": "休息区4（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "休息"
+      ],
+      "category": "rest",
+      "iconKey": "rest",
+      "status": "open"
+    },
+    {
+      "id": 2505,
+      "title": "休息区5",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 休息区",
+      "desc": "休息区5（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "休息"
+      ],
+      "category": "rest",
+      "iconKey": "rest",
+      "status": "open"
+    },
+    {
+      "id": 2506,
+      "title": "休息区6",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 休息区",
+      "desc": "休息区6（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "休息"
+      ],
+      "category": "rest",
+      "iconKey": "rest",
+      "status": "open"
+    },
+    {
+      "id": 2507,
+      "title": "休息区7",
+      "latitude": 31.4206,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 休息区",
+      "desc": "休息区7（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "休息"
+      ],
+      "category": "rest",
+      "iconKey": "rest",
+      "status": "open"
+    },
+    {
+      "id": 2601,
+      "title": "吸烟处1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2602,
+      "title": "吸烟处2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2603,
+      "title": "吸烟处3",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处3（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2604,
+      "title": "吸烟处4",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处4（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2605,
+      "title": "吸烟处5",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处5（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2606,
+      "title": "吸烟处6",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处6（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2607,
+      "title": "吸烟处7",
+      "latitude": 31.4206,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处7（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2608,
+      "title": "吸烟处8",
+      "latitude": 31.4206,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处8（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2609,
+      "title": "吸烟处9",
+      "latitude": 31.4206,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处9（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2610,
+      "title": "吸烟处10",
+      "latitude": 31.4206,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 吸烟处",
+      "desc": "吸烟处10（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "吸烟"
+      ],
+      "category": "smoking",
+      "iconKey": "smoking",
+      "status": "open"
+    },
+    {
+      "id": 2701,
+      "title": "垂丝海棠1",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 植物",
+      "desc": "垂丝海棠1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "植物"
+      ],
+      "category": "plant",
+      "iconKey": "plant",
+      "status": "open"
+    },
+    {
+      "id": 2702,
+      "title": "垂丝海棠2",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 植物",
+      "desc": "垂丝海棠2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "植物"
+      ],
+      "category": "plant",
+      "iconKey": "plant",
+      "status": "open"
+    },
+    {
+      "id": 2703,
+      "title": "垂丝海棠3",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 植物",
+      "desc": "垂丝海棠3（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "植物"
+      ],
+      "category": "plant",
+      "iconKey": "plant",
+      "status": "open"
+    },
+    {
+      "id": 2704,
+      "title": "玉兰1",
+      "latitude": 31.4195,
+      "longitude": 120.1098,
+      "address": "灵山文旅景区 · 植物",
+      "desc": "玉兰1（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "植物"
+      ],
+      "category": "plant",
+      "iconKey": "plant",
+      "status": "open"
+    },
+    {
+      "id": 2705,
+      "title": "玉兰2",
+      "latitude": 31.4195,
+      "longitude": 120.1109,
+      "address": "灵山文旅景区 · 植物",
+      "desc": "玉兰2（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "植物"
+      ],
+      "category": "plant",
+      "iconKey": "plant",
+      "status": "open"
+    },
+    {
+      "id": 2706,
+      "title": "牡丹",
+      "latitude": 31.4195,
+      "longitude": 120.112,
+      "address": "灵山文旅景区 · 植物",
+      "desc": "牡丹（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "植物"
+      ],
+      "category": "plant",
+      "iconKey": "plant",
+      "status": "open"
+    },
+    {
+      "id": 401,
+      "title": "P1 主停车场",
+      "latitude": 31.4195,
+      "longitude": 120.1065,
+      "address": "灵山文旅景区 · 停车场",
+      "desc": "P1 主停车场（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "停车"
+      ],
+      "category": "parking",
+      "iconKey": "parking",
+      "status": "open"
+    },
+    {
+      "id": 402,
+      "title": "P2 东停车场",
+      "latitude": 31.4195,
+      "longitude": 120.1076,
+      "address": "灵山文旅景区 · 停车场",
+      "desc": "P2 东停车场（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "停车"
+      ],
+      "category": "parking",
+      "iconKey": "parking",
+      "status": "open"
+    },
+    {
+      "id": 403,
+      "title": "P3 大巴停车场",
+      "latitude": 31.4195,
+      "longitude": 120.1087,
+      "address": "灵山文旅景区 · 停车场",
+      "desc": "P3 大巴停车场（坐标待精修，可在后续替换为真实经纬度）",
+      "tags": [
+        "停车"
+      ],
+      "category": "parking",
+      "iconKey": "parking",
+      "status": "open"
+    },
+    {
+      "id": 10002,
+      "category": "spot",
+      "title": "三叠泉",
+      "latitude": 31.420826,
+      "longitude": 120.102851,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "三叠泉",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    },
+    {
+      "id": 10003,
+      "category": "spot",
+      "title": "大照壁",
+      "latitude": 31.421389,
+      "longitude": 120.1025,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "大照壁",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    },
+    {
+      "id": 10004,
+      "category": "spot",
+      "title": "五明桥",
+      "latitude": 31.421748,
+      "longitude": 120.102248,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "五明桥",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    },
+    {
+      "id": 10005,
+      "category": "spot",
+      "title": "胜境门楼",
+      "latitude": 31.422327,
+      "longitude": 120.101802,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "胜境门楼",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    },
+    {
+      "id": 10006,
+      "category": "spot",
+      "title": "洗心池",
+      "latitude": 31.4224,
+      "longitude": 120.101604,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "洗心池",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    },
+    {
+      "id": 10007,
+      "category": "spot",
+      "title": "佛足坛",
+      "latitude": 31.422727,
+      "longitude": 120.101498,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "佛足坛",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    },
+    {
+      "id": 10008,
+      "category": "spot",
+      "title": "五智门",
+      "latitude": 31.423052,
+      "longitude": 120.101292,
+      "address": "灵山文旅景区 · 景点",
+      "desc": "五智门",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    },
+    {
+      "id": 10010,
+      "category": "ticket",
+      "title": "扫码购票",
+      "latitude": 31.419996,
+      "longitude": 120.10307,
+      "address": "灵山文旅景区 · 售票处",
+      "desc": "自助售票",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    },
+    {
+      "id": 10011,
+      "category": "toilet",
+      "title": "卫生间2",
+      "latitude": 31.426537,
+      "longitude": 120.100482,
+      "address": "灵山文旅景区 · 卫生间",
+      "desc": "卫生间 2（佛足坛北侧）",
+      "openTime": "",
+      "status": "open",
+      "tags": [],
+      "iconKey": "spot"
+    }
+  ],
+  "mapCategories": [
+    {
+      "key": "spot",
+      "label": "景点",
+      "icon": "spot",
+      "color": "#8b6138",
+      "sort": 1
+    },
+    {
+      "key": "toilet",
+      "label": "卫生间",
+      "icon": "toilet",
+      "color": "#7b9eb3",
+      "sort": 2
+    },
+    {
+      "key": "entrance",
+      "label": "出入口",
+      "icon": "entrance",
+      "color": "#6b7c8f",
+      "sort": 3
+    },
+    {
+      "key": "drinking",
+      "label": "饮用水",
+      "icon": "drinking",
+      "color": "#5a9fb8",
+      "sort": 4
+    },
+    {
+      "key": "service",
+      "label": "游客服务",
+      "icon": "service",
+      "color": "#c4a35a",
+      "sort": 5
+    },
+    {
+      "key": "nursery",
+      "label": "母婴室",
+      "icon": "nursery",
+      "color": "#d4a5a5",
+      "sort": 6
+    },
+    {
+      "key": "ticket",
+      "label": "售票处",
+      "icon": "ticket",
+      "color": "#9b6b4a",
+      "sort": 7
+    },
+    {
+      "key": "facility",
+      "label": "自助设施",
+      "icon": "facility",
+      "color": "#7a8b6a",
+      "sort": 8
+    },
+    {
+      "key": "guide",
+      "label": "讲解",
+      "icon": "guide",
+      "color": "#6f8f6f",
+      "sort": 9
+    },
+    {
+      "key": "food",
+      "label": "餐饮",
+      "icon": "food",
+      "color": "#c77d45",
+      "sort": 10
+    },
+    {
+      "key": "shop",
+      "label": "商店",
+      "icon": "shop",
+      "color": "#b8864f",
+      "sort": 11
+    },
+    {
+      "key": "hotel",
+      "label": "住宿",
+      "icon": "hotel",
+      "color": "#8b7355",
+      "sort": 12
+    },
+    {
+      "key": "shuttle",
+      "label": "观光车站",
+      "icon": "shuttle",
+      "color": "#5c7a9e",
+      "sort": 13
+    },
+    {
+      "key": "medical",
+      "label": "医务室",
+      "icon": "medical",
+      "color": "#c45c5c",
+      "sort": 14
+    },
+    {
+      "key": "rest",
+      "label": "休息区",
+      "icon": "rest",
+      "color": "#9a8b6b",
+      "sort": 15
+    },
+    {
+      "key": "smoking",
+      "label": "吸烟处",
+      "icon": "smoking",
+      "color": "#8a8a8a",
+      "sort": 16
+    },
+    {
+      "key": "plant",
+      "label": "植物",
+      "icon": "plant",
+      "color": "#6b9e6b",
+      "sort": 17
+    },
+    {
+      "key": "parking",
+      "label": "停车场",
+      "icon": "parking",
+      "color": "#8b9a6b",
+      "sort": 18
+    }
+  ],
+  "mapPointDetails": {
+    "101": {
+      "images": [
+        "https://cdn.example.com/map/101.jpg"
+      ],
+      "suggestedDuration": "45分钟",
+      "serviceTags": [
+        "讲解",
+        "拍照",
+        "无障碍"
+      ],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "102": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "103": {
+      "suggestedDuration": "20分钟",
+      "serviceTags": [
+        "演出"
+      ],
+      "images": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "104": {
+      "suggestedDuration": "40分钟",
+      "serviceTags": [
+        "参观",
+        "讲解"
+      ],
+      "images": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "105": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "106": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "301": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "303": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "304": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "305": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "306": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "307": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "308": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "309": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "310": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "311": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "312": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "501": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "502": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "503": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "504": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "601": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "602": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "603": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "901": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "902": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "1101": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "1102": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "1103": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "1104": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "1105": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "1106": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "1107": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "1108": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10002": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10003": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10004": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10005": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10006": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10007": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10008": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10010": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    },
+    "10011": {
+      "images": [],
+      "suggestedDuration": "",
+      "serviceTags": [],
+      "relatedShowIds": [],
+      "relatedProductIds": []
+    }
+  },
+  "mapRoutes": [
+    {
+      "id": 1,
+      "title": "历史文化深度游",
+      "scene": "culture",
+      "durationText": "约3小时",
+      "pointIds": [
+        102,
+        106,
+        101,
+        104
+      ],
+      "desc": "串联照心林、五印坛城、灵山大佛、灵山梵宫等文化节点。"
+    },
+    {
+      "id": 2,
+      "title": "亲子家庭轻松游",
+      "scene": "family",
+      "durationText": "约2.5小时",
+      "pointIds": [
+        103,
+        101,
+        201,
+        504
+      ],
+      "desc": "九龙灌浴、灵山大佛、餐饮补给与游客中心服务。"
+    },
+    {
+      "id": 3,
+      "title": "休闲漫步线",
+      "scene": "relax",
+      "durationText": "约2小时",
+      "pointIds": [
+        106,
+        104,
+        105
+      ],
+      "desc": "五印坛城、梵宫、十方林，适合慢游打卡。"
+    },
+    {
+      "id": 4,
+      "title": "景区餐饮线",
+      "scene": "food",
+      "durationText": "约1.5小时",
+      "pointIds": [
+        201,
+        202,
+        203,
+        206
+      ],
+      "desc": "半间小食令、吉祥食集、彩虹小食令、灵山五关堂。"
+    }
+  ],
+  "products": [
+    {
+      "id": 1001,
+      "type": "ticket",
+      "title": "灵山大佛成人票",
+      "subtitle": "当日可订，扫码入园",
+      "price": 21000,
+      "originPrice": 21000,
+      "coverUrl": "https://images.unsplash.com/photo-1600262300671-295cb21f6d06?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "成人票",
+        "即买即用"
+      ],
+      "stock": 999,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1600262300671-295cb21f6d06?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "灵山大佛景区成人门票。瞻礼灵山大佛，仰望世界露天青铜释迦牟尼立像，感受佛教文化的庄严与宁静。景区内可游览祥符禅寺、五智门、降魔壁等文化节点，还可参与佛前供奉香花活动。",
+      "notice": "1. 请携带身份证入园。\n2. 同一证件每日限购一张。\n3. 门票当日有效，出园后不可再次入园。\n4. 请妥善保管门票二维码。",
+      "specs": [
+        {
+          "id": 1,
+          "name": "成人票",
+          "price": 21000
+        }
+      ]
+    },
+    {
+      "id": 1002,
+      "type": "ticket",
+      "title": "灵山大佛半价票",
+      "subtitle": "6-18周岁及60-69周岁适用",
+      "price": 10500,
+      "originPrice": 21000,
+      "coverUrl": "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "半价票",
+        "需验证身份"
+      ],
+      "stock": 500,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "适用于6-18周岁未成年人及60-69周岁长者的半价门票，享受与成人票同等的游览权益。购票后需在入园时出示有效身份证件核验年龄。",
+      "notice": "1. 入园时须出示有效身份证件。\n2. 6-18周岁需由成人陪同入园。\n3. 门票当日有效，过期作废。",
+      "specs": [
+        {
+          "id": 3,
+          "name": "半价票",
+          "price": 10500
+        }
+      ]
+    },
+    {
+      "id": 1003,
+      "type": "ticket",
+      "title": "灵山大佛免票（预约）",
+      "subtitle": "6岁或1.4米以下及70岁以上",
+      "price": 0,
+      "originPrice": 0,
+      "coverUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "免票",
+        "需预约"
+      ],
+      "stock": 200,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "符合免票资格的游客可预约免费入园。适用人群：6岁（含）以下或身高1.4米（含）以下儿童、70周岁（含）以上长者。需提前在线预约，入园时核验身份。",
+      "notice": "1. 须提前1天在线预约。\n2. 入园时出示有效证件核验年龄。\n3. 儿童需由持票成人陪同入园。",
+      "specs": [
+        {
+          "id": 4,
+          "name": "免票预约",
+          "price": 0
+        }
+      ]
+    },
+    {
+      "id": 1004,
+      "type": "ticket",
+      "title": "灵山梵宫联票",
+      "subtitle": "含大佛景区与梵宫文化体验",
+      "price": 28000,
+      "originPrice": 32000,
+      "coverUrl": "https://images.unsplash.com/photo-1583037189850-1921ae7c6c2a?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "联票",
+        "含梵宫"
+      ],
+      "stock": 300,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1583037189850-1921ae7c6c2a?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "一票畅游灵山大佛景区与灵山梵宫，体验双倍的震撼之旅。灵山大佛景区瞻礼露天青铜大佛，灵山梵宫则带您走进佛教文化艺术的神圣殿堂。含梵宫文化体验活动一次。",
+      "notice": "1. 梵宫文化体验需按现场场次参与。\n2. 联票当日有效。\n3. 请携带身份证入园。",
+      "specs": [
+        {
+          "id": 5,
+          "name": "成人联票",
+          "price": 28000
+        },
+        {
+          "id": 6,
+          "name": "半价联票",
+          "price": 14000
+        }
+      ]
+    },
+    {
+      "id": 1005,
+      "type": "ticket",
+      "title": "九龙灌浴套票",
+      "subtitle": "含大佛景区与九龙灌浴表演",
+      "price": 26000,
+      "originPrice": 29000,
+      "coverUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "套票",
+        "含演出"
+      ],
+      "stock": 400,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1600262300671-295cb21f6d06?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "含灵山大佛景区门票与九龙灌浴大型音乐动态群雕表演观赏。九龙灌浴是灵山景区的标志性演出，以吉祥、庄严的氛围展现佛祖诞生的故事，每日多场次上演。",
+      "notice": "1. 九龙灌浴每日场次：10:00, 11:30, 13:30, 15:00。\n2. 请提前10分钟入场。\n3. 套票当日有效。",
+      "specs": [
+        {
+          "id": 7,
+          "name": "成人套票",
+          "price": 26000
+        },
+        {
+          "id": 8,
+          "name": "半价套票",
+          "price": 13000
+        }
+      ]
+    },
+    {
+      "id": 1006,
+      "type": "ticket",
+      "title": "灵山精舍禅修体验票",
+      "subtitle": "含景区门票与精舍半日禅修",
+      "price": 38800,
+      "originPrice": 42000,
+      "coverUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "体验票",
+        "含禅修"
+      ],
+      "stock": 100,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80",
+        "https://images.unsplash.com/photo-1549638441-b787d2e11f14?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "深度禅修体验之旅，含灵山大佛景区门票与灵山精舍半日禅修体验。在禅意园林中静坐冥想，跟随师父学习禅修方法，品尝素斋茶点，感受心灵深处的宁静与祥和。",
+      "notice": "1. 禅修体验每日上午场和下午场，请提前确认场次。\n2. 建议穿着宽松舒适衣物。\n3. 体验期间请保持安静。",
+      "specs": [
+        {
+          "id": 9,
+          "name": "禅修体验票",
+          "price": 38800
+        }
+      ]
+    },
+    {
+      "id": 2001,
+      "type": "hotel",
+      "title": "灵山精舍禅意房",
+      "subtitle": "含早课体验与素斋早餐",
+      "price": 68800,
+      "originPrice": 78800,
+      "coverUrl": "https://images.unsplash.com/photo-1549638441-b787d2e11f14?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "含早课",
+        "含素斋",
+        "禅意园林"
+      ],
+      "stock": 50,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1549638441-b787d2e11f14?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "灵山精舍禅意房，推窗见山，含早课体验与素斋早餐，适合慢游休憩。",
+      "notice": "1. 入住时间 14:00，退房时间 12:00。\n2. 早课体验需提前预约场次。",
+      "specs": [
+        {
+          "id": 101,
+          "name": "禅意大床房",
+          "price": 68800
+        }
+      ]
+    },
+    {
+      "id": 2002,
+      "type": "hotel",
+      "title": "灵山精舍景观房",
+      "subtitle": "推窗见山，独享庭院景观",
+      "price": 88800,
+      "originPrice": 98800,
+      "coverUrl": "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "景观房",
+        "庭院",
+        "含早课"
+      ],
+      "stock": 30,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "景观房位于精舍最佳观景位置，独享庭院景观，含早课体验。",
+      "notice": "1. 入住需出示身份证件。\n2. 景观房数量有限，建议提前预约。",
+      "specs": [
+        {
+          "id": 102,
+          "name": "景观大床房",
+          "price": 88800
+        }
+      ]
+    },
+    {
+      "id": 5001,
+      "type": "annualCard",
+      "title": "灵山年卡（个人）",
+      "subtitle": "全年无限次入园",
+      "price": 39800,
+      "originPrice": 39800,
+      "coverUrl": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "年卡",
+        "个人"
+      ],
+      "stock": 9999,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "灵山年卡个人版，激活后全年无限次入园，适合常来灵山的游客。",
+      "notice": "1. 年卡自激活日起一年内有效。\n2. 入园需出示年卡二维码及身份证件。",
+      "specs": [
+        {
+          "id": 201,
+          "name": "个人年卡",
+          "price": 39800
+        }
+      ]
+    },
+    {
+      "id": 5002,
+      "type": "annualCard",
+      "title": "灵山年卡（家庭）",
+      "subtitle": "两大一小全年无限次入园",
+      "price": 79800,
+      "originPrice": 79800,
+      "coverUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=600&q=80",
+      "tags": [
+        "年卡",
+        "家庭"
+      ],
+      "stock": 9999,
+      "status": "on_sale",
+      "coverImages": [
+        "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "description": "灵山年卡家庭版，两大一小全年无限次入园，适合家庭出游。",
+      "notice": "1. 家庭卡限登记成员使用。\n2. 入园需核验成员身份。",
+      "specs": [
+        {
+          "id": 202,
+          "name": "家庭年卡",
+          "price": 79800
+        }
+      ]
+    }
+  ],
+  "homeConfig": {
+    "heroSlides": [
+      {
+        "id": 1,
+        "title": "灵山大佛",
+        "subtitle": "在山湖之间仰望庄严佛光",
+        "kicker": "Lingshan Grand Buddha",
+        "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E7%81%B5%E5%B1%B1%E5%A4%A7%E4%BD%9B_-_panoramio_(1).jpg",
+        "themeColor": "#f8f1e3"
+      },
+      {
+        "id": 2,
+        "title": "灵山梵宫艺术细节",
+        "subtitle": "金色穹顶、壁画与木雕交织成东方美学",
+        "kicker": "Brahma Palace",
+        "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E6%97%A0%E9%94%A1%E7%81%B5%E5%B1%B1%E5%A4%A7%E4%BD%9B%E6%A2%B5%E5%AE%AB_-_panoramio.jpg",
+        "themeColor": "#f5ead9"
+      },
+      {
+        "id": 3,
+        "title": "灵山学子祈福季",
+        "subtitle": "灵山祈愿 金榜题名",
+        "kicker": "Ling Mountain wish",
+        "imageUrl": "http://localhost:3000/uploads/1780571947761-wow94dr5ey.png",
+        "themeColor": "#f8f1e3"
+      }
+    ],
+    "matrixItems": [
+      {
+        "key": "presaleTicket",
+        "title": "预售门票",
+        "desc": "票务小程序",
+        "icon": "ticket",
+        "target": {
+          "type": "ticket"
+        }
+      },
+      {
+        "key": "dailyTicket",
+        "title": "当日门票",
+        "desc": "160元起",
+        "icon": "ticketToday",
+        "target": {
+          "type": "ticket"
+        }
+      },
+      {
+        "key": "entryAlert",
+        "title": "入园提醒",
+        "desc": "须知与检票点",
+        "icon": "notice",
+        "target": {
+          "type": "toast",
+          "message": "入园提醒待开发"
+        }
+      },
+      {
+        "key": "openingHours",
+        "title": "运营时间",
+        "desc": "8:00-17:00",
+        "icon": "time",
+        "target": {
+          "type": "toast",
+          "message": "运营时间待开发"
+        }
+      },
+      {
+        "key": "audioGuide",
+        "title": "电子讲解器",
+        "desc": "扫码支付佩戴",
+        "icon": "audio",
+        "target": {
+          "type": "toast",
+          "message": "电子讲解器待开发"
+        }
+      },
+      {
+        "key": "service",
+        "title": "游客服务",
+        "desc": "热评与回复",
+        "icon": "service",
+        "target": {
+          "type": "help"
+        }
+      }
+    ],
+    "actionCards": [
+      {
+        "key": "buy",
+        "title": "立即购买",
+        "desc": "门票与套票",
+        "icon": "buy",
+        "target": {
+          "type": "ticket"
+        }
+      },
+      {
+        "key": "memberClub",
+        "title": "会员俱乐部",
+        "desc": "功德等级权益",
+        "icon": "member",
+        "target": {
+          "type": "toast",
+          "message": "会员俱乐部待开发"
+        }
+      },
+      {
+        "key": "annualCard",
+        "title": "年卡",
+        "desc": "全年畅游",
+        "icon": "card",
+        "target": {
+          "type": "annualCard"
+        }
+      },
+      {
+        "key": "activity",
+        "title": "体验活动",
+        "desc": "藏香制作等",
+        "icon": "activity",
+        "target": {
+          "type": "discoverPost",
+          "id": 1
+        }
+      }
+    ],
+    "collectionSections": [
+      {
+        "key": "routes",
+        "title": "路线选择",
+        "subtitle": "路线特点 · 地图轨迹 · 沿途景点",
+        "items": [
+          {
+            "id": 101,
+            "title": "历史文化深度游",
+            "desc": "串联祥符禅寺、五智门等文化节点",
+            "tag": "Routes",
+            "background": "linear-gradient(140deg, #a56a3d 0%, #d9b06f 100%)",
+            "target": {
+              "type": "map",
+              "keyword": "历史文化深度游"
+            }
+          },
+          {
+            "id": 102,
+            "title": "亲子家庭轻松游",
+            "desc": "低强度步行，适合家庭慢游打卡",
+            "tag": "Routes",
+            "background": "linear-gradient(140deg, #d08b55 0%, #f2c77b 100%)",
+            "target": {
+              "type": "map",
+              "keyword": "亲子家庭轻松游"
+            }
+          }
+        ]
+      },
+      {
+        "key": "shows",
+        "title": "演出",
+        "subtitle": "场次提醒 · 地点导航 · 演出介绍",
+        "items": [
+          {
+            "id": 201,
+            "title": "九龙灌浴",
+            "desc": "大型音乐动态群雕表演",
+            "tag": "Shows",
+            "nextShowText": "11：30下一场",
+            "background": "linear-gradient(140deg, #386b8f 0%, #8fbdda 100%)",
+            "target": {
+              "type": "map",
+              "keyword": "九龙灌浴"
+            }
+          }
+        ]
+      }
+    ],
+    "feedItems": [
+      {
+        "id": 1,
+        "type": "攻略推文",
+        "title": "灵山集章全攻略",
+        "desc": "整理隐藏章点和推荐动线，适合首次游玩。",
+        "source": "游玩攻略",
+        "actionText": "阅读",
+        "background": "linear-gradient(140deg, #526f52 0%, #b5c987 100%)",
+        "target": {
+          "type": "discoverPost",
+          "id": 2
+        }
+      },
+      {
+        "id": 2,
+        "type": "美食预约",
+        "title": "梵宫素斋自助",
+        "desc": "午间用餐高峰建议提前预约。",
+        "source": "美食",
+        "actionText": "查看",
+        "background": "linear-gradient(140deg, #6f5b3e 0%, #d8aa67 100%)",
+        "target": {
+          "type": "search",
+          "keyword": "梵宫素斋"
+        }
+      }
+    ]
+  },
+  "discoverPosts": [
+    {
+      "id": 1,
+      "status": "published",
+      "category": "activity",
+      "title": "梵宫文化体验",
+      "subtitle": "灵山梵宫",
+      "priceText": "免费",
+      "coverUrl": "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80",
+      "tagText": "体验活动",
+      "summary": "沉浸式体验佛前供奉香花活动，感受梵宫艺术空间。",
+      "location": "灵山梵宫廊所庭",
+      "publishTime": "今日推荐",
+      "actionText": "预约",
+      "target": {
+        "type": "discoverPost",
+        "id": 1
+      },
+      "place": "灵山梵宫廊所庭",
+      "joinWay": "点击“立即预约”即可参与",
+      "durationText": "约15分钟",
+      "contentText": "伴随佛通宝塔升起，游客朋友们可以沉浸式体验佛前供奉香花活动。",
+      "meaningText": "带您走进佛教文化艺术的神圣殿堂，通过禅圣庄严的供花仪式，让您感受一次洗涤心灵的文化之旅。",
+      "detailImageUrl": "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80",
+      "buttonText": "立即预约",
+      "relatedTargets": [
+        {
+          "title": "查看梵宫位置",
+          "desc": "在地图中查看活动地点",
+          "target": {
+            "type": "map",
+            "keyword": "灵山梵宫"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "status": "published",
+      "category": "guide",
+      "title": "灵山集章全攻略",
+      "subtitle": "从大照壁到天下第一掌",
+      "priceText": "攻略",
+      "coverUrl": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
+      "tagText": "游玩攻略",
+      "summary": "整理隐藏章点和推荐动线，适合第一次来灵山的游客。",
+      "location": "全景区",
+      "publishTime": "2小时前",
+      "actionText": "阅读",
+      "target": {
+        "type": "discoverPost",
+        "id": 2
+      },
+      "place": "全景区",
+      "joinWay": "按攻略路线自行打卡",
+      "durationText": "约2-3小时",
+      "contentText": "建议从入口大照壁出发，依次完成祥符禅寺、天下第一掌、九龙灌浴和梵宫章点。",
+      "meaningText": "用集章任务串联主要文化节点，让亲子与年轻游客更轻松理解景区故事。",
+      "detailImageUrl": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80",
+      "buttonText": "收藏攻略",
+      "relatedTargets": [
+        {
+          "title": "打开地图路线",
+          "desc": "从地图继续查看相关点位",
+          "target": {
+            "type": "map",
+            "keyword": "集章"
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "status": "published",
+      "category": "show",
+      "title": "九龙灌浴今日场次",
+      "subtitle": "下一场 11:30",
+      "priceText": "演出",
+      "coverUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80",
+      "tagText": "演出提醒",
+      "summary": "大型音乐动态群雕表演，以吉祥庄严氛围展现佛祖诞生。",
+      "location": "九龙灌浴广场",
+      "publishTime": "实时",
+      "actionText": "导航",
+      "target": {
+        "type": "map",
+        "keyword": "九龙灌浴"
+      },
+      "place": "九龙灌浴广场",
+      "joinWay": "按当日演出场次提前到达广场观看",
+      "durationText": "约20分钟",
+      "contentText": "九龙灌浴以音乐、喷泉、动态群雕共同呈现佛祖诞生故事，是灵山景区标志性演出。",
+      "meaningText": "通过演出把文化故事转化为易理解的现场体验，适合亲子与首次到访游客。",
+      "detailImageUrl": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80",
+      "buttonText": "去地图查看",
+      "relatedTargets": [
+        {
+          "title": "导航到九龙灌浴",
+          "desc": "在现有地图页中查看位置",
+          "target": {
+            "type": "map",
+            "keyword": "九龙灌浴"
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "status": "published",
+      "category": "food",
+      "title": "梵宫素斋自助预约",
+      "subtitle": "11:00-14:00",
+      "priceText": "¥88起",
+      "coverUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+      "tagText": "美食",
+      "summary": "禅意空间里的精致素食自助，适合午间休憩。",
+      "location": "灵山梵宫一层东侧",
+      "publishTime": "今日可约",
+      "actionText": "查看",
+      "target": {
+        "type": "map",
+        "keyword": "梵宫素斋"
+      },
+      "place": "灵山梵宫一层东侧",
+      "joinWay": "建议午餐高峰前预约或错峰前往",
+      "durationText": "约45-60分钟",
+      "contentText": "梵宫素斋自助提供多种素食、热菜与茶点，适合游览中途补给休憩。",
+      "meaningText": "把饮食服务与禅意空间结合，让游客在用餐中延续灵山文化体验。",
+      "detailImageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80",
+      "buttonText": "查看位置",
+      "relatedTargets": [
+        {
+          "title": "去地图查看餐厅",
+          "desc": "在现有地图页中查看梵宫素斋",
+          "target": {
+            "type": "map",
+            "keyword": "梵宫素斋"
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "status": "published",
+      "category": "creative",
+      "title": "灵山禅茶礼盒上新",
+      "subtitle": "伴手礼与祈福心意",
+      "priceText": "¥128起",
+      "coverUrl": "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=800&q=80",
+      "tagText": "文创",
+      "summary": "精选禅茶与定制包装，适合作为灵山伴手礼。",
+      "location": "灵山文创店",
+      "publishTime": "新品",
+      "actionText": "查看",
+      "target": {
+        "type": "mall"
+      },
+      "place": "灵山文创店",
+      "joinWay": "到店选购",
+      "durationText": "约15分钟",
+      "contentText": "精选禅茶与定制包装，适合作为灵山伴手礼。",
+      "meaningText": "把文创产品与景区文化结合，方便游客带走一份纪念。",
+      "detailImageUrl": "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=1200&q=80",
+      "buttonText": "查看",
+      "relatedTargets": []
+    },
+    {
+      "id": 6,
+      "status": "published",
+      "category": "activity",
+      "title": "藏香制作体验",
+      "subtitle": "非遗手作",
+      "priceText": "¥39起",
+      "coverUrl": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=800&q=80",
+      "tagText": "体验活动",
+      "summary": "跟随老师了解香文化，完成一份可带走的藏香作品。",
+      "location": "灵山文创体验区",
+      "publishTime": "周末可约",
+      "actionText": "预约",
+      "target": {
+        "type": "discoverPost",
+        "id": 6
+      },
+      "place": "灵山文创体验区",
+      "joinWay": "到店咨询或通过后续预约入口参与",
+      "durationText": "约30分钟",
+      "contentText": "体验区提供香料识别、配方讲解和手作环节，游客可完成一份藏香作品。",
+      "meaningText": "用轻量手作承接文化内容，适合亲子家庭和年轻游客参与。",
+      "detailImageUrl": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80",
+      "buttonText": "立即预约",
+      "relatedTargets": [
+        {
+          "title": "搜索文创体验",
+          "desc": "后续可接入搜索页或预约页",
+          "target": {
+            "type": "search",
+            "keyword": "藏香制作"
+          }
+        }
+      ]
+    }
+  ],
+  "faqs": [
+    {
+      "id": 1,
+      "question": "儿童和老年人门票价格",
+      "answer": "6-18周岁及60-69周岁半价（105元），6岁或1.4米以下及70岁以上免票。",
+      "category": "ticket",
+      "type": "normal",
+      "sort": 1
+    },
+    {
+      "id": 2,
+      "question": "九龙灌浴表演时间",
+      "answer": "每日平日 10:00、11:30、13:30、15:00 场次，建议提前10分钟到场。",
+      "category": "show",
+      "type": "normal",
+      "sort": 2
+    },
+    {
+      "id": 3,
+      "question": "景区停车场在哪里",
+      "answer": "主要停车场位于景区南门附近，可在地图「停车场」分类中查看具体点位。",
+      "category": "parking",
+      "type": "normal",
+      "sort": 3
+    },
+    {
+      "id": 4,
+      "question": "如何到达灵山大佛脚下",
+      "answer": "可沿登云道步行到达，也可在地图中查看「灵山大佛」点位并导航。",
+      "category": "route",
+      "type": "normal",
+      "sort": 4
+    },
+    {
+      "id": 99,
+      "question": "人工客服",
+      "category": "other",
+      "type": "human",
+      "sort": 99
+    }
+  ],
+  "questionnaires": [
+    {
+      "id": 1,
+      "title": "灵山文旅满意度调研",
+      "desc": "约 2 分钟完成，您的意见对我们很重要",
+      "rewardHint": "完成后随机赠送积功德星或小额优惠券",
+      "deadline": "2026-12-31 23:59:59",
+      "active": true,
+      "questions": [
+        {
+          "id": 1,
+          "type": "score",
+          "title": "您对本次游览的整体满意度",
+          "required": true
+        },
+        {
+          "id": 2,
+          "type": "single",
+          "title": "您主要通过哪种方式了解灵山",
+          "required": true,
+          "options": [
+            {
+              "id": "a",
+              "label": "朋友推荐"
+            },
+            {
+              "id": "b",
+              "label": "短视频/社交媒体"
+            },
+            {
+              "id": "c",
+              "label": "旅行社"
+            },
+            {
+              "id": "d",
+              "label": "其他"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": "multi",
+          "title": "您最喜欢的体验（可多选）",
+          "required": false,
+          "options": [
+            {
+              "id": "a",
+              "label": "灵山大佛"
+            },
+            {
+              "id": "b",
+              "label": "九龙灌浴"
+            },
+            {
+              "id": "c",
+              "label": "灵山梵宫"
+            },
+            {
+              "id": "d",
+              "label": "素斋餐饮"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": "text",
+          "title": "还有哪些建议想告诉我们",
+          "required": false
+        },
+        {
+          "id": 5,
+          "type": "score",
+          "title": "您对灵山APP使用体验的满意度",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "智慧导览体验小调查",
+      "desc": "帮助改进地图与导览服务",
+      "rewardHint": "感谢您的参与",
+      "deadline": "2026-10-01 23:59:59",
+      "active": true,
+      "questions": [
+        {
+          "id": 1,
+          "type": "score",
+          "title": "地图找点是否方便",
+          "required": true
+        },
+        {
+          "id": 2,
+          "type": "text",
+          "title": "希望增加哪些设施标注",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "serviceConfig": {
+    "servicePhone": "0510-85933333",
+    "serviceHours": "每日 08:30–17:00（节假日以景区公告为准）",
+    "servicePhoneRemark": "票务、退款、投诉均可致电"
+  },
+  "couponPackages": [
+    {
+      "id": 6001,
+      "couponPackageId": 6001,
+      "title": "满200减20",
+      "subtitle": "门票、酒店、年卡通用",
+      "minAmount": 20000,
+      "discountAmount": 2000,
+      "scopeLabel": "通用",
+      "scopeTypes": [
+        "ticket",
+        "hotel",
+        "annualCard"
+      ],
+      "coverUrl": "https://images.unsplash.com/photo-1553729459-afe8f2e2db29?auto=format&fit=crop&w=400&q=80"
+    },
+    {
+      "id": 6002,
+      "couponPackageId": 6002,
+      "title": "满100减10",
+      "subtitle": "仅限门票使用",
+      "minAmount": 10000,
+      "discountAmount": 1000,
+      "scopeLabel": "门票",
+      "scopeTypes": [
+        "ticket"
+      ],
+      "coverUrl": "https://images.unsplash.com/photo-1600262300671-295cb21f6d06?auto=format&fit=crop&w=400&q=80"
+    }
+  ],
+  "counters": {
+    "mapPoint": 10011,
+    "product": 5004,
+    "faq": 101,
+    "questionnaire": 10,
+    "discoverPost": 10
+  }
+}
