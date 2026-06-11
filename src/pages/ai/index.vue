@@ -129,7 +129,6 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { askAI } from '@/api/ai'
 import Live2DCharacter from '@/components/Live2DCharacter.vue'
-import { getCdnFallbackUrl, getModelUrl } from '@/config/live2d'
 import {
   matchDocumentKnowledge,
   matchLocalKnowledge,
@@ -150,8 +149,8 @@ const availableVoices = ref([])
 let recognition = null
 let currentUtterance = null
 
-const live2dModelUrl = getModelUrl('haru')
-const live2dCdnFallback = getCdnFallbackUrl('haru')
+const live2dModelUrl = '/static/HeiJiao/yachiyo.model3.json'
+const live2dCdnFallback = ''
 
 const canPauseSpeech = computed(() => isSpeaking.value && !isPaused.value)
 const canResumeSpeech = computed(() => isSpeaking.value && isPaused.value)

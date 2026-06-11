@@ -1,5 +1,8 @@
 <template>
-  <view class="live2d-character" :style="containerStyle" ref="containerRef">
+  <!-- #ifdef H5 -->
+  <view class="live2d-character" :style="containerStyle">
+    <view :id="containerId" class="live2d-container"></view>
+
     <view v-if="loading" class="live2d-loading">
       <view class="loading-ring"></view>
       <text class="loading-text">灵儿加载中...</text>
@@ -10,15 +13,22 @@
       <view v-if="statusText" class="fallback-status">{{ statusText }}</view>
     </view>
   </view>
+  <!-- #endif -->
 </template>
 
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
+// #ifdef H5
+import * as PIXI from 'pixi.js'
+import { Live2DModel } from 'pixi-live2d-display/cubism4'
+window.PIXI = PIXI
+// #endif
+
 const props = defineProps({
   modelUrl: {
     type: String,
-    default: 'https://unpkg.com/live2d-widget-model-haru@1.0.5/assets/haru.model.json',
+    default: '/static/HeiJiao/yachiyo.model3.json',
   },
   fallbackUrl: {
     type: String,
@@ -48,15 +58,16 @@ const props = defineProps({
 
 const emit = defineEmits(['loaded', 'error', 'tap'])
 
-const containerRef = ref(null)
+const containerId = 'live2d-character-container'
 const loading = ref(true)
 const error = ref(false)
 
 let app = null
 let model = null
 let statusTimer = null
-let PIXI = null
-let Live2DModel = null
+
+const expressions = ['smile', 'squint', 'tears', 'teardrop']
+let expressionTimer = null
 
 const containerStyle = computed(() => ({
   width: `${props.width}rpx`,
@@ -75,85 +86,118 @@ const statusText = computed(() => {
 
 const fallbackAnimClass = computed(() => `fallback-${props.status}`)
 
-async function loadModules() {
-  const [pixiModule, live2dModule] = await Promise.all([
-    import('pixi.js'),
-    import('pixi-live2d-display'),
-  ])
-  PIXI = pixiModule
-  Live2DModel = live2dModule.Live2DModel
+function bindInteraction(m) {
+  m.buttonMode = true
+
+  let startX = 0
+  let startY = 0
+  let isDragging = false
+
+  m.on('pointerdown', (e) => {
+    isDragging = false
+    startX = e.data.global.x
+    startY = e.data.global.y
+    m.dragging = true
+    m._pointerX = e.data.global.x - m.x
+    m._pointerY = e.data.global.y - m.y
+  })
+
+  m.on('pointermove', (e) => {
+    if (m.dragging) {
+      const dx = e.data.global.x - startX
+      const dy = e.data.global.y - startY
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        isDragging = false
+      }
+      m.position.x = e.data.global.x - m._pointerX
+      m.position.y = e.data.global.y - m._pointerY
+    }
+  })
+
+  m.on('pointerup', () => {
+    m.dragging = false
+    if (!isDragging) {
+      triggerRandomExpression(m)
+    }
+  })
+
+  m.on('pointerupoutside', () => {
+    m.dragging = false
+  })
 }
 
-async function initLive2D() {
-  try {
-    if (typeof window === 'undefined') {
-      throw new Error('Live2D 仅在 H5 浏览器环境加载')
-    }
+function triggerRandomExpression(m) {
+  if (expressionTimer) clearTimeout(expressionTimer)
+  const name = expressions[Math.floor(Math.random() * expressions.length)]
+  m.expression(name)
+  expressionTimer = setTimeout(() => {
+    m.expression()
+  }, 2000)
+}
 
-    await loadModules()
-    await nextTick()
+function initApp() {
+  const container = document.getElementById(containerId)
+  if (!container) return
 
-    const container = containerRef.value
-    if (!container) throw new Error('Live2D 容器未找到')
+  const width = container.offsetWidth
+  const height = container.offsetHeight
 
-    app = new PIXI.Application({
-      width: props.width * 2,
-      height: props.height * 2,
-      transparent: true,
-      antialias: true,
-      resolution: window.devicePixelRatio || 1,
-      autoDensity: true,
-      backgroundAlpha: 0,
-    })
+  app = new PIXI.Application({
+    width,
+    height,
+    autoStart: true,
+    backgroundAlpha: 0,
+    antialias: true,
+    resolution: window.devicePixelRatio || 1,
+  })
 
-    const canvas = app.view
-    canvas.style.width = '100%'
-    canvas.style.height = '100%'
-    canvas.style.display = 'block'
-    container.appendChild(canvas)
+  app.view.style.width = '100%'
+  app.view.style.height = '100%'
+  container.appendChild(app.view)
+}
 
-    const urls = [props.modelUrl]
-    if (props.fallbackUrl && props.fallbackUrl !== props.modelUrl) {
-      urls.push(props.fallbackUrl)
-    }
+async function loadModel() {
+  const container = document.getElementById(containerId)
+  if (!container || !app) return
 
-    let lastError = null
-    for (const url of urls) {
-      try {
-        model = await Live2DModel.from(url, { autoInteract: true })
-        break
-      } catch (err) {
-        lastError = err
-      }
-    }
+  const width = container.offsetWidth
+  const height = container.offsetHeight
 
-    if (!model) throw lastError || new Error('Live2D 模型加载失败')
-
-    model.anchor.set(0.5, 0.5)
-    model.position.set(app.screen.width / 2, app.screen.height / 2)
-    const fitScale = Math.min(
-      (app.screen.width * 0.85) / model.width,
-      (app.screen.height * 0.9) / model.height,
-    )
-    model.scale.set(fitScale * props.scale)
-
-    model.interactive = true
-    model.buttonMode = true
-    model.on('hit', () => {
-      emit('tap')
-      playMotion('tap')
-    })
-
-    app.stage.addChild(model)
-    applyStatus(props.status)
-    loading.value = false
-    emit('loaded')
-  } catch (err) {
-    console.warn('[Live2D] 使用静态形象兜底:', err)
-    error.value = true
-    loading.value = false
-    emit('error', err)
+  if (model) {
+    app.stage.removeChild(model)
+    model.destroy()
+    model = null
   }
+
+  const urls = [props.modelUrl]
+  if (props.fallbackUrl && props.fallbackUrl !== props.modelUrl) {
+    urls.push(props.fallbackUrl)
+  }
+
+  let lastError = null
+  for (const url of urls) {
+    try {
+      model = await Live2DModel.from(url)
+      break
+    } catch (err) {
+      lastError = err
+    }
+  }
+
+  if (!model) {
+    throw lastError || new Error('Live2D 模型加载失败')
+  }
+
+  const scale = Math.min(width / model.width, height / model.height) * 0.8 * props.scale
+  model.scale.set(scale)
+  model.x = (width - model.width * scale) / 2
+  model.y = (height - model.height * scale) / 2
+
+  bindInteraction(model)
+  app.stage.addChild(model)
+
+  loading.value = false
+  emit('loaded')
 }
 
 function clearStatusTimer() {
@@ -170,7 +214,7 @@ function playMotion(groupName, index) {
       model.motion(groupName, index)
     }
   } catch {
-    // Some free models do not expose the requested motion group.
+    // ignore
   }
 }
 
@@ -183,7 +227,7 @@ function setExpression(name) {
       model.expression(name)
     }
   } catch {
-    // Expression availability depends on the model.
+    // ignore
   }
 }
 
@@ -208,18 +252,28 @@ function applyStatus(status) {
 
 watch(() => props.status, applyStatus)
 
-onMounted(initLive2D)
+onMounted(async () => {
+  try {
+    if (typeof window === 'undefined') {
+      throw new Error('Live2D 仅在 H5 浏览器环境加载')
+    }
+
+    await nextTick()
+    initApp()
+    await loadModel()
+  } catch (err) {
+    console.warn('[Live2D] 使用静态形象兜底:', err)
+    error.value = true
+    loading.value = false
+    emit('error', err)
+  }
+})
 
 onUnmounted(() => {
   clearStatusTimer()
-  if (model) {
-    model.destroy()
-    model = null
-  }
-  if (app) {
-    app.destroy(true, { children: true, texture: true })
-    app = null
-  }
+  if (expressionTimer) clearTimeout(expressionTimer)
+  model?.destroy()
+  app?.destroy(true, { children: true })
 })
 
 defineExpose({
@@ -236,12 +290,18 @@ defineExpose({
   border-radius: 36rpx;
   background: linear-gradient(180deg, #fff7df, #d5a866);
   box-shadow: 0 18rpx 36rpx rgba(111, 74, 29, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+
+.live2d-container {
+  width: 100%;
+  height: 100%;
 }
 
 .live2d-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -263,6 +323,9 @@ defineExpose({
 }
 
 .live2d-fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
