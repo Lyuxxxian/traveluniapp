@@ -65,6 +65,7 @@ const error = ref(false)
 let app = null
 let model = null
 let statusTimer = null
+let mouthTimer = null
 
 // 表情功能已关闭（当前模型无表情数据）
 // const expressions = ['smile', 'squint', 'tears', 'teardrop']
@@ -237,8 +238,33 @@ function playMotion(groupName, index) {
 //   }
 // }
 
+
+function startMouthAnimation() {
+  stopMouthAnimation()
+  mouthTimer = setInterval(() => {
+    if (!model) return
+    try {
+      const value = Math.random() * 0.8 + 0.2
+      model.internalModel.coreModel.setParameterValueById('ParamMouthOpenY', value)
+    } catch {}
+  }, 250)
+}
+
+function stopMouthAnimation() {
+  if (mouthTimer) {
+    clearInterval(mouthTimer)
+    mouthTimer = null
+  }
+  if (model) {
+    try {
+      model.internalModel.coreModel.setParameterValueById('ParamMouthOpenY', 0)
+    } catch {}
+  }
+}
+
 function applyStatus(status) {
   clearStatusTimer()
+  stopMouthAnimation()
   if (!model) return
 
   if (status === 'thinking') {
@@ -248,6 +274,7 @@ function applyStatus(status) {
   if (status === 'speaking') {
     playMotion('tap')
     statusTimer = setInterval(() => playMotion('tap'), 2600)
+    startMouthAnimation()
   }
 }
 
@@ -272,6 +299,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearStatusTimer()
+  stopMouthAnimation()
   model?.destroy()
   app?.destroy(true, { children: true })
 })
