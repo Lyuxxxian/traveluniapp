@@ -149,7 +149,7 @@ const availableVoices = ref([])
 let recognition = null
 let currentUtterance = null
 
-const live2dModelUrl = '/static/HeiJiao/yachiyo.model3.json'
+const live2dModelUrl = '/static/tianqing/tianqing.model3.json'
 const live2dCdnFallback = ''
 
 const canPauseSpeech = computed(() => isSpeaking.value && !isPaused.value)

@@ -28,7 +28,7 @@ window.PIXI = PIXI
 const props = defineProps({
   modelUrl: {
     type: String,
-    default: '/static/HeiJiao/yachiyo.model3.json',
+    default: '/static/tianqing/tianqing.model3.json',
   },
   fallbackUrl: {
     type: String,
@@ -66,8 +66,9 @@ let app = null
 let model = null
 let statusTimer = null
 
-const expressions = ['smile', 'squint', 'tears', 'teardrop']
-let expressionTimer = null
+// 表情功能已关闭（当前模型无表情数据）
+// const expressions = ['smile', 'squint', 'tears', 'teardrop']
+// let expressionTimer = null
 
 const containerStyle = computed(() => ({
   width: `${props.width}rpx`,
@@ -116,9 +117,7 @@ function bindInteraction(m) {
 
   m.on('pointerup', () => {
     m.dragging = false
-    if (!isDragging) {
-      triggerRandomExpression(m)
-    }
+    emit('tap')
   })
 
   m.on('pointerupoutside', () => {
@@ -126,14 +125,15 @@ function bindInteraction(m) {
   })
 }
 
-function triggerRandomExpression(m) {
-  if (expressionTimer) clearTimeout(expressionTimer)
-  const name = expressions[Math.floor(Math.random() * expressions.length)]
-  m.expression(name)
-  expressionTimer = setTimeout(() => {
-    m.expression()
-  }, 2000)
-}
+// 表情功能已关闭
+// function triggerRandomExpression(m) {
+//   if (expressionTimer) clearTimeout(expressionTimer)
+//   const name = expressions[Math.floor(Math.random() * expressions.length)]
+//   m.expression(name)
+//   expressionTimer = setTimeout(() => {
+//     m.expression()
+//   }, 2000)
+// }
 
 function initApp() {
   const container = document.getElementById(containerId)
@@ -196,6 +196,11 @@ async function loadModel() {
   bindInteraction(model)
   app.stage.addChild(model)
 
+  // 去水印
+  try {
+    model.internalModel.coreModel.setParameterValueById('Param75', 1)
+  } catch {}
+
   loading.value = false
   emit('loaded')
 }
@@ -218,33 +223,29 @@ function playMotion(groupName, index) {
   }
 }
 
-function setExpression(name) {
-  if (!model) return
-  try {
-    if (model.internalModel?.expressionManager) {
-      model.internalModel.expressionManager.setExpression(name)
-    } else if (typeof model.expression === 'function') {
-      model.expression(name)
-    }
-  } catch {
-    // ignore
-  }
-}
+// 表情功能已关闭
+// function setExpression(name) {
+//   if (!model) return
+//   try {
+//     if (model.internalModel?.expressionManager) {
+//       model.internalModel.expressionManager.setExpression(name)
+//     } else if (typeof model.expression === 'function') {
+//       model.expression(name)
+//     }
+//   } catch {
+//     // ignore
+//   }
+// }
 
 function applyStatus(status) {
   clearStatusTimer()
   if (!model) return
-
-  if (status === 'listening') {
-    setExpression('happy')
-  }
 
   if (status === 'thinking') {
     statusTimer = setInterval(() => playMotion('tap'), 5000)
   }
 
   if (status === 'speaking') {
-    setExpression('happy')
     playMotion('tap')
     statusTimer = setInterval(() => playMotion('tap'), 2600)
   }
@@ -271,14 +272,12 @@ onMounted(async () => {
 
 onUnmounted(() => {
   clearStatusTimer()
-  if (expressionTimer) clearTimeout(expressionTimer)
   model?.destroy()
   app?.destroy(true, { children: true })
 })
 
 defineExpose({
   playMotion,
-  setExpression,
   getModel: () => model,
 })
 </script>

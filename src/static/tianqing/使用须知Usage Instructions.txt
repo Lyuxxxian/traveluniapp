@@ -1,0 +1,79 @@
+
+使用说明 / Usage Instructions:
+
+教程与安装 / Tutorial & Setup：
+请搜索 VTube Studio/vts 面捕教程，基本参数已添加，但具体数值需要根据个人需求调整。
+Please search for VTube Studio/vts Facial Capture Tutorial . The basic parameters are set, but specific values need to be adjusted according to personal needs.
+
+模型介绍 / Model Description：
+该模型为预先制作的虚拟主播模型，下载后即可直接使用。买家应在购买前确认电脑是否支持运行VTube Studio软件。
+This is a pre-made virtual streamer model, which can be used directly after download. Buyers should confirm their computer supports VTube Studio before purchasing.
+
+公开贩售 / Public Sale：
+该模型为公开贩售产品，可能会多次销售，并非唯一购买者所有。
+This model is a public sale product, which may be sold multiple times, and is not exclusive to one buyer.
+
+自定义与限制 / Customization & Restrictions：
+购买者可自行修改模型颜色，但禁止恶意丑化角色。禁止将模型用于AI训练或生成，请勿投喂AI。
+Buyers can modify the model's colors but are prohibited from maliciously altering or defacing the character. The model cannot be used for AI training or generation, and feeding the model to AI is prohibited.
+
+使用场景 / Usage Scenarios：
+购买者可将此模型用于直播、社交媒体及商业视频制作。
+Buyers may use this model for live streaming, social media, and commercial video production.
+
+禁止转售 / No Resale：
+严禁转售或免费分享模型文件，禁止团购或多人共享。
+Reselling or freely sharing model files is strictly prohibited. Group buying or sharing the model among multiple users is also not allowed.
+
+版权声明 / Copyright Notice：
+模型的艺术作品版权归创作者所有，相关信息请参考：创作者B站空间：https://space.bilibili.com/3546726046632480?spm_id_from=333.788.0.0  /@ 酿造布丁
+。
+The artistic copyright of the model belongs to the creator. For more details, visit the creator's Bilibili page：https://space.bilibili.com/3546726046632480?spm_id_from=333.788.0.0  /@ 酿造布丁
+.
+
+模型署名 / Model Attribution：
+使用模型时，必须正确注明来源，禁止声称为自创或定制模型。
+When using the model, you must correctly attribute it as a public sale model. Do not claim it as your own or a commissioned/custom model.
+
+社团限制 / Community Restrictions：
+禁止将模型加入任何社团、工会等组织。
+The model is prohibited from being used in any associations, guilds, or other organizations.
+
+售后政策 / Return & Exchange Policy：
+虚拟物品售出后不接受退换，模型使用请自行搜索教程，本店不提供使用工坊指导。
+Virtual items are non-refundable and non-exchangeable. Please search for tutorials on how to use the model; we do not provide workshops or technical support.
+
+使用限制 / Usage Restrictions：
+该模型不得用于政治、宗教、诽谤或扰乱公共秩序和道德的行为。
+The model cannot be used for political, religious, defamatory, or any actions that disrupt public order and morals.
+
+设备要求 / Device Requirements：
+该模型可能体积过大，无法在大多数移动设备上使用，适用于电脑端。
+The model may be too large to run on most mobile devices and is designed for use on computers.
+
+纹理集 / Texture Sets：
+模型配备8K/4K/2K大小的纹理集，用户可根据需求删减使用。
+The model comes with 8K/4K/2K texture sets, and users may remove parts according to their needs.
+
+衣物挂件 / Accessory Clothing：
+购买者可以自行搭配衣服挂件。
+Buyers can customize and mix and match clothing and accessories for the model.
+
+直播平台 / Streaming Platforms：
+可在B站或其他平台进行直播。
+The model can be used for live streaming on Bilibili or other platforms.
+
+不包含 / Exclusions:
+
+cmo3文件（Live2D编辑文件）
+cmo3 file (Live2D editing file)
+
+模型PSD文件
+Model PSD file
+
+免责声明 / Disclaimer：
+模型使用者因使用该模型所造成的任何不良后果，本店概不负责。如有疑问，请直接联系创作者。直播和视频制作时，必须在合适位置标注模型来源，例如：模型来源：@酿造布丁。
+The store is not responsible for any negative consequences arising from the use of the model. If you have any questions, please contact the creator directly. Please properly credit the model source in your streams and videos, e.g., Model source: @酿造布丁.
+
+购买此款产品即表示您同意本条款。感谢您的支持！
+By purchasing this product, you agree to these terms. Thank you for your support!
