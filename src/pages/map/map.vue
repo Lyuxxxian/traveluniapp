@@ -1184,12 +1184,17 @@ async function handleLeftAction(action) {
 }
 
 /* #ifdef H5 */
+.page {
+  background: #b4ebaf;
+}
+
 .h5-map-host,
 #amap-h5-container {
   width: 100%;
   height: 100%;
   min-height: 100vh;
   position: relative;
+  background-color: #b4ebaf;
 }
 /* #endif */
 

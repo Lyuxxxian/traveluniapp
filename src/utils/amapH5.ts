@@ -1,5 +1,10 @@
 /** H5 端高德地图 JS API 2.0 加载（Key 来自 .env.local，勿提交 Git） */
 
+import {
+  buildLingshanCoverPath,
+  LINGSHAN_MASK_OUTSIDE_COLOR,
+} from '../data/lingshanBoundary'
+
 type AmapLngLat = { getLng: () => number; getLat: () => number }
 type AmapMap = {
   setCenter: (center: [number, number]) => void
@@ -15,8 +20,14 @@ type AmapMarker = { on: (event: string, handler: () => void) => void }
 type AmapNamespace = {
   Map: new (
     container: string | HTMLElement,
-    options: { zoom: number; center: [number, number]; viewMode?: string },
+    options: {
+      zoom: number
+      center: [number, number]
+      viewMode?: string
+      features?: string[]
+    },
   ) => AmapMap
+  Polygon: new (options: Record<string, unknown>) => { setMap: (map: AmapMap | null) => void }
   Marker: new (options: Record<string, unknown>) => AmapMarker
   Size: new (w: number, h: number) => unknown
   Pixel: new (x: number, y: number) => unknown
@@ -105,11 +116,29 @@ export function createH5Map(
     throw new Error(`地图容器 #${containerId} 不存在`)
   }
 
-  return new AMap.Map(containerId, {
+  container.style.backgroundColor = LINGSHAN_MASK_OUTSIDE_COLOR
+
+  const map = new AMap.Map(containerId, {
     zoom,
     center: [center.longitude, center.latitude],
     viewMode: '2D',
+    // 隐藏高德底图自带 POI 点位，只保留道路/建筑/背景，避免和业务分类点位混在一起。
+    features: ['bg', 'road', 'building'],
   })
+
+  // mask 仅在 3D 下生效；2D 用「全球外环 + 景区洞」多边形实现区域外纯色遮罩。
+  new AMap.Polygon({
+    path: buildLingshanCoverPath(),
+    strokeColor: 'transparent',
+    strokeWeight: 0,
+    strokeOpacity: 0,
+    fillColor: LINGSHAN_MASK_OUTSIDE_COLOR,
+    fillOpacity: 1,
+    bubble: true,
+    zIndex: 10,
+  }).setMap(map)
+
+  return map
 }
 
 function escapeHtml(input: string) {
