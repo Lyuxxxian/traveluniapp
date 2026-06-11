@@ -188,10 +188,10 @@ async function loadModel() {
     throw lastError || new Error('Live2D 模型加载失败')
   }
 
-  const scale = Math.min(width / model.width, height / model.height) * 0.8 * props.scale
-  model.scale.set(scale)
-  model.x = (width - model.width * scale) / 2
-  model.y = (height - model.height * scale) / 2
+  const fitScale = Math.min(width / model.width, height / model.height) * 2.0 * props.scale
+  model.scale.set(fitScale)
+  model.x = (width - model.width) / 2
+  model.y = (height - model.height * 0.5) / 2
 
   bindInteraction(model)
   app.stage.addChild(model)
@@ -285,15 +285,25 @@ defineExpose({
 <style scoped>
 .live2d-character {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 36rpx;
   background: linear-gradient(180deg, #fff7df, #d5a866);
   box-shadow: 0 18rpx 36rpx rgba(111, 74, 29, 0.18);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .live2d-container {
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.live2d-container canvas {
+  display: block;
 }
 
 .live2d-loading {

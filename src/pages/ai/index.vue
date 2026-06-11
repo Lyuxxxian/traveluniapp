@@ -15,8 +15,8 @@
       <Live2DCharacter
         ref="live2dRef"
         class="human-card-live2d"
-        :width="250"
-        :height="320"
+        :width="350"
+        :height="450"
         :model-url="live2dModelUrl"
         :fallback-url="live2dCdnFallback"
         :status="live2dStatus"
