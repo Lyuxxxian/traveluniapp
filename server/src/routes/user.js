@@ -11,6 +11,46 @@ router.get('/profile', requireAuth, (req, res) => {
   return ok(res, rest)
 })
 
+function validateVisitor(body = {}) {
+  if (!body.name || !String(body.name).trim()) return '请填写姓名'
+  if (!/^1\d{10}$/.test(String(body.phone || '').trim())) return '手机号格式不正确'
+  if (!/^[0-9A-Za-z]{6,20}$/.test(String(body.idCard || '').trim())) return '身份证号格式不正确'
+  return ''
+}
+
+router.get('/visitors', requireAuth, (req, res) => {
+  const store = loadStore()
+  const list = (store.visitors || []).filter((item) => item.userId === req.user.id)
+  return ok(res, list)
+})
+
+router.post('/visitors', requireAuth, (req, res) => {
+  const store = loadStore()
+  const error = validateVisitor(req.body)
+  if (error) return fail(res, 40001, error)
+
+  const id = nextId('visitor')
+  const row = {
+    id,
+    userId: req.user.id,
+    name: String(req.body.name).trim(),
+    phone: String(req.body.phone).trim(),
+    idCard: String(req.body.idCard).trim(),
+    isDefault: Boolean(req.body.isDefault),
+    createdAt: new Date().toISOString(),
+  }
+
+  store.visitors = store.visitors || []
+  if (row.isDefault) {
+    store.visitors.forEach((item) => {
+      if (item.userId === req.user.id) item.isDefault = false
+    })
+  }
+  store.visitors.push(row)
+  saveStore()
+  return ok(res, row)
+})
+
 router.get('/coupons', requireAuth, (req, res) => {
   const store = loadStore()
   const list = (store.userCoupons || []).filter((c) => c.userId === req.user.id)

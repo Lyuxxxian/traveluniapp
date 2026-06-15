@@ -21,6 +21,7 @@ export const seedData = {
     discoverPost: 10,
     order: 9007,
     userCoupon: 8003,
+    visitor: 1,
     mapPoint: 10000,
     product: 5002,
   },

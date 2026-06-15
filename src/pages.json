@@ -101,6 +101,13 @@
 			}
 		},
 		{
+			"path": "pages/mall/checkout",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/mine/mine",
 			"style": {
 				"navigationBarTitleText": "我的",
@@ -116,6 +123,13 @@
 		},
 		{
 			"path": "pages/mine/profileEdit",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine/commonInfo",
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationStyle": "custom"

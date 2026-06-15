@@ -33,6 +33,11 @@ export type OrderDetail = OrderItem & {
   remark: string
   couponDiscount: number
   couponTitle: string
+  buyerName?: string
+  buyerPhone?: string
+  buyerIdCard?: string
+  visitDate?: string
+  ticketSaleMode?: 'daily' | 'presale'
 }
 
 export type UserCoupon = {
@@ -315,6 +320,11 @@ export async function createOrder(params: {
   items: CreateOrderItem[]
   couponId?: number
   productType?: string
+  buyerName?: string
+  buyerPhone?: string
+  buyerIdCard?: string
+  visitDate?: string
+  ticketSaleMode?: 'daily' | 'presale'
 }): Promise<CreateOrderResult> {
   if (!getToken()) return Promise.reject(new Error('请先登录'))
   return http.post<CreateOrderResult>(API_PATHS.orders.create, params, AUTH_OPTS)

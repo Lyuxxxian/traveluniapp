@@ -252,8 +252,8 @@ function handleScanTap() {
 }
 
 const matrixItems = [
-  { key: 'presaleTicket', icon: '🎟️', title: '预售门票', desc: '票务小程序' },
-  { key: 'dailyTicket', icon: '🎫', title: '当日门票', desc: '160元起' },
+  { key: 'presaleTicket', icon: '🎟️', title: '预售门票', desc: '票务小程序', target: { type: 'ticket', saleMode: 'presale' } },
+  { key: 'dailyTicket', icon: '🎫', title: '当日门票', desc: '160元起', target: { type: 'ticket', saleMode: 'daily' } },
   { key: 'entryAlert', icon: '🔔', title: '入园提醒', desc: '须知与检票点' },
   { key: 'openingHours', icon: '🕘', title: '运营时间', desc: '8:00-17:00' },
   { key: 'audioGuide', icon: '🎧', title: '电子讲解器', desc: '扫码支付佩戴' },
@@ -461,9 +461,16 @@ function normalizeHeroSlide(item) {
 }
 
 function normalizeEntryItem(item) {
+  let target = item.target
+  if (item.key === 'presaleTicket' && (!target || target.type === 'ticket')) {
+    target = { ...(target || { type: 'ticket' }), saleMode: 'presale' }
+  } else if (item.key === 'dailyTicket' && (!target || target.type === 'ticket')) {
+    target = { ...(target || { type: 'ticket' }), saleMode: 'daily' }
+  }
   return {
     ...item,
     icon: iconMap[item.icon] || item.icon,
+    target,
   }
 }
 

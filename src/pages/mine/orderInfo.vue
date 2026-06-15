@@ -36,6 +36,26 @@
           <text class="info-label">支付时间</text>
           <text class="info-value">{{ detail.payAt }}</text>
         </view>
+        <view v-if="detail.productType === 'ticket'" class="info-row">
+          <text class="info-label">门票类型</text>
+          <text class="info-value">{{ detail.ticketSaleMode === 'presale' ? '预售门票' : '当日门票' }}</text>
+        </view>
+        <view v-if="detail.visitDate" class="info-row">
+          <text class="info-label">游玩日期</text>
+          <text class="info-value">{{ detail.visitDate }}</text>
+        </view>
+        <view v-if="detail.buyerName" class="info-row">
+          <text class="info-label">订购人</text>
+          <text class="info-value">{{ detail.buyerName }}</text>
+        </view>
+        <view v-if="detail.buyerPhone" class="info-row">
+          <text class="info-label">手机号</text>
+          <text class="info-value">{{ detail.buyerPhone }}</text>
+        </view>
+        <view v-if="detail.buyerIdCard" class="info-row">
+          <text class="info-label">身份证号</text>
+          <text class="info-value">{{ maskIdCard(detail.buyerIdCard) }}</text>
+        </view>
         <view v-if="detail.remark" class="info-row">
           <text class="info-label">备注</text>
           <text class="info-value">{{ detail.remark }}</text>
@@ -209,6 +229,12 @@ function formatPrice(priceInFen) {
   const yuan = priceInFen / 100
   if (yuan % 1 === 0) return String(yuan)
   return yuan.toFixed(yuan < 10 ? 1 : 0)
+}
+
+function maskIdCard(value) {
+  const text = String(value || '')
+  if (text.length <= 8) return text
+  return `${text.slice(0, 4)}********${text.slice(-4)}`
 }
 
 function statusClass(status) {

@@ -48,6 +48,11 @@ export function toOrderDetail(order, { forAdmin = false } = {}) {
     qrCodeUrl: order.qrCodeUrl || '',
     payAt: order.payAt || '',
     remark: order.remark || '',
+    buyerName: order.buyerName || '',
+    buyerPhone: order.buyerPhone || '',
+    buyerIdCard: order.buyerIdCard || '',
+    visitDate: order.visitDate || '',
+    ticketSaleMode: order.ticketSaleMode || '',
   }
 }
 

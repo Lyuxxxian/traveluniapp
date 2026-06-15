@@ -17,6 +17,7 @@ export const API_PATHS = {
     profile: '/api/user/profile',
     coupons: '/api/user/coupons',
     couponsAvailable: '/api/user/coupons/available',
+    visitors: '/api/user/visitors',
   },
   orders: {
     list: '/api/orders',

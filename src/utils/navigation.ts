@@ -39,7 +39,7 @@ export function goContentTarget(target?: ContentTarget) {
   }
 
   if (target.type === 'ticket') {
-    uni.navigateTo({ url: '/pages/mall/ticket' })
+    uni.navigateTo({ url: `/pages/mall/ticket${buildQuery({ mode: target.saleMode })}` })
     return
   }
 

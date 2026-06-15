@@ -37,9 +37,34 @@ router.get('/orders/:id', requireAuth, (req, res) => {
 })
 
 router.post('/orders', requireAuth, (req, res) => {
-  const { title, coverUrl, items, couponId, productType } = req.body || {}
+  const {
+    title,
+    coverUrl,
+    items,
+    couponId,
+    productType,
+    buyerName,
+    buyerPhone,
+    buyerIdCard,
+    visitDate,
+    ticketSaleMode,
+  } = req.body || {}
   if (!title || !Array.isArray(items) || !items.length) {
     return fail(res, 40001, '订单参数不完整')
+  }
+  if (productType === 'ticket') {
+    if (!buyerName || !buyerPhone || !buyerIdCard) {
+      return fail(res, 40001, '请填写订购人姓名、手机号和身份证号')
+    }
+    if (!/^1\d{10}$/.test(String(buyerPhone))) {
+      return fail(res, 40001, '手机号格式不正确')
+    }
+    if (!/^[0-9A-Za-z]{6,20}$/.test(String(buyerIdCard))) {
+      return fail(res, 40001, '身份证号格式不正确')
+    }
+    if (ticketSaleMode === 'presale' && !visitDate) {
+      return fail(res, 40001, '预售门票请选择购买日期')
+    }
   }
 
   const store = loadStore()
@@ -80,6 +105,11 @@ router.post('/orders', requireAuth, (req, res) => {
     couponDiscount,
     couponTitle,
     productType: productType || 'ticket',
+    buyerName: buyerName ? String(buyerName).trim() : '',
+    buyerPhone: buyerPhone ? String(buyerPhone).trim() : '',
+    buyerIdCard: buyerIdCard ? String(buyerIdCard).trim() : '',
+    visitDate: visitDate ? String(visitDate).trim() : '',
+    ticketSaleMode: ticketSaleMode === 'presale' ? 'presale' : 'daily',
     items: items.map((it) => ({
       title: it.title || title,
       skuName: it.skuName || '默认规格',

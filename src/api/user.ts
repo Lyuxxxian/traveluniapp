@@ -26,6 +26,21 @@ export type UpdateUserProfilePayload = {
   avatarUrl?: string
 }
 
+export type VisitorInfo = {
+  id: number
+  name: string
+  phone: string
+  idCard: string
+  isDefault?: boolean
+}
+
+export type CreateVisitorPayload = {
+  name: string
+  phone: string
+  idCard: string
+  isDefault?: boolean
+}
+
 export type FetchUserProfileOptions = {
   silent?: boolean
 }
@@ -93,4 +108,13 @@ export async function updateUserProfile(payload: UpdateUserProfilePayload): Prom
 
 export function getCachedUserProfile(): UserProfile | null {
   return getUserProfile()
+}
+
+export async function fetchVisitors(): Promise<VisitorInfo[]> {
+  if (!getToken()) return []
+  return http.get<VisitorInfo[]>(API_PATHS.user.visitors)
+}
+
+export async function createVisitor(payload: CreateVisitorPayload): Promise<VisitorInfo> {
+  return http.post<VisitorInfo>(API_PATHS.user.visitors, payload)
 }

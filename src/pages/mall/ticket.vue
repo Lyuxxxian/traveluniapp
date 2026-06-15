@@ -98,9 +98,11 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { fetchProducts } from '../../api/mall'
 import TabBar from '../../components/TabBar.vue'
 
+const saleMode = ref('daily')
 const keyword = ref('')
 const sortType = ref('default')
 const sortDesc = ref(false)
@@ -199,8 +201,12 @@ function goBack() {
 }
 
 function goDetail(id) {
-  uni.navigateTo({ url: `/pages/mall/productDetail?id=${id}` })
+  uni.navigateTo({ url: `/pages/mall/productDetail?id=${id}&mode=${saleMode.value}` })
 }
+
+onLoad((options) => {
+  saleMode.value = options?.mode === 'presale' ? 'presale' : 'daily'
+})
 
 onMounted(() => {
   loadData()

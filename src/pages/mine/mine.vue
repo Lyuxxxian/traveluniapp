@@ -186,6 +186,7 @@ function goOrderList(status) {
 
 function goFunction(key) {
   const routes = {
+    commonInfo: '/pages/mine/commonInfo',
     coupons: '/pages/mine/coupons',
     reviews: '/pages/mine/reviews',
     feedback: '/pages/mine/feedback',

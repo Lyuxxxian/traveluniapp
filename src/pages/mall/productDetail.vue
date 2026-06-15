@@ -87,10 +87,10 @@
 import { computed, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { fetchProductDetail } from '../../api/mall'
-import { createOrder } from '../../api/mine'
 
 const detail = ref(null)
 const selectedSpecId = ref(0)
+const saleMode = ref('daily')
 const selectedPrice = computed(() => {
   if (!detail.value) return 0
   const spec = detail.value.specs.find((s) => s.id === selectedSpecId.value)
@@ -124,32 +124,14 @@ function onShare() {
 async function onBuy() {
   const spec = detail.value.specs.find((s) => s.id === selectedSpecId.value)
   if (!spec) return
-
-  uni.showLoading({ title: '下单中...' })
-  try {
-    const result = await createOrder({
-      title: detail.value.title,
-      coverUrl: detail.value.coverUrl,
-      productType: detail.value.type,
-      items: [
-        {
-          productId: detail.value.id,
-          skuName: spec.name,
-          skuPrice: spec.price,
-          quantity: 1,
-        },
-      ],
-    })
-    uni.hideLoading()
-    uni.navigateTo({ url: `/pages/mine/orderInfo?id=${result.id}` })
-  } catch {
-    uni.hideLoading()
-    uni.showToast({ title: '下单失败', icon: 'none' })
-  }
+  uni.navigateTo({
+    url: `/pages/mall/checkout?id=${detail.value.id}&specId=${spec.id}&mode=${saleMode.value}`,
+  })
 }
 
 onLoad(async (options) => {
   const id = Number(options?.id || 0)
+  saleMode.value = options?.mode === 'presale' ? 'presale' : 'daily'
   if (!id) {
     uni.showToast({ title: '商品不存在', icon: 'none' })
     return
