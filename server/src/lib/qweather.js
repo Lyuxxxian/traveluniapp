@@ -1,5 +1,5 @@
 /**
- * 和风天气：首页实时天气 + 空气质量（Key 仅放 server/.env，勿提交 Git）
+ * 和风天气：首页实时天气 + 空气质量 + 天气详情（Key 仅放 server/.env，勿提交 Git）
  * 文档：https://dev.qweather.com/docs/api/weather/weather-now/
  */
 
@@ -7,12 +7,61 @@ const DEFAULT_HOST = 'devapi.qweather.com'
 const CACHE_TTL_MS = 10 * 60 * 1000
 
 let cache = { at: 0, data: null }
+let detailCache = { at: 0, data: null }
 
 const MOCK_HOME_WEATHER = {
   icon: '☀',
   temperature: '26°C',
   airQuality: '良',
   source: 'mock',
+}
+
+const MOCK_WEATHER_DETAIL = {
+  source: 'mock',
+  placeName: '灵山胜境',
+  updatedAt: '刚刚',
+  now: {
+    icon: '☀',
+    text: '晴',
+    temp: '26',
+    feelsLike: '28',
+    windDir: '东南风',
+    windScale: '3',
+    windSpeed: '14',
+    humidity: '62',
+    precip: '0.0',
+    pressure: '1012',
+    vis: '16',
+  },
+  today: {
+    fxDate: '',
+    textDay: '晴',
+    textNight: '多云',
+    icon: '☀',
+    tempMax: '29',
+    tempMin: '21',
+    sunrise: '04:56',
+    sunset: '19:06',
+    precip: '0.0',
+    humidity: '62',
+    windDir: '东南风',
+    windScale: '3',
+    uvIndex: '中等',
+  },
+  airQuality: '良',
+  hourly: [
+    { time: '08:00', icon: '☀', text: '晴', temp: '23', windDir: '东南风', windScale: '2', humidity: '68', precip: '0.0' },
+    { time: '10:00', icon: '☀', text: '晴', temp: '26', windDir: '东南风', windScale: '3', humidity: '62', precip: '0.0' },
+    { time: '12:00', icon: '🌤', text: '多云', temp: '28', windDir: '东南风', windScale: '3', humidity: '58', precip: '0.0' },
+    { time: '14:00', icon: '🌤', text: '多云', temp: '29', windDir: '东南风', windScale: '3', humidity: '57', precip: '0.0' },
+    { time: '16:00', icon: '⛅', text: '阴', temp: '27', windDir: '东南风', windScale: '2', humidity: '63', precip: '0.0' },
+    { time: '18:00', icon: '⛅', text: '多云', temp: '25', windDir: '东南风', windScale: '2', humidity: '70', precip: '0.0' },
+  ],
+  daily: [
+    { date: '今天', icon: '☀', textDay: '晴', textNight: '多云', tempMax: '29', tempMin: '21', precip: '0.0', humidity: '62', windDir: '东南风', windScale: '3', sunrise: '04:56', sunset: '19:06', uvIndex: '中等' },
+    { date: '明天', icon: '⛅', textDay: '多云', textNight: '多云', tempMax: '28', tempMin: '22', precip: '0.0', humidity: '66', windDir: '东风', windScale: '3', sunrise: '04:56', sunset: '19:06', uvIndex: '中等' },
+    { date: '周三', icon: '🌧', textDay: '小雨', textNight: '阴', tempMax: '25', tempMin: '20', precip: '3.2', humidity: '82', windDir: '东风', windScale: '3', sunrise: '04:57', sunset: '19:07', uvIndex: '弱' },
+  ],
 }
 
 function roundCoord(n) {
@@ -31,6 +80,10 @@ function getLatLng() {
   const loc = getQWeatherLocation()
   const [lng, lat] = loc.split(',').map((s) => Number(s.trim()))
   return { lat: roundCoord(lat), lng: roundCoord(lng) }
+}
+
+function getPlaceName() {
+  return (process.env.QWEATHER_PLACE_NAME || '灵山胜境').trim()
 }
 
 function getApiHost() {
@@ -187,6 +240,97 @@ async function fetchNowWeather() {
   return payload.now
 }
 
+async function fetchDailyWeather() {
+  const location = getQWeatherLocation()
+  const payload = await qweatherGet('/v7/weather/7d', { location, lang: 'zh' })
+  if (payload?.code !== '200' || !Array.isArray(payload.daily)) {
+    throw new Error(`和风天气 7d 失败: ${payload?.code || 'unknown'}`)
+  }
+  return payload.daily
+}
+
+async function fetchHourlyWeather() {
+  const location = getQWeatherLocation()
+  const payload = await qweatherGet('/v7/weather/24h', { location, lang: 'zh' })
+  if (payload?.code !== '200' || !Array.isArray(payload.hourly)) {
+    throw new Error(`和风天气 24h 失败: ${payload?.code || 'unknown'}`)
+  }
+  return payload.hourly
+}
+
+async function fetchUvIndex() {
+  const location = getQWeatherLocation()
+  const payload = await qweatherGet('/v7/indices/1d', { location, type: 5, lang: 'zh' })
+  if (payload?.code !== '200' || !Array.isArray(payload.daily)) return ''
+  return payload.daily[0]?.category || payload.daily[0]?.level || ''
+}
+
+function formatHour(fxTime) {
+  if (!fxTime) return ''
+  const date = new Date(fxTime)
+  if (!Number.isNaN(date.getTime())) {
+    return `${String(date.getHours()).padStart(2, '0')}:00`
+  }
+  return String(fxTime).slice(11, 16)
+}
+
+function formatDay(fxDate, index) {
+  if (index === 0) return '今天'
+  if (index === 1) return '明天'
+  const date = new Date(`${fxDate}T00:00:00`)
+  if (Number.isNaN(date.getTime())) return fxDate || ''
+  return ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()]
+}
+
+function normalizeNow(now) {
+  return {
+    icon: weatherIconEmoji(now.icon, now.text),
+    text: now.text || '',
+    temp: now.temp || '',
+    feelsLike: now.feelsLike || '',
+    windDir: now.windDir || '',
+    windScale: now.windScale || '',
+    windSpeed: now.windSpeed || '',
+    humidity: now.humidity || '',
+    precip: now.precip || '0.0',
+    pressure: now.pressure || '',
+    vis: now.vis || '',
+  }
+}
+
+function normalizeDailyItem(item, index, uvIndex = '') {
+  return {
+    date: formatDay(item.fxDate, index),
+    fxDate: item.fxDate || '',
+    icon: weatherIconEmoji(item.iconDay, item.textDay),
+    textDay: item.textDay || '',
+    textNight: item.textNight || '',
+    tempMax: item.tempMax || '',
+    tempMin: item.tempMin || '',
+    precip: item.precip || '0.0',
+    humidity: item.humidity || '',
+    windDir: item.windDirDay || item.windDirNight || '',
+    windScale: item.windScaleDay || item.windScaleNight || '',
+    sunrise: item.sunrise || '',
+    sunset: item.sunset || '',
+    uvIndex: index === 0 ? uvIndex : '',
+  }
+}
+
+function normalizeHourlyItem(item) {
+  return {
+    time: formatHour(item.fxTime),
+    icon: weatherIconEmoji(item.icon, item.text),
+    text: item.text || '',
+    temp: item.temp || '',
+    windDir: item.windDir || '',
+    windScale: item.windScale || '',
+    humidity: item.humidity || '',
+    precip: item.precip || '0.0',
+    pop: item.pop || '',
+  }
+}
+
 export async function fetchHomeWeatherFromQWeather() {
   if (Date.now() - cache.at < CACHE_TTL_MS && cache.data) {
     return cache.data
@@ -211,5 +355,53 @@ export async function fetchHomeWeatherFromQWeather() {
   } catch (error) {
     console.warn('[qweather] 首页天气拉取失败，使用 mock:', error?.message || error)
     return { ...MOCK_HOME_WEATHER }
+  }
+}
+
+export async function fetchWeatherDetailFromQWeather() {
+  if (Date.now() - detailCache.at < CACHE_TTL_MS && detailCache.data) {
+    return detailCache.data
+  }
+
+  if (!getApiKey()) {
+    return { ...MOCK_WEATHER_DETAIL, placeName: getPlaceName() }
+  }
+
+  try {
+    const [nowResult, dailyResult, hourlyResult, airResult, uvResult] = await Promise.allSettled([
+      fetchNowWeather(),
+      fetchDailyWeather(),
+      fetchHourlyWeather(),
+      fetchAirQualityLabel(),
+      fetchUvIndex(),
+    ])
+
+    const now = nowResult.status === 'fulfilled' ? nowResult.value : null
+    const daily = dailyResult.status === 'fulfilled' ? dailyResult.value : []
+    const hourly = hourlyResult.status === 'fulfilled' ? hourlyResult.value : []
+    const airQuality = airResult.status === 'fulfilled' ? airResult.value : MOCK_HOME_WEATHER.airQuality
+    const uvIndex = uvResult.status === 'fulfilled' ? uvResult.value : ''
+
+    if (!now && daily.length === 0 && hourly.length === 0) {
+      throw new Error('和风天气详情为空')
+    }
+
+    const normalizedDaily = daily.map((item, index) => normalizeDailyItem(item, index, uvIndex))
+    const data = {
+      source: 'qweather',
+      placeName: getPlaceName(),
+      updatedAt: now?.obsTime || new Date().toISOString(),
+      now: now ? normalizeNow(now) : MOCK_WEATHER_DETAIL.now,
+      today: normalizedDaily[0] || MOCK_WEATHER_DETAIL.today,
+      airQuality,
+      hourly: hourly.slice(0, 24).map(normalizeHourlyItem),
+      daily: normalizedDaily.slice(0, 7),
+    }
+
+    detailCache = { at: Date.now(), data }
+    return data
+  } catch (error) {
+    console.warn('[qweather] 天气详情拉取失败，使用 mock:', error?.message || error)
+    return { ...MOCK_WEATHER_DETAIL, placeName: getPlaceName() }
   }
 }

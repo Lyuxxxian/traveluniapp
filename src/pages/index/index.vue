@@ -31,7 +31,7 @@
             <text class="hero-subtitle">{{ currentHero.subtitle }}</text>
           </view>
           <view class="top-bar">
-            <view class="weather-status">
+            <view class="weather-status" @tap="handleWeatherTap">
               <text class="weather-icon">{{ weather.icon }}</text>
               <view class="weather-copy">
                 <text class="temperature">{{ weather.temperature }}</text>
@@ -226,6 +226,10 @@ function handleActionTap(item) {
 
 function handleSearchTap() {
   goContentTarget({ type: 'search' })
+}
+
+function handleWeatherTap() {
+  uni.navigateTo({ url: '/pages/weather/detail' })
 }
 
 function handleContentTap(item) {

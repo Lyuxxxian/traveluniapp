@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { loadStore } from '../lib/store.js'
-import { fetchHomeWeatherFromQWeather } from '../lib/qweather.js'
+import { fetchHomeWeatherFromQWeather, fetchWeatherDetailFromQWeather } from '../lib/qweather.js'
 import { ok } from '../lib/response.js'
 
 const router = Router()
@@ -14,6 +14,11 @@ router.get('/weather', async (_req, res) => {
   const data = await fetchHomeWeatherFromQWeather()
   const { icon, temperature, airQuality } = data
   return ok(res, { icon, temperature, airQuality })
+})
+
+router.get('/weather/detail', async (_req, res) => {
+  const data = await fetchWeatherDetailFromQWeather()
+  return ok(res, data)
 })
 
 export default router

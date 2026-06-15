@@ -32,6 +32,7 @@ export const API_PATHS = {
     config: '/api/home/config',
     shows: '/api/shows',
     weather: '/api/home/weather',
+    weatherDetail: '/api/home/weather/detail',
   },
   discover: {
     posts: '/api/discover/posts',

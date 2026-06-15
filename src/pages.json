@@ -52,6 +52,13 @@
 			}
 		},
 		{
+			"path": "pages/weather/detail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/mall/mall",
 			"style": {
 				"navigationBarTitleText": "商城",

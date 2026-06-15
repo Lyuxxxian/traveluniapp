@@ -76,6 +76,60 @@ export type HomeWeather = {
   airQuality: string
 }
 
+export type WeatherNowDetail = {
+  icon: string
+  text: string
+  temp: string
+  feelsLike: string
+  windDir: string
+  windScale: string
+  windSpeed: string
+  humidity: string
+  precip: string
+  pressure: string
+  vis: string
+}
+
+export type WeatherDailyItem = {
+  date: string
+  fxDate?: string
+  icon: string
+  textDay: string
+  textNight: string
+  tempMax: string
+  tempMin: string
+  precip: string
+  humidity: string
+  windDir: string
+  windScale: string
+  sunrise: string
+  sunset: string
+  uvIndex?: string
+}
+
+export type WeatherHourlyItem = {
+  time: string
+  icon: string
+  text: string
+  temp: string
+  windDir: string
+  windScale: string
+  humidity: string
+  precip: string
+  pop?: string
+}
+
+export type WeatherDetail = {
+  source: string
+  placeName: string
+  updatedAt: string
+  now: WeatherNowDetail
+  today: WeatherDailyItem
+  airQuality: string
+  hourly: WeatherHourlyItem[]
+  daily: WeatherDailyItem[]
+}
+
 export type ShowItem = {
   id: number
   title: string
@@ -191,6 +245,53 @@ const mockWeather: HomeWeather = {
   airQuality: '良',
 }
 
+const mockWeatherDetail: WeatherDetail = {
+  source: 'mock',
+  placeName: '灵山胜境',
+  updatedAt: '刚刚',
+  now: {
+    icon: '☀',
+    text: '晴',
+    temp: '26',
+    feelsLike: '28',
+    windDir: '东南风',
+    windScale: '3',
+    windSpeed: '14',
+    humidity: '62',
+    precip: '0.0',
+    pressure: '1012',
+    vis: '16',
+  },
+  today: {
+    date: '今天',
+    icon: '☀',
+    textDay: '晴',
+    textNight: '多云',
+    tempMax: '29',
+    tempMin: '21',
+    precip: '0.0',
+    humidity: '62',
+    windDir: '东南风',
+    windScale: '3',
+    sunrise: '04:56',
+    sunset: '19:06',
+    uvIndex: '中等',
+  },
+  airQuality: '良',
+  hourly: [
+    { time: '08:00', icon: '☀', text: '晴', temp: '23', windDir: '东南风', windScale: '2', humidity: '68', precip: '0.0' },
+    { time: '10:00', icon: '☀', text: '晴', temp: '26', windDir: '东南风', windScale: '3', humidity: '62', precip: '0.0' },
+    { time: '12:00', icon: '🌤', text: '多云', temp: '28', windDir: '东南风', windScale: '3', humidity: '58', precip: '0.0' },
+    { time: '14:00', icon: '🌤', text: '多云', temp: '29', windDir: '东南风', windScale: '3', humidity: '57', precip: '0.0' },
+    { time: '16:00', icon: '⛅', text: '阴', temp: '27', windDir: '东南风', windScale: '2', humidity: '63', precip: '0.0' },
+  ],
+  daily: [
+    { date: '今天', icon: '☀', textDay: '晴', textNight: '多云', tempMax: '29', tempMin: '21', precip: '0.0', humidity: '62', windDir: '东南风', windScale: '3', sunrise: '04:56', sunset: '19:06', uvIndex: '中等' },
+    { date: '明天', icon: '⛅', textDay: '多云', textNight: '多云', tempMax: '28', tempMin: '22', precip: '0.0', humidity: '66', windDir: '东风', windScale: '3', sunrise: '04:56', sunset: '19:06' },
+    { date: '周三', icon: '🌧', textDay: '小雨', textNight: '阴', tempMax: '25', tempMin: '20', precip: '3.2', humidity: '82', windDir: '东风', windScale: '3', sunrise: '04:57', sunset: '19:07' },
+  ],
+}
+
 const mockShows: ShowItem[] = [
   {
     id: 201,
@@ -236,6 +337,22 @@ export async function fetchHomeWeather(): Promise<HomeWeather> {
     }
   }
   return Promise.resolve(mockWeather)
+}
+
+export async function fetchWeatherDetail(): Promise<WeatherDetail> {
+  try {
+    const data = await http.get<WeatherDetail>(API_PATHS.home.weatherDetail, undefined, HOME_READ_OPTS)
+    if (data && data.now && Array.isArray(data.hourly)) return data
+  } catch {
+    if (import.meta.env.DEV) {
+      uni.showToast({
+        title: '天气详情接口失败，已用本地 mock',
+        icon: 'none',
+        duration: 2500,
+      })
+    }
+  }
+  return Promise.resolve(mockWeatherDetail)
 }
 
 export async function fetchShows(date?: string): Promise<ShowItem[]> {
