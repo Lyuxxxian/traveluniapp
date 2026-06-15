@@ -1,11 +1,12 @@
 import { API_PATHS } from '../config/api'
+import { isRemoteApiEnabled } from '../utils/remoteApi'
 import { http } from '../utils/request'
 
 /**
- * 后端联调：.env 设置 VITE_MALL_USE_REMOTE_API=true 走真实 /api/mall/*
+ * 开发环境默认走 /api/mall/*；可用 VITE_MALL_USE_REMOTE_API=false 强制 mock
  * 失败时自动回退本地 mock；下架商品远程返回空/404 时不回退 mock
  */
-const USE_REMOTE_MALL_API = import.meta.env.VITE_MALL_USE_REMOTE_API === 'true'
+const USE_REMOTE_MALL_API = isRemoteApiEnabled(import.meta.env.VITE_MALL_USE_REMOTE_API)
 const MALL_READ_OPTS = { auth: false, showErrorToast: false } as const
 
 export type ProductType = 'ticket' | 'hotel' | 'annualCard' | 'couponPackage' | 'food' | 'creative'

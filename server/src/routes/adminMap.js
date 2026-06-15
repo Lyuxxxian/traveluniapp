@@ -138,7 +138,7 @@ router.post('/points', (req, res) => {
     ...base,
     latitude: Number(base.latitude),
     longitude: Number(base.longitude),
-    iconKey: base.iconKey || base.category,
+    iconKey: base.category,
   }
 
   store.mapPoints = store.mapPoints || []
@@ -185,7 +185,7 @@ router.put('/points/:id', (req, res) => {
     ...merged,
     latitude: Number(merged.latitude),
     longitude: Number(merged.longitude),
-    iconKey: merged.iconKey || merged.category,
+    iconKey: merged.category,
   }
   store.mapPoints[idx] = row
   setMapPointDetailExtras(store, id, pickMapDetailFromBody(body))

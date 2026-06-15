@@ -84,7 +84,7 @@ onMounted(async () => {
 <template>
   <el-card header="地图点位">
     <p class="tip">
-      修改保存后，C 端设置 <code>VITE_MAP_USE_REMOTE_API=true</code> 并刷新地图页即可看到更新（失败时仍 fallback 本地数据）。
+      修改保存后，本机 C 端重启 dev 即可看到更新。同步给队友：在 <code>server</code> 执行 <code>npm run store:publish</code> 并提交 <code>data/baseline</code> 到 Git。
     </p>
     <div class="toolbar">
       <el-select

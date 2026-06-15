@@ -38,7 +38,10 @@
     "verify:map-doc": "node scripts/verify-map-doc-fields.mjs",
     "verify:mall-doc": "node scripts/verify-mall-doc-fields.mjs",
     "verify:mall-remote": "node scripts/verify-mall-remote.mjs",
-    "verify:service": "node scripts/verify-service-api.mjs"
+    "verify:service": "node scripts/verify-service-api.mjs",
+    "store:publish": "npm run store:publish --prefix server",
+    "store:sync": "npm run store:sync --prefix server",
+    "team:api": "node scripts/setup-team-api.mjs"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-5000720260410001",

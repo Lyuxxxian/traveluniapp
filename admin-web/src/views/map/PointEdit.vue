@@ -106,7 +106,7 @@ async function save() {
       ...form,
       latitude: Number(form.latitude),
       longitude: Number(form.longitude),
-      iconKey: form.iconKey || form.category,
+      iconKey: form.category,
       relatedShowIds: parseIdList(relatedShowText.value),
       relatedProductIds: parseIdList(relatedProductText.value),
     }
@@ -123,7 +123,7 @@ async function save() {
 }
 
 function onCategoryChange(key: string) {
-  if (!form.iconKey) form.iconKey = key
+  form.iconKey = key
 }
 
 onMounted(load)
@@ -173,7 +173,7 @@ onMounted(load)
         </el-select>
       </el-form-item>
       <el-form-item label="图标 iconKey">
-        <el-input v-model="form.iconKey" placeholder="默认与分类相同" />
+        <el-input v-model="form.iconKey" disabled placeholder="自动与分类一致" />
       </el-form-item>
       <el-form-item label="封面图">
         <ImageUpload v-model="coverImage" label="images[0]" />

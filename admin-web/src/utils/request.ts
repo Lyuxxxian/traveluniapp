@@ -38,6 +38,14 @@ client.interceptors.response.use(
     return res
   },
   (err) => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem('admin_token')
+      localStorage.removeItem('admin_user')
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      }
+      return Promise.reject(new Error('登录已失效，请重新登录'))
+    }
     if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
       const hint = baseURL
         ? `无法连接 API（${baseURL}），请确认后端已启动且 VITE_API_BASE_URL 正确`

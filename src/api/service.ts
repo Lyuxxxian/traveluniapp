@@ -1,4 +1,5 @@
 import { AI_PROXY_PATHS, API_PATHS } from '../config/api'
+import { isRemoteApiEnabled } from '../utils/remoteApi'
 import { http } from '../utils/request'
 import { getToken } from '../utils/auth'
 import {
@@ -13,11 +14,11 @@ import {
 /**
  * 服务层 API（契约见 API接口文档v4 第 13 章）
  *
- * 联调：.env 设置 VITE_SERVICE_USE_REMOTE_API=true
+ * 开发环境默认走远程 API；可用 VITE_SERVICE_USE_REMOTE_API=false 强制 mock
  * 模拟失败：VITE_SERVICE_SIMULATE_API_ERROR=true
  * 禁止引用 src/api/ai.ts 的 askAI
  */
-const USE_REMOTE_SERVICE_API = import.meta.env.VITE_SERVICE_USE_REMOTE_API === 'true'
+const USE_REMOTE_SERVICE_API = isRemoteApiEnabled(import.meta.env.VITE_SERVICE_USE_REMOTE_API)
 const SIMULATE_SERVICE_API_ERROR = import.meta.env.VITE_SERVICE_SIMULATE_API_ERROR === 'true'
 
 const SERVICE_READ_OPTS = { auth: false, showErrorToast: false } as const

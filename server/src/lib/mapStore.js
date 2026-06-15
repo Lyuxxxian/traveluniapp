@@ -64,7 +64,7 @@ export function buildMapPointBase(body = {}, defaults = {}) {
     openTime: body.openTime ?? defaults.openTime,
     status: body.status ?? defaults.status ?? 'open',
     tags: body.tags ?? defaults.tags,
-    iconKey: body.iconKey ?? defaults.iconKey ?? category,
+    iconKey: category,
   }
 }
 

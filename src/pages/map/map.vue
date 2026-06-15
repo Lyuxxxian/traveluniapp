@@ -228,15 +228,16 @@ let detailRequestSeq = 0
 function toDisplayCategories(list) {
   return list.map((item) => ({
     ...item,
-    displayIcon: categoryIconEmoji[item.key] || '📍',
+    displayIcon: categoryIconEmoji[item.icon] || categoryIconEmoji[item.key] || '📍',
   }))
 }
 
 function getCategoryMeta(categoryKey) {
   const category = categories.value.find((item) => item.key === categoryKey)
+  const iconRef = category?.icon || categoryKey
   return {
     color: category?.color || '#42c79c',
-    icon: category?.displayIcon || categoryIconEmoji[categoryKey] || '📍',
+    icon: category?.displayIcon || categoryIconEmoji[iconRef] || categoryIconEmoji[categoryKey] || '📍',
   }
 }
 
@@ -765,8 +766,8 @@ function syncH5MapMarkers() {
       latitude: point.latitude,
       longitude: point.longitude,
       title: point.title,
-      iconText: getCategoryMeta(point.iconKey || point.category).icon,
-      iconColor: getCategoryMeta(point.iconKey || point.category).color,
+      iconText: getCategoryMeta(point.category).icon,
+      iconColor: getCategoryMeta(point.category).color,
     })),
     markerColor: resolveH5MarkerColor(),
     routeMode: mapMode.value === 'route',
@@ -873,7 +874,7 @@ const currentMarkers = computed(() => {
 
   return markerDisplayPoints.value.map((point, index) => ({
     ...(() => {
-      const meta = getCategoryMeta(point.iconKey || point.category)
+      const meta = getCategoryMeta(point.category)
       return {
         iconPath: buildMarkerIconDataUrl(meta.icon, meta.color),
       }

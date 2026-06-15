@@ -1,4 +1,5 @@
 import { API_PATHS } from '../config/api'
+import { isRemoteApiEnabled } from '../utils/remoteApi'
 import { http } from '../utils/request'
 
 export type ContentTarget =
@@ -201,7 +202,7 @@ const mockShows: ShowItem[] = [
   },
 ]
 
-const USE_REMOTE_HOME_API = import.meta.env.VITE_HOME_USE_REMOTE_API === 'true'
+const USE_REMOTE_HOME_API = isRemoteApiEnabled(import.meta.env.VITE_HOME_USE_REMOTE_API)
 const HOME_READ_OPTS = { auth: false, showErrorToast: false } as const
 
 export async function fetchHomeConfig(): Promise<HomeConfig> {

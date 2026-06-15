@@ -3,6 +3,7 @@ import express from 'express'
 import { loadEnvFile } from './lib/loadEnv.js'
 
 loadEnvFile()
+import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import authRouter from './routes/auth.js'
@@ -20,6 +21,7 @@ import mallRouter from './routes/mall.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PORT = Number(process.env.PORT) || 3000
+const HOST = process.env.HOST || '0.0.0.0'
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 if (IS_PRODUCTION && process.env.ADMIN_AUTH_DISABLED === 'true') {
@@ -58,8 +60,26 @@ app.use((_req, res) => {
   res.status(404).json({ code: 404, message: '接口不存在', data: null })
 })
 
-app.listen(PORT, () => {
+function getLanUrls() {
+  const urls = []
+  const interfaces = os.networkInterfaces()
+  for (const [name, items] of Object.entries(interfaces)) {
+    for (const item of items || []) {
+      if (item.family === 'IPv4' && !item.internal) {
+        urls.push(`${name}: http://${item.address}:${PORT}`)
+      }
+    }
+  }
+  return urls
+}
+
+app.listen(PORT, HOST, () => {
   console.log(`[traveluniapp-server] http://localhost:${PORT}`)
+  const lanUrls = getLanUrls()
+  if (lanUrls.length) {
+    console.log(`  局域网共享后端: ${lanUrls.join(' / ')}`)
+    console.log('  队友需将管理端和 C 端 VITE_API_BASE_URL 指向同一个地址')
+  }
   console.log('  服务层: reviews, feedback, questionnaires, support/tickets, faqs, service/config')
   console.log('  上传: POST /api/upload/image')
   console.log('  公开: GET /api/home/config, GET /api/home/weather, GET /api/discover/posts, GET /api/map/*, GET /api/mall/products')

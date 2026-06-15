@@ -1,13 +1,14 @@
 import { API_PATHS } from '../config/api'
+import { isRemoteApiEnabled } from '../utils/remoteApi'
 import { http } from '../utils/request'
 import { MAP_CATEGORIES, MAP_POINT_SEEDS, MAP_ROUTES } from './mapData'
 
 /**
- * 后端联调：.env 设置 VITE_MAP_USE_REMOTE_API=true 走真实 /api/map/*
+ * 开发环境默认走 /api/map/*；可用 VITE_MAP_USE_REMOTE_API=false 强制 mock
  * 失败或空数据时自动回退 mock/fallback，不白屏
  * 模拟失败：VITE_MAP_SIMULATE_API_ERROR=true
  */
-const USE_REMOTE_MAP_API = import.meta.env.VITE_MAP_USE_REMOTE_API === 'true'
+const USE_REMOTE_MAP_API = isRemoteApiEnabled(import.meta.env.VITE_MAP_USE_REMOTE_API)
 const SIMULATE_MAP_API_ERROR = import.meta.env.VITE_MAP_SIMULATE_API_ERROR === 'true'
 
 const MAP_HTTP_OPTS = { auth: false, showErrorToast: false } as const

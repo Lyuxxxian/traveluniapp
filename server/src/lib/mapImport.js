@@ -90,7 +90,7 @@ export function planMapPointImport(store, rawRows, options = {}) {
       ...base,
       latitude: Number(base.latitude),
       longitude: Number(base.longitude),
-      iconKey: base.iconKey || base.category,
+      iconKey: base.category,
     }
     const detail = pickMapDetailFromBody(row)
     planned.push({

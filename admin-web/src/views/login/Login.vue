@@ -8,7 +8,7 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const auth = useAuthStore()
 const username = ref('admin')
-const password = ref('DevOnly!2026')
+const password = ref('')
 const loading = ref(false)
 
 async function onSubmit() {
@@ -41,7 +41,7 @@ async function onSubmit() {
           登录
         </el-button>
       </el-form>
-      <p class="hint">开发账号：admin / DevOnly!2026（生产请改密，见 server/docs/ADMIN_PRODUCTION.md）</p>
+      <p class="hint">开发账号：admin；密码以当前共享后端 store 为准（本机常用 admin123 或 DevOnly!2026）。</p>
     </el-card>
   </div>
 </template>

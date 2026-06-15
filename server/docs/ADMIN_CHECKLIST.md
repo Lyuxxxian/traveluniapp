@@ -4,7 +4,7 @@
 
 1. 后端：`cd server && npm run dev`（端口 3000，单实例）
 2. 管理端：`cd admin-web && npm install && npm run dev`（端口 5174）
-3. C 端联调：项目根目录 `.env.local` 按需开启远程 API（改 env 后须**重启** C 端 dev）
+3. C 端联调：根目录已提交 `.env.development`，**开发模式默认走本机 server**（改 env 后须**重启** C 端 dev）
 
 | 变量 | 说明 |
 | --- | --- |
@@ -14,6 +14,21 @@
 | `VITE_MAP_USE_REMOTE_API=true` | 地图走 `/api/map/*`（失败仍 fallback 本地 mock） |
 | `VITE_MALL_USE_REMOTE_API=true` | 商城走 `/api/mall/products`（失败 fallback；下架不回退 mock） |
 | `VITE_SERVICE_USE_REMOTE_API=true` | 服务层点评/问卷/工单等 |
+
+## 团队数据同步（重要）
+
+管理端数据存在后端 `server/data/store.json`。如果每个人都连自己的 `localhost:3000`，数据一定不同步。
+
+实时协作请让所有人的管理端和 C 端指向同一个共享后端：
+
+```bash
+# 共享后端电脑启动后，看 server 日志里的局域网地址，例如 http://192.168.1.23:3000
+npm run team:api -- http://192.168.1.23:3000
+```
+
+然后重启 admin-web 与 C 端 dev。详见 `server/docs/TEAM_DATA_SYNC.md`。
+
+`store:publish` / `store:sync` 只用于把运营数据快照随 Git 发布，不是实时多人同步方案。
 
 ## 冒烟（自动化）
 

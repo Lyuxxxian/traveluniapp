@@ -1,6 +1,8 @@
-# 运营数据 Baseline（Git 协作）
+# 运营数据 Baseline（Git 快照）
 
-管理端写入的 `data/store.json` **不会**进入 Git。本目录存放可提交的运营数据快照，队友 `git pull` 后自动/手动同步到本机 `store.json`。
+管理端写入的 `data/store.json` **不会**进入 Git。本目录存放可提交的运营数据快照，队友 `git pull` 后可手动同步到本机 `store.json`。
+
+注意：baseline 不是实时多人同步方案。若希望你和队友谁在管理端上传，双方用户端都立即看到，请使用同一个共享后端，见 `server/docs/TEAM_DATA_SYNC.md`。
 
 ## 谁在改数据（发布方）
 
@@ -18,9 +20,7 @@ git push
 ## 队友如何接收
 
 1. `git pull`
-2. 重启 server：`cd server && npm run dev`（启动时会自动应用较新的 baseline）
-
-若本机已有旧 `store.json` 且未自动更新，可强制同步：
+2. 手动同步 baseline（会先备份当前 `store.json` 到 `data/backups/`）：
 
 ```bash
 cd server
@@ -28,7 +28,7 @@ npm run store:sync
 npm run dev
 ```
 
-3. 重启 C 端 dev（`npm run dev:h5` 等）。开发环境已默认走 `http://localhost:3000` 远程 API（见根目录 `.env.development`）。
+3. 重启 C 端 dev（`npm run dev:h5` 等）。如果是多人实时协作，请先执行 `npm run team:api -- <共享后端地址>`，不要继续使用各自的 `localhost:3000`。
 
 ## 同步范围
 

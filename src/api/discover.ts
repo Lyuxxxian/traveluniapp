@@ -1,4 +1,5 @@
 import { API_PATHS } from '../config/api'
+import { isRemoteApiEnabled } from '../utils/remoteApi'
 import { http } from '../utils/request'
 import type { ContentTarget } from './home'
 
@@ -222,7 +223,7 @@ const detailMap: Record<number, Omit<DiscoverPostDetail, keyof DiscoverPost>> = 
   },
 }
 
-const USE_REMOTE_DISCOVER_API = import.meta.env.VITE_DISCOVER_USE_REMOTE_API === 'true'
+const USE_REMOTE_DISCOVER_API = isRemoteApiEnabled(import.meta.env.VITE_DISCOVER_USE_REMOTE_API)
 const DISCOVER_READ_OPTS = { auth: false, showErrorToast: false } as const
 
 export async function fetchDiscoverPosts(params: DiscoverPostListParams = {}): Promise<DiscoverPost[] | DiscoverPostPage> {

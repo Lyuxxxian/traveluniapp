@@ -19,7 +19,9 @@
     "map:import": "node scripts/import-map-points.mjs",
     "map:import:dry": "node scripts/import-map-points.mjs --dry-run",
     "verify:p0": "node scripts/verify-p0-checklist.mjs",
-    "admin:set-password": "node scripts/set-admin-password.mjs"
+    "admin:set-password": "node scripts/set-admin-password.mjs",
+    "store:publish": "node scripts/store-baseline.mjs publish",
+    "store:sync": "node scripts/store-baseline.mjs sync"
   },
   "dependencies": {
     "cors": "^2.8.5",
